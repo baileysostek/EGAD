@@ -116,30 +116,33 @@ module.exports = class Grid{
         let count = COLUMNS.length;
         for(var i = 0; i < count; i++){
             COLUMNS[i].element.style.width = ((Math.ceil((1.0/count) * 100))+(COLUMNS[i].delta))+'%';
-            if(COLUMNS[i].dragPriority == DRAG_PRIORITY.SECONDARY) {
-                COLUMNS[i].element.style.left = ((i / count) + (COLUMNS[i].delta) / -100) * WIDTH + 'px';
-            }else{
-                COLUMNS[i].element.style.left = ((i / count)) * WIDTH + 'px';
-            }
+            COLUMNS[i].element.style.left = ((i / count) * 100) + '%';
+        }
+    }
+
+
+    onDrag(event, index1, index2){
+        console.log(event);
+        //Determine sum of previous segments
+        let preColumnOffset = 0;
+        for(var i = 0; i < index1; i++){
+            preColumnOffset += parseFloat(COLUMNS[i].element.style.width);
+        }
+        if(event.screenX > 0) {
+            // console.log("Event",event);
+            COLUMNS[index1].delta = (((parseFloat(DRAGS[index1].element.style.left) / WIDTH) - (event.screenX / WIDTH) + (1.0 / COLUMNS.length)) * -100);
+            COLUMNS[index1].dragPriority = DRAG_PRIORITY.PRIMARY;
+            COLUMNS[index2].delta = (((parseFloat(DRAGS[index1].element.style.left) / WIDTH) - (event.screenX / WIDTH) + (1.0 / COLUMNS.length)) * 100);
+            COLUMNS[index2].dragPriority = DRAG_PRIORITY.SECONDARY;
+            COLUMNS[index1].element.style.width = ((COLUMNS[index1].delta) + (1.0 / COLUMNS.length * 100))+'%';
+            COLUMNS[index2].element.style.width = ((COLUMNS[index2].delta) + (1.0 / COLUMNS.length * 100))+'%';
+            COLUMNS[index2].element.style.left = (parseFloat(COLUMNS[index1].element.style.left) + parseFloat(COLUMNS[index1].element.style.width)) + '%';
+        }else{
             /*
                 Since each Drag links two columns, the size of our Drag array is (COLUMNS.length - 1)
                 because of this we need to only access the drag array when n < length-1
              */
-            if(i < COLUMNS.length - 1){
-                //Offset the position by 1 column length to position the drag between column (n) and (n+1)
-                DRAGS[i].element.style.left = ((parseFloat(COLUMNS[i].element.style.left) / WIDTH)+(parseFloat(COLUMNS[i].element.style.width)/100)) * WIDTH + 'px';
-            }
-        }
-    }
-
-    onDrag(event, index1, index2){
-        if(event.screenX > 0) {
-            // console.log("Event",event);
-            COLUMNS[index1].delta = ((event.offsetX / WIDTH) * 100);
-            COLUMNS[index1].dragPriority = DRAG_PRIORITY.PRIMARY;
-            COLUMNS[index2].delta = ((event.offsetX / WIDTH) * -100);
-            COLUMNS[index2].dragPriority = DRAG_PRIORITY.SECONDARY;
-            this.refresh();
+            DRAGS[index1].element.style.left = ((parseFloat(COLUMNS[index1].element.style.left) + parseFloat(COLUMNS[index1].element.style.width)) - preColumnOffset) + '%';
         }
     }
 

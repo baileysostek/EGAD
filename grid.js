@@ -3,12 +3,27 @@ let WIDTH = 0;
 let HEIGHT = 0;
 
 let COLUMNS = [];
+let DRAGS = [];
 
-const COLUMNS_TAG = 'columns';
 const COLUMN_TAG = 'column';
+const DRAG_TAG = 'drag';
 const ROW_TAG = 'row';
 
+const DRAG_PRIORITY = {
+    PRIMARY:0,
+    SECONDARY:1
+};
+
+/**
+ * Creates a new Grid, this contains columns and drag elements.
+ * @class
+ */
 module.exports = class Grid{
+    /**
+     * The Grid class takes in the window width and height, passed in to establish a basic window size.
+     * @param {Number, Number} width, height
+     * @returns {Grid} Returns an instance of the Grid class.
+     */
     constructor(width, height){
         WIDTH = width;
         HEIGHT = height;
@@ -22,32 +37,109 @@ module.exports = class Grid{
         })
     }
 
+    /**
+     * Creates a Column. A column is a resizable container for data.
+     * @class
+     * @param {String, String} name, color
+     * @returns {String, Element} Returns a json object representing a Column.
+     */
     createColumn(name, color){
         let column = document.createElement(COLUMN_TAG);
         column.style.backgroundColor = color;
+        column.style.height = 100+'%';
         column.style.position = "absolute";
         column.innerText = name;
         return {
+            dragPriority:DRAG_PRIORITY.PRIMARY,
+            delta:0,
             name:name,
-            element:column
+            element:column,
+            index:0,
+        }
+    }
+
+    /**
+     * Creates a Drag. A drag is a small element conjoining two Columns. Clicking and dragging on a Drag will change the
+     * relative scale of the linked columns.
+     * @class
+     * @param {COLUMN, COLUMN} col1, col2
+     * @returns {String, Element} Returns a json object representing a Column.
+     */
+    createDrag(col1, col2){
+        let drag = document.createElement(DRAG_TAG);
+        // drag.style.backgroundColor = "#ffffff00";
+        drag.style.backgroundColor = "#212121";
+        drag.style.position = "absolute";
+        drag.style.height = 100+'%';
+        drag.style.width = 3+'px';
+        var that = this;
+        drag.addEventListener("drag", function( event) {
+            that.onDrag(event, col1.index, col2.index);
+        }, false);
+        drag.setAttribute("draggable", true);
+        return{
+            offset:0,
+            column1:col1,
+            column2:col2,
+            element:drag
         }
     }
 
     addColumn(column){
         if(column['element']) {
             document.body.appendChild(column.element);
+            column.index = COLUMNS.length;
             COLUMNS.push(column);
+            /*
+                If there are more than one columns in the world, then we need to add the dragging functionality.
+                A Drag element is created, it references two columns.
+             */
+            if(COLUMNS.length > 1){
+                //Link the column at (n) to the column at (n-1)
+                this.addDrag(this.createDrag(COLUMNS[COLUMNS.length-2], COLUMNS[COLUMNS.length-1]));
+            }
         }else{
             console.log("Tried to add a column that was not a column element.",column);
         }
     }
 
+    addDrag(drag){
+        if(drag['element']) {
+            document.body.appendChild(drag.element);
+            DRAGS.push(drag);
+        }else{
+            console.log("Tried to add an object that was not a drag element.",drag);
+        }
+    }
+
     refresh(){
         let count = COLUMNS.length;
-        console.log("There are "+count+"columns");
         for(var i = 0; i < count; i++){
-            COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
-            COLUMNS[i].element.style.left = (i/count)*WIDTH + 'px';
+            COLUMNS[i].element.style.width = ((Math.ceil((1.0/count) * 100))+(COLUMNS[i].delta))+'%';
+            if(COLUMNS[i].dragPriority == DRAG_PRIORITY.SECONDARY) {
+                COLUMNS[i].element.style.left = ((i / count) + (COLUMNS[i].delta) / -100) * WIDTH + 'px';
+            }else{
+                COLUMNS[i].element.style.left = ((i / count)) * WIDTH + 'px';
+            }
+            /*
+                Since each Drag links two columns, the size of our Drag array is (COLUMNS.length - 1)
+                because of this we need to only access the drag array when n < length-1
+             */
+            if(i < COLUMNS.length - 1){
+                //Offset the position by 1 column length to position the drag between column (n) and (n+1)
+                DRAGS[i].element.style.left = ((parseFloat(COLUMNS[i].element.style.left) / WIDTH)+(parseFloat(COLUMNS[i].element.style.width)/100)) * WIDTH + 'px';
+            }
+        }
+    }
+
+    onDrag(event, index1, index2){
+        if(event.screenX > 0) {
+            // console.log("Event",event);
+            COLUMNS[index1].delta = ((event.offsetX / WIDTH) * 100);
+            COLUMNS[index1].dragPriority = DRAG_PRIORITY.PRIMARY;
+            COLUMNS[index2].delta = ((event.offsetX / WIDTH) * -100);
+            COLUMNS[index2].dragPriority = DRAG_PRIORITY.SECONDARY;
+            this.refresh();
         }
     }
 

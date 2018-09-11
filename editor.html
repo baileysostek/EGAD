@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body onload="init()">
+    <div>
+    </div>
+    <script type="text/javascript">
+        function init() {
+            const electron = require('electron');
+            console.log(screen);
+            const grid = require('./grid');
+            const myGrid = new grid(screen.width, screen.height);
+
+            myGrid.addColumn(myGrid.createColumn("Test" , '#ff0000'));
+            myGrid.addColumn(myGrid.createColumn("Test2", '#00ff00'));
+            myGrid.addColumn(myGrid.createColumn("Test3", '#0000ff'));
+            myGrid.refresh();
+
+        }
+    </script>
+</body>
+</html>

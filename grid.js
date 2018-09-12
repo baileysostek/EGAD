@@ -9,11 +9,6 @@ const COLUMN_TAG = 'column';
 const DRAG_TAG = 'drag';
 const ROW_TAG = 'row';
 
-const DRAG_PRIORITY = {
-    PRIMARY:0,
-    SECONDARY:1
-};
-
 /**
  * Creates a new Grid, this contains columns and drag elements.
  * @class
@@ -50,8 +45,6 @@ module.exports = class Grid{
         column.style.position = "absolute";
         column.innerText = name;
         return {
-            dragPriority:DRAG_PRIORITY.PRIMARY,
-            delta:0,
             name:name,
             element:column,
             index:0,
@@ -98,6 +91,11 @@ module.exports = class Grid{
                 //Link the column at (n) to the column at (n-1)
                 this.addDrag(this.createDrag(COLUMNS[COLUMNS.length-2], COLUMNS[COLUMNS.length-1]));
             }
+            let count = COLUMNS.length;
+            for(var i = 0; i < count; i++){
+                COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
+                COLUMNS[i].element.style.left = ((i / count) * 100)+ '%';
+            }
         }else{
             console.log("Tried to add a column that was not a column element.",column);
         }
@@ -113,36 +111,30 @@ module.exports = class Grid{
     }
 
     refresh(){
-        let count = COLUMNS.length;
-        for(var i = 0; i < count; i++){
-            COLUMNS[i].element.style.width = ((Math.ceil((1.0/count) * 100))+(COLUMNS[i].delta))+'%';
-            COLUMNS[i].element.style.left = ((i / count) * 100) + '%';
+
+        for(var i = 0; i < DRAGS.length; i++){
+            DRAGS[i].element.style.left = parseFloat(DRAGS[i].column2.element.style.left)+'%';
         }
     }
 
 
     onDrag(event, index1, index2){
-        console.log(event);
-        //Determine sum of previous segments
-        let preColumnOffset = 0;
-        for(var i = 0; i < index1; i++){
-            preColumnOffset += parseFloat(COLUMNS[i].element.style.width);
-        }
         if(event.screenX > 0) {
-            // console.log("Event",event);
-            COLUMNS[index1].delta = (((parseFloat(DRAGS[index1].element.style.left) / WIDTH) - (event.screenX / WIDTH) + (1.0 / COLUMNS.length)) * -100);
-            COLUMNS[index1].dragPriority = DRAG_PRIORITY.PRIMARY;
-            COLUMNS[index2].delta = (((parseFloat(DRAGS[index1].element.style.left) / WIDTH) - (event.screenX / WIDTH) + (1.0 / COLUMNS.length)) * 100);
-            COLUMNS[index2].dragPriority = DRAG_PRIORITY.SECONDARY;
-            COLUMNS[index1].element.style.width = ((COLUMNS[index1].delta) + (1.0 / COLUMNS.length * 100))+'%';
-            COLUMNS[index2].element.style.width = ((COLUMNS[index2].delta) + (1.0 / COLUMNS.length * 100))+'%';
-            COLUMNS[index2].element.style.left = (parseFloat(COLUMNS[index1].element.style.left) + parseFloat(COLUMNS[index1].element.style.width)) + '%';
+            //Index 1 Left is never Going to change
+            let col1X = (parseFloat(COLUMNS[index1].element.style.left)/100) * WIDTH; //PX coords of the start of this column
+            let col2X = (parseFloat(COLUMNS[index2].element.style.left)/100) * WIDTH; //PX coords of the start of this column
+            let dragX = event.screenX;
+            let col2Width = col2X + ((parseFloat(COLUMNS[index2].element.style.width)/100) * WIDTH);
+            console.log('COL1',((dragX - col1X)/WIDTH * 100));
+            console.log('COL2',((col2Width - dragX)/WIDTH * 100));
+            COLUMNS[index1].element.style.width = ((dragX - col1X)/WIDTH * 100)+'%';
+            COLUMNS[index2].element.style.width = ((col2Width - dragX)/WIDTH * 100) +'%';
+            COLUMNS[index2].element.style.left = (dragX / WIDTH * 100) + '%';
         }else{
-            /*
-                Since each Drag links two columns, the size of our Drag array is (COLUMNS.length - 1)
-                because of this we need to only access the drag array when n < length-1
-             */
-            DRAGS[index1].element.style.left = ((parseFloat(COLUMNS[index1].element.style.left) + parseFloat(COLUMNS[index1].element.style.width)) - preColumnOffset) + '%';
+            //On Release
+            for(var i = 0; i < DRAGS.length; i++){
+                DRAGS[i].element.style.left = parseFloat(DRAGS[i].column2.element.style.left)+'%';
+            }
         }
     }
 
@@ -150,7 +142,6 @@ module.exports = class Grid{
         WIDTH = document.body.clientWidth;
         HEIGHT = document.body.clientHeight;
         console.log("WIDTH:",WIDTH,"HEIGHT:",HEIGHT);
-        this.refresh();
     }
 
 };

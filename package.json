@@ -13,6 +13,7 @@
     "electron": "^2.0.8"
   },
   "devDependencies": {
+    "electron-packager": "^12.1.1",
     "jsdoc": "^3.5.5"
   }
 }

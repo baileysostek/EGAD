@@ -4,22 +4,77 @@
     <meta charset="UTF-8">
 </head>
 <body onload="init()">
-    <div>
-    </div>
+    <script src="./node_modules/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" type="text/css" href="./node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="./node_modules/codemirror/theme/darcula.css">
+    <script src="./node_modules/codemirror/mode/javascript/javascript.js"></script>
     <script type="text/javascript">
+        let myFileManager;
+        let myGrid;
+
         function init() {
-            const electron = require('electron');
-            console.log(screen);
+            //Include all needed modules
+            const CodeMirror = require('codemirror');
             const grid = require('./grid');
-            const myGrid = new grid(screen.width, screen.height);
+            const fileManager = require('./fileManager');
 
-            myGrid.addColumn(myGrid.createColumn("Test" , '#00ff9b'));
-            myGrid.addColumn(myGrid.createColumn("\"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.\"", '#00ffcd'));
-            myGrid.addColumn(myGrid.createColumn("Test3", '#0081ff'));
-            myGrid.addColumn(myGrid.createColumn("Test4", '#1700ff'));
-            myGrid.refresh();
+            //Initialize the file manager, and load the configuration file.
+            myFileManager = new fileManager();
+            myFileManager.initialize().then(function(result) {
 
+                console.log("Initialized?", myFileManager.INITIALIZED);
+
+                myGrid = new grid(screen.width, screen.height);
+
+                let editorDiv = document.createElement('div');
+                editorDiv.setAttribute('id', 'editor');
+                var editor = CodeMirror(editorDiv, {
+                    mode: "javascript",
+                    theme: "darcula",
+                    lineNumbers: true,
+                });
+
+
+                //Set the Editor data to be the game.js of the current project.
+                myFileManager.loadFile('game.js').then(function(result) {
+                    editor.setValue(result);
+                }, function(err) {
+                    console.log(err);
+                });
+
+                editor.setSize('auto', 700);
+
+                // let psTest = document.createElement("webview");
+                // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
+                // psTest.style.height = 100+'%';
+
+                // editorDiv.appendChild(psTest);
+
+                myGrid.addColumn(myGrid.createColumn("Test" , '#414141'));
+                myGrid.addColumn(myGrid.createColumn(editorDiv, '#232323'));
+                myGrid.addColumn(myGrid.createColumn("test", '#414141'));
+                myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
+                myGrid.addColumn(myGrid.createColumn("test", '#002341'));
+
+                myFileManager.getProjectData('WIDTHS').then(function(result) {
+                    console.log("WIDTHS", result);
+                    myGrid.initializeWidths(result);
+                }, function(err) {
+                    console.log(err);
+                });
+
+                myGrid.refresh();
+                editor.refresh();
+
+            }, function(err) {
+                console.log(err);
+            });
         }
+
+        function onCloseRequested(){
+            myFileManager.writeToProperties('WIDTHS', myGrid.getColumnWidths());
+        }
+
     </script>
 </body>
 </html>

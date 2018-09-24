@@ -9,7 +9,7 @@
   "author": "Bailey Sostek",
   "license": "MIT",
   "dependencies": {
-    "codemirror": "^5.40.0",
+    "codemirror": "~5.40.0",
     "electron": "^2.0.8"
   },
   "devDependencies": {

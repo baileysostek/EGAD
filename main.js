@@ -2,7 +2,6 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 
-
 const {app, BrowserWindow, Menu} = electron;
 
 let mainWindow;
@@ -24,6 +23,20 @@ app.on('ready', function(){
         protocol:'file:',
         slashes:true
     }));
+
+    mainWindow.on('close', function(e){
+        mainWindow.webContents.executeJavaScript('onCloseRequested()');
+        // var choice = require('electron').dialog.showMessageBox(this,
+        //     {
+        //         type: 'question',
+        //         buttons: ['Yes', 'No'],
+        //         title: 'Confirm',
+        //         message: 'Are you sure you want to quit?'
+        //     });
+        // if(choice == 1){
+        //     e.preventDefault();
+        // }
+    });
 
     //Build Menu from template
     // const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);

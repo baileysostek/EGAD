@@ -4,25 +4,30 @@
     <meta charset="UTF-8">
 </head>
 <body onload="init()">
-    <script src="./node_modules/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" type="text/css" href="./node_modules/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" type="text/css" href="./node_modules/codemirror/theme/darcula.css">
-    <script src="./node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="./CodeMirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" type="text/css" href="./CodeMirror/lib/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="./CodeMirror/theme/darcula.css">
+    <script src="./CodeMirror/mode/javascript/javascript.js"></script>
     <script type="text/javascript">
         let myFileManager;
+        let myFileBrowser;
         let myGrid;
+
+        let version = '18w39a';
 
         function init() {
             //Include all needed modules
-            const CodeMirror = require('codemirror');
             const grid = require('./grid');
             const fileManager = require('./fileManager');
+            const fileBrowser = require('./fileBrowser');
 
             //Initialize the file manager, and load the configuration file.
             myFileManager = new fileManager();
+            myFileBrowser = new fileBrowser();
             myFileManager.initialize().then(function(result) {
 
-                console.log("Initialized?", myFileManager.INITIALIZED);
+                console.log("Perlenspeil IDE Version:", version);
+                console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty in 2018");
 
                 myGrid = new grid(screen.width, screen.height);
 
@@ -44,17 +49,29 @@
 
                 editor.setSize('auto', 700);
 
-                // let psTest = document.createElement("webview");
-                // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
-                // psTest.style.height = 100+'%';
+                let column1 = myGrid.addColumn(myGrid.createColumn("Test" , '#414141'));
+                myFileManager.getProjectFiles().then(function(result) {
+                    let line = "";
+                    for(var i = 0; i < result.length; i++){
+                        line += result[i] +'\n';
+                    }
+                    column1.element.innerText = line;
+                }, function(err) {
+                    console.log(err);
+                });
 
-                // editorDiv.appendChild(psTest);
-
-                myGrid.addColumn(myGrid.createColumn("Test" , '#414141'));
                 myGrid.addColumn(myGrid.createColumn(editorDiv, '#232323'));
-                myGrid.addColumn(myGrid.createColumn("test", '#414141'));
-                myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
-                myGrid.addColumn(myGrid.createColumn("test", '#002341'));
+                let column3 = myGrid.addColumn(myGrid.createColumn("test", '#414141'));
+                // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
+                // myGrid.addColumn(myGrid.createColumn("test", '#002341'));
+
+
+                let psTest = document.createElement("webview");
+                // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
+                psTest.setAttribute("src", "Projects/cube/game.html");
+                psTest.style.height = 100+'%';
+
+                column3.setChildren(psTest);
 
                 myFileManager.getProjectData('WIDTHS').then(function(result) {
                     console.log("WIDTHS", result);

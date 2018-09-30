@@ -25,7 +25,7 @@ module.exports = class Grid{
     constructor(width, height){
         WIDTH = width;
         HEIGHT = height;
-        console.log("Initializing Perlenspeil IDE Version 0.1");
+        console.log("Initializing Columns API");
         console.log("Width:"+width);
         console.log("Height:"+height);
         let that = this;
@@ -37,35 +37,58 @@ module.exports = class Grid{
 
     /**
      * Creates a Column. A column is a resizable container for data.
+     * Columns contain a unique ID, a background color, a list of children, and an Index
+     * representing which column they are numerically on the screen.
      * @class
      * @param {String, String} name, color
      * @returns {String, Element} Returns a json object representing a Column.
      */
-    createColumn(name, color){
+    createColumn(elements, color){
         let column = document.createElement(COLUMN_TAG);
         column.style.backgroundColor = color;
         column.style.height = 100+'%';
         column.style.position = "absolute";
 
-        if(name instanceof HTMLElement) {
-            column.appendChild(name);
-            name.style.height = 100+'%';
-        }
+        let rows = [];
 
-        for(var i = 0; i < 3; i++) {
+        //Determine if the passed elements are an array
+        if(elements instanceof HTMLElement) {    //Pass a single element.
             let row = document.createElement(ROW_TAG);
             row.style.width  = 100+'%';
-            row.style.height = (1 / 3 * 100)+'%';
-            row.style.top    = (i / 3 * 100)+'%';
-            // row.style.backgroundColor = 'rgb('+23+','+ 132+','+11+')';
+            row.style.height = (1 / 1 * 100)+'%';
+            row.style.top    = (0 / 1 * 100)+'%';
             row.style.position = "absolute";
+            row.appendChild(elements);
             column.appendChild(row);
+        }else if(elements.constructor === Array){//Pass an array of elements.
+            let elementCount = elements.length;
+            for(var i = 0; i < elementCount; i++) {
+                let row = document.createElement(ROW_TAG);
+                row.style.width  = 100+'%';
+                row.style.height = (1 / elementCount * 100)+'%';
+                row.style.top    = (i / elementCount * 100)+'%';
+                row.style.position = "absolute";
+                column.appendChild(row);
+            }
+            for(var i = 0; i < elementCount; i++){
+                if(elements[i] instanceof HTMLElement) {    //Pass a single element.
+                    column.childNodes[i].appendChild(elements[i]);
+                }
+            }
         }
 
         return {
-            name:name,
             element:column,
             index:0,
+            children:rows,
+            setChildren: function(children){
+                this.children = children;
+                column.appendChild(children);
+            },
+            addChild: function(child){
+                this.element.appendChild(child);
+                children.push(child);
+            },
             vDrags:[]
         }
     }
@@ -121,8 +144,10 @@ module.exports = class Grid{
                 COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
                 COLUMNS[i].element.style.left = ((i / count) * 100)+ '%';
             }
+            return column;
         }else{
             console.log("Tried to add a column that was not a column element.",column);
+            return null;
         }
     }
 

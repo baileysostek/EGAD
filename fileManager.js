@@ -100,4 +100,60 @@ module.exports = class FileManager{
             });
         }
     }
+
+    getProjectFiles(){
+        if(!this.INITIALIZED){
+            console.error('getProjectFiles was called before the FS was initialized.');
+            return;
+        }
+        let that = this;
+        return new Promise(function (resolve, reject) {
+            fs.readdir(that.PATH, function (err, files) {
+                if (err) {
+                    reject(err);
+                }
+                let outputFiles = [];
+                that.getProjectData("IGNORE").then(function(result) {
+                    console.log("Ignored files:", result);
+                    let ignoreObject = {};
+
+                    for(var i = 0; i < result.length; i++) {
+                        let fileName = result[i].split('.')[0];
+                        let extension = result[i].split('.')[1];
+                        if (ignoreObject[extension]) {
+                            ignoreObject[extension].push(fileName);
+                        }else{
+                            ignoreObject[extension] = []; //Initialize the array
+                            ignoreObject[extension].push(fileName);
+                        }
+                    }
+
+                    files.forEach(file => {
+                        let fileName  = file.split('.')[0];
+                        let extension = file.split('.')[1];
+                        //Is this file extension in the list of ignored file extensions?
+                        if(ignoreObject[extension]) {
+                            for(var i = 0; i < ignoreObject[extension].length; i++) {
+                                let ignoreIdentifier = ignoreObject[extension][i];
+                                if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
+
+                                } else { //Add this file
+                                    outputFiles.push(file);
+                                }
+                            }
+                        }else{ //If not then there is no way this file is ignored, so push it.
+                            outputFiles.push(file);
+                        }
+
+                    });
+
+                    console.log(outputFiles);
+
+                    resolve(outputFiles);
+                }, function(err) {
+                    reject(err);
+                });
+            })
+        });
+    }
 };

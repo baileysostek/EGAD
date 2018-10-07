@@ -40,12 +40,17 @@ module.exports = class Grid{
      * Columns contain a unique ID, a background color, a list of children, and an Index
      * representing which column they are numerically on the screen.
      * @class
-     * @param {String, String} name, color
+     * @param {String, Object} name, properties
      * @returns {String, Element} Returns a json object representing a Column.
      */
-    createColumn(elements, color){
+    createColumn(elements, properties){
         let column = document.createElement(COLUMN_TAG);
-        column.style.backgroundColor = color;
+        if(properties['color']) {
+            column.style.backgroundColor = properties.color;
+        }
+        if(properties['id']) {
+            column.id = properties.id;
+        }
         column.style.height = 100+'%';
         column.style.position = "absolute";
 
@@ -102,7 +107,7 @@ module.exports = class Grid{
      */
     createDrag(col1, col2){
         let drag = document.createElement(DRAG_TAG);
-        drag.style.backgroundColor = "#212121";
+        // drag.style.backgroundColor = "#212121";
         drag.style.position = "absolute";
         drag.style.height = 100+'%';
         drag.style.width = DRAG_WIDTH+'px';

@@ -138,22 +138,34 @@ module.exports = class FileManager{
                                 if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
                                 } else { //Add this file
-                                    outputFiles.push(file);
+                                    outputFiles.push(that.convertFileToObject(file));
                                 }
                             }
                         }else{ //If not then there is no way this file is ignored, so push it.
-                            outputFiles.push(file);
+                            outputFiles.push(that.convertFileToObject(file));
                         }
 
                     });
+                    let outObject = [{
+                        "title":that.loadedProject,
+                        "expanded":true,
+                        "folder":true,
+                        "children":outputFiles
+                    }];
 
-                    console.log(outputFiles);
+                    console.log(outObject);
 
-                    resolve(outputFiles);
+                    resolve(outObject);
                 }, function(err) {
                     reject(err);
                 });
             })
         });
+    }
+
+    convertFileToObject(fileName){
+        return{
+            "title":fileName
+        }
     }
 };

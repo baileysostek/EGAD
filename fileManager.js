@@ -34,6 +34,10 @@ module.exports = class FileManager{
         });
     }
 
+    switchProject(filePath){
+
+    }
+
     loadFile(fileName){
         if(!this.INITIALIZED){
             console.error('LoadFile was called before the FS was initialized.');

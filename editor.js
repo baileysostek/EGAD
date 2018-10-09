@@ -107,6 +107,20 @@ function onCloseRequested(){
     myFileManager.writeToProperties('WIDTHS', myGrid.getColumnWidths());
 }
 
+function open(path){
+    console.log("Opening:"+path);
+    let brokenPath = JSON.stringify(path).split('\\');
+    let cleanPath = [];
+    for(var i = 0; i < brokenPath.length; i++){
+        brokenPath[i] = brokenPath[i].replace('"','').replace('[','').replace(']','');
+        if(brokenPath[i]){
+            cleanPath.push(brokenPath[i]);
+        }
+    }
+    console.log(cleanPath);
+    Perlenspeil.setAttribute("src", 'Projects/'+cleanPath[cleanPath.length-1]+'/game.html');
+}
+
 function save(){
     console.log("Save");
     myFileManager.writeToFile('game.js', editor.getValue()).then(function(result) {

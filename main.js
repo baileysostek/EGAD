@@ -51,9 +51,17 @@ const mainMenuTemplate = [
         submenu:[
             {
                 label:'Open Project',
+                accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
                 click(){
-                    const {dialog} = require('electron')
-                    console.log(dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']}));
+                    const {dialog} = require('electron');
+                    const basepath = app.getAppPath();
+
+                    dialog.showOpenDialog({
+                        defaultPath:basepath+"\\Projects",
+                        properties: ['openDirectory']
+                    },function(path){
+                        mainWindow.webContents.executeJavaScript('open('+JSON.stringify(path)+')');
+                    });
                 }
             },
             {

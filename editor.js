@@ -81,7 +81,7 @@ function init() {
 
         let psTest = document.createElement("webview");
         // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
-        psTest.setAttribute("src", "Projects/cube/game.html");
+        psTest.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
         psTest.style.height = 100+'%';
 
         Perlenspeil = psTest;
@@ -110,7 +110,7 @@ function onCloseRequested(){
 function save(){
     console.log("Save");
     myFileManager.writeToFile('game.js', editor.getValue()).then(function(result) {
-        Perlenspeil.setAttribute("src", "Projects/cube/game.html");
+        Perlenspeil.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
     }, function(err) {
         console.log(err);
     });

@@ -50,10 +50,22 @@ const mainMenuTemplate = [
         label:'File',
         submenu:[
             {
-                label:'Save',
-                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+                label:'Open Project',
                 click(){
-                    mainWindow.webContents.executeJavaScript('save()');
+                    const {dialog} = require('electron')
+                    console.log(dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']}));
+                }
+            },
+            {
+                label:'New Project',
+                click(){
+
+                }
+            },
+            {
+                label:'Recent Projects',
+                click(){
+
                 }
             },
             {
@@ -73,17 +85,30 @@ const mainMenuTemplate = [
         ]
     },
     {
-        label:'Pile',
+        label:'Project',
         submenu:[
             {
-                label:'Add Item'
+                label:'Save',
+                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+                click(){
+                    mainWindow.webContents.executeJavaScript('save()');
+                }
             },
             {
-                label:'Click',
+                label:'Add File'
+            },
+            {
+                label:'Change Theme',
                 click(){
                     console.log("Message2");
                 }
             },
+            {
+                label:'Change Language',
+                click(){
+                    console.log("Message2");
+                }
+            }
         ]
     }
 ];

@@ -39,9 +39,9 @@ app.on('ready', function(){
     });
 
     //Build Menu from template
-    // const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    // //Insert the menu
-    // Menu.setApplicationMenu(mainMenu);
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+    //Insert the menu
+    Menu.setApplicationMenu(mainMenu);
 });
 
 //Create menu template
@@ -50,7 +50,18 @@ const mainMenuTemplate = [
         label:'File',
         submenu:[
             {
-                label:'Add Item'
+                label:'Save',
+                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+                click(){
+                    mainWindow.webContents.executeJavaScript('save()');
+                }
+            },
+            {
+                label:'Developer Tools',
+                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+                click(){
+                    mainWindow.toggleDevTools();
+                }
             },
             {
                 label:'Quit',

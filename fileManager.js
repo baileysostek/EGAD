@@ -67,6 +67,22 @@ module.exports = class FileManager{
         });
     }
 
+    writeToFile(fileName, data){
+        if(!this.INITIALIZED){
+            console.error('writeToFile was called before the FS was initialized.');
+            return;
+        }
+        let that = this;
+        return new Promise(function(resolve, reject) {
+            fs.writeFile(that.PATH+fileName, data, 'utf8', function (err, data){
+                if (err) {
+                    reject(err);
+                }
+                resolve(data);
+            });
+        });
+    }
+
     getProjectData(fieldName){
         if(!this.INITIALIZED){
             console.error('getProjectData was called before the FS was initialized.');

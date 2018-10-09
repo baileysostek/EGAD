@@ -8,6 +8,11 @@ let myGrid;
 
 let version = '18w39a';
 
+//This is the perlenspeil instance
+let Perlenspeil;
+
+let editor;
+
 function init() {
     //Initialize JQuery
 
@@ -28,7 +33,7 @@ function init() {
 
         let editorDiv = document.createElement('div');
         editorDiv.setAttribute('id', 'editor');
-        var editor = CodeMirror(editorDiv, {
+        editor = CodeMirror(editorDiv, {
             mode: "javascript",
             theme: "darcula",
             lineNumbers: true,
@@ -50,9 +55,9 @@ function init() {
                 checkbox: true,
                 selectMode: 3,
                 source: result,
-                lazyLoad: function(event, data) {
-                    data.result = {url: "https://cdn.rawgit.com/mar10/fancytree/72e03685/demo/ajax-sub2.json"};
-                },
+                // lazyLoad: function(event, data) {
+                //     data.result = {url: "https://cdn.rawgit.com/mar10/fancytree/72e03685/demo/ajax-sub2.json"};
+                // },
 
                 activate: function(event, data) {
                     $("#statusLine").text(event.type + ": " + data.node);
@@ -79,6 +84,8 @@ function init() {
         psTest.setAttribute("src", "Projects/cube/game.html");
         psTest.style.height = 100+'%';
 
+        Perlenspeil = psTest;
+
         column3.setChildren(psTest);
 
         myFileManager.getProjectData('WIDTHS').then(function(result) {
@@ -98,4 +105,13 @@ function init() {
 
 function onCloseRequested(){
     myFileManager.writeToProperties('WIDTHS', myGrid.getColumnWidths());
+}
+
+function save(){
+    console.log("Save");
+    myFileManager.writeToFile('game.js', editor.getValue()).then(function(result) {
+        Perlenspeil.setAttribute("src", "Projects/cube/game.html");
+    }, function(err) {
+        console.log(err);
+    });
 }

@@ -446,6 +446,7 @@ var drawAllFaces = function(){
                         break;
                     }
                     if(draw>0){
+                        // lastColor = PS.glyph(k,j,count);
                         PS.color(k,j, lastColor);
                     }
                 }

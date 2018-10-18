@@ -412,6 +412,7 @@ var drawAllFaces = function(){
 				var draw = -1;
 				var flip_count = 0;
                 var lastFlip = 0;
+              	var lastColor = [];
 				for (var k = 0; k < grid.width; k++) {
 					if(isPointInArray([k-FACES[i].origin[0],j-FACES[i].origin[1]], pixelsPlaced)){
                         if(lastFlip == 1){
@@ -420,6 +421,10 @@ var drawAllFaces = function(){
                             draw *= -1;
                             flip_count++;
                             lastFlip = 1;
+                          	lastColor.push({
+                              xPos:k,
+                              color:PS.color(k,j)
+                            });
                         }
 					}else{
                         lastFlip = 0;
@@ -427,7 +432,6 @@ var drawAllFaces = function(){
 				}
                 var draw = -1;
                 var count = 0;
-                var lastColor = 0;
                 var lastFlip = 0;
                 for (var k = 0; k < grid.width; k++) {
                     if(isPointInArray([k-FACES[i].origin[0],j-FACES[i].origin[1]], pixelsPlaced)){
@@ -435,7 +439,6 @@ var drawAllFaces = function(){
                             draw *= 1;
                         }else {
                             draw*=-1;
-                            lastColor = PS.color(k,j);
                             count++;
                             lastFlip = 1;
                         }
@@ -447,7 +450,7 @@ var drawAllFaces = function(){
                     }
                     if(draw>0){
                         // lastColor = PS.glyph(k,j,count);
-                        PS.color(k,j, lastColor);
+                        PS.color(k,j, crossFadeColors(lastColor[0].color,lastColor[1].color,(k-lastColor[0].xPos)/(lastColor[1].xPos-lastColor[0].xPos)));
                     }
                 }
 			}

@@ -84,7 +84,7 @@ function init() {
         outputConsole.innerText = 'Console';
         let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, outputConsole], {'color':'#232323'}));
         column2.registerCallback(editorDiv, function (data) {
-            console.log("Callback for this editorDiv being resized:",data);
+            // console.log("Callback for this editorDiv being resized:",data);
             editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
         });
 
@@ -100,8 +100,10 @@ function init() {
 
         Perlenspeil = psTest;
 
-        let watchedVariables = document.createElement('div');
-        watchedVariables.innerText = 'These are the variables I am interested in watching.';
+        let watchedVariables = document.createElement("webview");
+        // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
+        watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
+        watchedVariables.style.height = 100+'%';
 
 
         column3.addChild(psTest);

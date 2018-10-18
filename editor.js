@@ -36,8 +36,11 @@ function init() {
         editor = CodeMirror(editorDiv, {
             mode: "javascript",
             theme: "darcula",
-            lineNumbers: true,
+            autofocus:true,
+            lineNumbers: true
         });
+
+        editor.setSize('auto', '580');
 
 
         //Set the Editor data to be the game.js of the current project.
@@ -47,9 +50,16 @@ function init() {
             console.log(err);
         });
 
-        editor.setSize('auto', 1200+'px');
+        // editor.setSize('auto', 'auto');
 
-        let column1 = myGrid.addColumn(myGrid.createColumn("Test" , {'color':'#414141', 'id':'tree'}));
+        let testDiv3 = document.createElement('div');
+        testDiv3.setAttribute('id', 'tree');
+
+        let testDiv2 = document.createElement('div');
+        testDiv2.innerText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+
+        let column1 = myGrid.addColumn(myGrid.createColumn([testDiv3, testDiv2] , {'color':'#414141'}));
         myFileManager.getProjectFiles().then(function(result) {
             $("#tree").fancytree({
                 checkbox: true,
@@ -73,7 +83,10 @@ function init() {
             console.log(err);
         });
 
-        let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, document.createElement('div')], {'color':'#232323'}));
+        let testDiv = document.createElement('div');
+        testDiv.innerText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+        let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, testDiv], {'color':'#232323'}));
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
         // myGrid.addColumn(myGrid.createColumn("test", '#002341'));
@@ -86,11 +99,17 @@ function init() {
 
         Perlenspeil = psTest;
 
-        column3.setChildren(psTest);
+        let watchedVariables = document.createElement('div');
+        watchedVariables.innerText = 'These are the variables I am interested in watching.';
+
+
+        column3.addChild(psTest);
+        column3.addChild(watchedVariables);
 
         myFileManager.getProjectData('WIDTHS').then(function(result) {
             console.log("WIDTHS", result);
-            myGrid.initializeWidths(result);
+            //This is an array of arrays.
+            myGrid.initializeGrid(result);
         }, function(err) {
             console.log(err);
         });
@@ -103,22 +122,44 @@ function init() {
     });
 }
 
+/**
+ * Callback function executed when the windows close button is pressed.
+ * The code below is a blocking call that must terminate before the window can be closed.
+ **/
 function onCloseRequested(){
-    myFileManager.writeToProperties('WIDTHS', myGrid.getColumnWidths());
+    myFileManager.writeToProperties('WIDTHS', myGrid.getGridSize());
 }
 
+/**
+ * Function to execute when the open project option is selected from the menu.
+ * @param {Object} path
+ * @path is the relative path to the currently opened project. It is a stringified json object that must be
+ **/
 function open(path){
-    console.log("Opening:"+path);
-    let brokenPath = JSON.stringify(path).split('\\');
-    let cleanPath = [];
-    for(var i = 0; i < brokenPath.length; i++){
-        brokenPath[i] = brokenPath[i].replace('"','').replace('[','').replace(']','');
-        if(brokenPath[i]){
-            cleanPath.push(brokenPath[i]);
+    //Makes sure that a valid path was passed into this function, not undefined.
+    if(path) {
+        //Print the selected path
+        console.log("Opening:" + path);
+        //Turn Path from an object into a string that can be manipulated.
+        //Replace all quote characters with nothing.
+        path = JSON.stringify(path).replace(new RegExp('"', 'g'), '');
+        //Break this path into its component directories by splitting the string into a string array on each '/' character.
+        let brokenPath = path.split('\\');
+        let cleanPath = [];
+        //Take out unwanted characters.
+        for (var i = 0; i < brokenPath.length; i++) {
+            brokenPath[i] = brokenPath[i].replace('[', '').replace(']', '');
+            if (brokenPath[i]) {
+                cleanPath.push(brokenPath[i]);
+            }
         }
+        //Print our cleaned path.
+        console.log("Clean Path:"+cleanPath);
+        //Reload the editor with the new data.
+        Perlenspeil.setAttribute("src", 'Projects/' + cleanPath[cleanPath.length - 1] + '/game.html');
+    }else{ //When no path is selected this portion of the function triggers.
+        console.log("No Directory Selected.");
     }
-    console.log(cleanPath);
-    Perlenspeil.setAttribute("src", 'Projects/'+cleanPath[cleanPath.length-1]+'/game.html');
 }
 
 function save(){
@@ -128,4 +169,5 @@ function save(){
     }, function(err) {
         console.log(err);
     });
+    console.log(myGrid.getGridSize());
 }

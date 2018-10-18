@@ -40,9 +40,6 @@ function init() {
             lineNumbers: true
         });
 
-        editor.setSize('auto', '580');
-
-
         //Set the Editor data to be the game.js of the current project.
         myFileManager.loadFile('game.js').then(function(result) {
             editor.setValue(result);
@@ -83,10 +80,14 @@ function init() {
             console.log(err);
         });
 
-        let testDiv = document.createElement('div');
-        testDiv.innerText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+        let outputConsole = document.createElement('div');
+        outputConsole.innerText = 'Console';
+        let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, outputConsole], {'color':'#232323'}));
+        column2.registerCallback(editorDiv, function (data) {
+            console.log("Callback for this editorDiv being resized:",data);
+            editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
+        });
 
-        let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, testDiv], {'color':'#232323'}));
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
         // myGrid.addColumn(myGrid.createColumn("test", '#002341'));

@@ -103,10 +103,35 @@ module.exports = class Grid{
             onDragEnd:this.onDragEnd,
             onVDrag:this.onVDrag,
             createVDrag:this.createVDrag,
+            callbacks:[],
+            executeElementsCallback:function(element, data){
+                for (var i = 0; i < this.ROWS.length; i++) {
+                    if (this.ROWS[i].childNodes[0] === element || this.ROWS[i] === element) { //IF this row element is exactly the callback element OR a row contained within this column is passed.
+                        if(this.callbacks[i]){ //If the element has a registered callback execute it.
+                            this.callbacks[i](data);
+                        }
+                    }
+                }
+            },
+            registerCallback: function(element, callback){
+                findLoop:{
+                    //Look for the passed in element, to regester a callback
+                    for (var i = 0; i < this.ROWS.length; i++) {
+                        if (this.ROWS[i].childNodes[0] === element) { //IF this row element is exactly this element.
+                            this.callbacks[i] = callback;
+                            console.log("Callback registered.");
+                            break findLoop;
+                        }
+                    }
+                    //This is reached if
+                    console.log("Wlement not found; Callback was not registered.");
+                }
+            },
             //TODO build a row here.
             addChild: function(child){
                 //Create our row element
                 let row = document.createElement(ROW_TAG);
+                //TODO replace the 33% with a re-allocated piece of the 100% screenspace
                 row.style.width  = 100+'%';
                 row.style.height = (33)+'%';
                 row.style.top    = (33)+'%';
@@ -258,6 +283,11 @@ module.exports = class Grid{
             row1.style.height = ((dragY - row1Y) / HEIGHT * 100) + '%';
             row2.style.height = ((row2Height - dragY) / HEIGHT * 100) + '%';
             row2.style.top = (dragY / HEIGHT * 100) + '%';
+            for(var i = 0; i < COLUMNS.length; i++){
+                let column = COLUMNS[i];
+                column.executeElementsCallback(row1, row1);
+                column.executeElementsCallback(row2, row2);
+            }
         }
     }
 

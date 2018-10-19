@@ -45,6 +45,20 @@ var DELTA = {'x':0, 'y':0};
 //Prefabs for models
 //CUBE
 
+//all faces in the world
+var FACES = [];
+var TO_ADD = [];
+var TO_REMOVE = [];
+
+//Directional pts
+var START_POINT = {'x':0, 'y':0};
+var END_POINT   = {'x':0, 'y':0};
+var DELTA = {'x':0, 'y':0};
+
+//Prefabs for models
+//CUBE
+
+
 // PS.init( system, options )
 // Initializes the game
 PS.init = function( system, options ) {
@@ -191,53 +205,54 @@ PS.exitGrid = function( options ) {
 
 PS.keyDown = function( key, shift, ctrl, options ) {
 	"use strict";
+  	var amount = 3;
     if(key == 119){
-        rotateY(getFace("cubef"), 10);
-        rotateY(getFace("cubeb"), 10);
-        rotateY(getFace("cubel"), 10);
-        rotateY(getFace("cuber"), 10);
-        rotateY(getFace("cubet"), 10);
-        rotateY(getFace("cubeo"), 10);
+        rotateY(getFace("cubef"), amount);
+        rotateY(getFace("cubeb"), amount);
+        rotateY(getFace("cubel"), amount);
+        rotateY(getFace("cuber"), amount);
+        rotateY(getFace("cubet"), amount);
+        rotateY(getFace("cubeo"), amount);
     }
     if(key == 115){
-        rotateY(getFace("cubef"), -10);
-        rotateY(getFace("cubeb"), -10);
-        rotateY(getFace("cubel"), -10);
-        rotateY(getFace("cuber"), -10);
-        rotateY(getFace("cubet"), -10);
-        rotateY(getFace("cubeo"), -10);
+        rotateY(getFace("cubef"), -amount);
+        rotateY(getFace("cubeb"), -amount);
+        rotateY(getFace("cubel"), -amount);
+        rotateY(getFace("cuber"), -amount);
+        rotateY(getFace("cubet"), -amount);
+        rotateY(getFace("cubeo"), -amount);
     }
     if(key == 97){
-        rotateZ(getFace("cubef"), -10);
-        rotateZ(getFace("cubeb"), -10);
-        rotateZ(getFace("cubel"), -10);
-        rotateZ(getFace("cuber"), -10);
-        rotateZ(getFace("cubet"), -10);
-        rotateZ(getFace("cubeo"), -10);
+        rotateZ(getFace("cubef"), -amount);
+        rotateZ(getFace("cubeb"), -amount);
+        rotateZ(getFace("cubel"), -amount);
+        rotateZ(getFace("cuber"), -amount);
+        rotateZ(getFace("cubet"), -amount);
+        rotateZ(getFace("cubeo"), -amount);
     }
     if(key == 100){
-        rotateZ(getFace("cubef"), 10);
-        rotateZ(getFace("cubeb"), 10);
-        rotateZ(getFace("cubel"), 10);
-        rotateZ(getFace("cuber"), 10);
-        rotateZ(getFace("cubet"), 10);
-        rotateZ(getFace("cubeo"), 10);
+        rotateZ(getFace("cubef"), amount);
+        rotateZ(getFace("cubeb"), amount);
+        rotateZ(getFace("cubel"), amount);
+        rotateZ(getFace("cuber"), amount);
+        rotateZ(getFace("cubet"), amount);
+        rotateZ(getFace("cubeo"), amount);
     }
     if(key == 113){
-        rotateX(getFace("cubef"), -10);
-        rotateX(getFace("cubeb"), -10);
-        rotateX(getFace("cubel"), -10);
-        rotateX(getFace("cuber"), -10);
-        rotateX(getFace("cubet"), -10);
-        rotateX(getFace("cubeo"), -10);
+        rotateX(getFace("cubef"), -amount);
+        rotateX(getFace("cubeb"), -amount);
+        rotateX(getFace("cubel"), -amount);
+        rotateX(getFace("cuber"), -amount);
+        rotateX(getFace("cubet"), -amount);
+        rotateX(getFace("cubeo"), -amount);
     }
     if(key == 101){
-        rotateX(getFace("cubef"), 10);
-        rotateX(getFace("cubeb"), 10);
-        rotateX(getFace("cubel"), 10);
-        rotateX(getFace("cuber"), 10);
-        rotateX(getFace("cubet"), 10);
-        rotateX(getFace("cubeo"), 10);
+        rotateX(getFace("cubef"), amount);
+        rotateX(getFace("cubeb"), amount);
+        rotateX(getFace("cubel"), amount);
+        rotateX(getFace("cuber"), amount);
+        rotateX(getFace("cubet"), amount);
+        rotateX(getFace("cubeo"), amount);
     }
 
     cleanupFaces();
@@ -270,7 +285,12 @@ var addFace = function(origin, id, points){
 		angleZ:0,
 		length:points.length,
 		points:points,
-		initialPoints:initialPoints
+		initialPoints:initialPoints,
+      	textureID:0,
+      	textureCoords:{
+        	x:0,
+          	y:0
+        }
 	};
 	TO_ADD[TO_ADD.length] = face;
 }
@@ -402,7 +422,7 @@ var drawAllFaces = function(){
 				for (var l = 0; l < line.length; l++) {
 					if (isPointOnGrid(line[l][0] + FACES[i].origin[0], line[l][1] + FACES[i].origin[1])) {
 						PS.color(line[l][0] + FACES[i].origin[0], line[l][1] + FACES[i].origin[1], crossFadeColors(color1, color2, (l / line.length)));
-						pixelsPlaced[pixelsPlaced.length] = [line[l][0], line[l][1]];
+                      	pixelsPlaced[pixelsPlaced.length] = [line[l][0], line[l][1]];
 					}
 				}
 			}

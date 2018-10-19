@@ -13,6 +13,8 @@ let Perlenspeil;
 
 let editor;
 
+let clipboard = '';
+
 function init() {
     //Initialize JQuery
 
@@ -37,7 +39,7 @@ function init() {
             mode: "javascript",
             theme: "darcula",
             autofocus:true,
-            lineNumbers: true
+            lineNumbers: true,
         });
 
         //Set the Editor data to be the game.js of the current project.
@@ -173,4 +175,24 @@ function save(){
         console.log(err);
     });
     console.log(myGrid.getGridSize());
+}
+
+function copy(){
+    //This is the OSX copy function
+    if(process.platform == 'darwin') {
+        let proc = require('child_process').spawn('pbcopy');
+        proc.stdin.write($('textArea').val());
+        proc.stdin.end();
+    }
+}
+
+function paste(){
+    let value = '';
+    if(process.platform == 'darwin') {
+        let proc =  require('child_process').spawn('pbpaste');
+        proc.stdout.on('data', function(data) {
+            value = data.toString();
+            editor.replaceRange(value, editor.getCursor(), editor.getCursor());
+        });
+    }
 }

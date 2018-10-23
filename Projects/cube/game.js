@@ -89,6 +89,7 @@ var init = function(){
 		}
 	}
 
+
 	//set status line stuff
 	PS.statusText("");
 	PS.statusColor(COLOR_STATUS);

@@ -24,11 +24,11 @@ module.exports = class Grid{
      * @returns {Grid} Returns an instance of the Grid class.
      */
     constructor(width, height){
-        WIDTH = width;
-        HEIGHT = height;
+        this.WIDTH = width;
+        this.HEIGHT = height;
         console.log("Initializing Columns API");
-        console.log("Width:"+width);
-        console.log("Height:"+height);
+        console.log("Width:"+this.WIDTH);
+        console.log("Height:"+this.HEIGHT);
         let that = this;
         window.addEventListener('resize', function(e){
             e.preventDefault();
@@ -257,36 +257,46 @@ module.exports = class Grid{
 
 
     onDrag(event, index1, index2){
-        let screenPercentPos = ((event.screenX / WIDTH) * 100);
+        let screenPercentPos = ((event.screenX / this.getWIDTH()) * 100);
         if(screenPercentPos > (parseFloat(COLUMNS[index1].element.style.left) + COLUMN_MIN_WIDTH) && screenPercentPos < (parseFloat(COLUMNS[index2].element.style.left) + parseFloat(COLUMNS[index2].element.style.width) - COLUMN_MIN_WIDTH)) {
             //Index 1 Left is never Going to change
-            let col1X = (parseFloat(COLUMNS[index1].element.style.left)/100) * WIDTH; //PX coords of the start of this column
-            let col2X = (parseFloat(COLUMNS[index2].element.style.left)/100) * WIDTH; //PX coords of the start of this column
+            let col1X = (parseFloat(COLUMNS[index1].element.style.left)/100) * this.getWIDTH(); //PX coords of the start of this column
+            let col2X = (parseFloat(COLUMNS[index2].element.style.left)/100) * this.getWIDTH(); //PX coords of the start of this column
             let dragX = event.screenX;
-            let col2Width = col2X + ((parseFloat(COLUMNS[index2].element.style.width)/100) * WIDTH);
+            let col2Width = col2X + ((parseFloat(COLUMNS[index2].element.style.width)/100) * this.getWIDTH());
             // console.log('COL1',((dragX - col1X)/WIDTH * 100));
             // console.log('COL2',((col2Width - dragX)/WIDTH * 100));
-            COLUMNS[index1].element.style.width = ((dragX - col1X)/WIDTH * 100)+'%';
-            COLUMNS[index2].element.style.width = ((col2Width - dragX)/WIDTH * 100) +'%';
-            COLUMNS[index2].element.style.left = (dragX / WIDTH * 100) + '%';
+            COLUMNS[index1].element.style.width = ((dragX - col1X)/this.getWIDTH() * 100)+'%';
+            COLUMNS[index2].element.style.width = ((col2Width - dragX)/this.getWIDTH() * 100) +'%';
+            COLUMNS[index2].element.style.left = (dragX / this.getWIDTH() * 100) + '%';
         }
     }
 
     onVDrag(event, row1, row2){
         if(event.screenY > 0) {
-            let screenPercentPos = ((event.screenY / HEIGHT) * 100);
+            let screenPercentPos = ((event.screenY / this.getHEIGHT()) * 100);
             //Index 1 Left is never Going to change
-            let row1Y = (parseFloat(row1.style.top) / 100) * HEIGHT; //PX coords of the start of this column
-            let row2Y = (parseFloat(row2.style.top) / 100) * HEIGHT; //PX coords of the start of this column
+            let row1Y = (parseFloat(row1.style.top) / 100) * this.getHEIGHT(); //PX coords of the start of this column
+            let row2Y = (parseFloat(row2.style.top) / 100) * this.getHEIGHT(); //PX coords of the start of this column
             let dragY = event.screenY;
-            let row2Height = row2Y + ((parseFloat(row2.style.height) / 100) * HEIGHT);
-            row1.style.height = ((dragY - row1Y) / HEIGHT * 100) + '%';
-            row2.style.height = ((row2Height - dragY) / HEIGHT * 100) + '%';
-            row2.style.top = (dragY / HEIGHT * 100) + '%';
+            let row2Height = row2Y + ((parseFloat(row2.style.height) / 100) * this.getHEIGHT());
+            row1.style.height = ((dragY - row1Y) / this.getHEIGHT() * 100) + '%';
+            row2.style.height = ((row2Height - dragY) / this.getHEIGHT() * 100) + '%';
+            row2.style.top = (dragY / this.getHEIGHT() * 100) + '%';
             for(var i = 0; i < COLUMNS.length; i++){
                 let column = COLUMNS[i];
                 column.executeElementsCallback(row1, row1);
                 column.executeElementsCallback(row2, row2);
+            }
+        }
+    }
+
+    executeCallbacks(){
+        for(var i = 0; i < COLUMNS.length; i++){
+            let column = COLUMNS[i];
+            for(var j = 0; j < column.ROWS.length; j++) {
+                let element = column.ROWS[j];
+                column.executeElementsCallback(element, element);
             }
         }
     }
@@ -323,9 +333,15 @@ module.exports = class Grid{
                     COLUMNS[i].ROWS[j].style.height = (widthArray[i][1+j])+'%';
                     COLUMNS[i].ROWS[j].style.top = (runningTopHeight)+ '%';
                     runningTopHeight += widthArray[i][1+j];
+                    if(runningTopHeight > 100){
+                        console.log("Running height is too big:"+runningLeftWidth);
+                        let offsetAmmount = (runningLeftWidth - 100.0);
+                        COLUMNS[i].ROWS[j].style.height = ((widthArray[i][1+j])-offsetAmmount)+'%';
+                    }
                 }
             }
             this.refresh();
+            this.executeCallbacks();
         }
     }
 
@@ -343,6 +359,14 @@ module.exports = class Grid{
         }
         console.log(out);
         return out;
+    }
+
+    getWIDTH(){
+        return this.WIDTH;
+    }
+
+    getHEIGHT(){
+        return this.HEIGHT
     }
 
 };

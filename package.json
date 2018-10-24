@@ -6,17 +6,20 @@
   "scripts": {
     "start": "electron ."
   },
+  "name": "electron-tutorial-app",
+  "productName": "Perlenspeil IDE",
   "author": "Bailey Sostek",
   "license": "MIT",
   "dependencies": {
     "codemirror": "~5.40.0",
-    "electron": "^3.0.5",
+    "electron-download": "^4.1.1",
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",
     "jquery.fancytree": "^2.30.0"
   },
   "devDependencies": {
-    "electron-packager": "^12.1.1",
+    "electron": "^3.0.5",
+    "electron-packager": "^12.2.0",
     "jsdoc": "^3.5.5"
   }
 }

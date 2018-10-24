@@ -32,16 +32,6 @@ var grid = {
 	data : []
 };
 
-//all faces in the world
-var FACES = [];
-var TO_ADD = [];
-var TO_REMOVE = [];
-
-//Directional pts
-var START_POINT = {'x':0, 'y':0};
-var END_POINT   = {'x':0, 'y':0};
-var DELTA = {'x':0, 'y':0};
-
 //Prefabs for models
 //CUBE
 

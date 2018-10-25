@@ -29,7 +29,7 @@ module.exports = class FileManager{
                 that.PATH = 'Projects/'+that.configurationData.MAIN_PROJECT+'/';
                 that.loadedProject = that.configurationData.MAIN_PROJECT;
                 that.INITIALIZED = true;
-                resolve(data);
+                resolve(that.configurationData);
             });
         });
     }

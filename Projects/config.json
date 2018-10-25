@@ -1,3 +1,56 @@
 {
-  "MAIN_PROJECT":"cube"
+  "MAIN_PROJECT":"cube",
+  "LANGUAGE":{
+    "NAME":"Perlenspeil 3",
+    "KEYWORDS":["var", "let", "const"],
+    "TYPES":["bead", "Integer", "Color"],
+    "FUNCTIONS": {
+      "PS.color":{
+        "NAME": "PS.color",
+        "PARAMETERS":[
+          {
+            "NAME": "x",
+            "TYPE": "Integer"
+          },
+          {
+            "NAME": "y",
+            "TYPE": "Integer"
+          },
+          {
+            "NAME": "color",
+            "TYPE": "Color",
+            "OPTIONAL": true
+          }
+        ],
+        "RETURNS":{
+          "NAME":"Bead Color",
+          "TYPE":"Integer"
+        },
+        "TEXT":"The required x and y parameters indicate the zero-based column and row position of the bead, respectively. An error occurs if either parameter is negative, or exceeds the dimensions of the grid. Multiple bead assignment is supported using PS.ALL. The optional color parameter can be supplied in any of Perlenspiel’s four color expression formats. If color is PS.DEFAULT, the default color (PS.COLOR_WHITE) is applied. If color is PS.CURRENT or not supplied, the color is not changed. Return value PS.color() returns a RGB triplet integer indicating the current color of the bead. PS.ERROR is returned if an error occurs."
+      },
+      "PS.alpha":{
+        "NAME": "PS.alpha",
+        "PARAMETERS":[
+          {
+            "NAME": "x",
+            "TYPE": "Integer"
+          },
+          {
+            "NAME": "y",
+            "TYPE": "Integer"
+          },
+          {
+            "NAME": "alpha",
+            "TYPE": "Integer",
+            "OPTIONAL": true
+          }
+        ],
+        "RETURNS":{
+          "NAME":"Bead Alpha",
+          "TYPE":"Integer"
+        },
+        "TEXT":""
+      }
+    }
+  }
 }

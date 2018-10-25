@@ -5,6 +5,7 @@ const fancyTree = require('jquery.fancytree');
 let myFileManager;
 let myFileBrowser;
 let myGrid;
+let language;
 
 let version = '18w39a';
 
@@ -22,17 +23,20 @@ function init() {
     const grid = require('./grid');
     const fileManager = require('./fileManager');
     const fileBrowser = require('./fileBrowser');
+    const languageParser = require('./languageParser');
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
     myFileBrowser = new fileBrowser();
     myFileManager.initialize().then(function(result) {
-
+        //Print out version information and Author information.
         console.log("Perlenspeil IDE Version:", version);
         console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty in 2018");
 
+        //Initialize the Grid API with the screen width and height. This will create a reasponsive grid that can hold the rest of the editor elements.
         myGrid = new grid(screen.width, screen.height);
 
+        //Create the Editor and set up preliminary configuration data.
         let editorDiv = document.createElement('div');
         editorDiv.setAttribute('id', 'editor');
         editor = CodeMirror(editorDiv, {
@@ -41,6 +45,9 @@ function init() {
             autofocus:true,
             lineNumbers: true,
         });
+
+        //Initialize the language from the language configuration file.
+        language = new languageParser(result);
 
         // let titleBar = document.createElement('div');
         // titleBar.setAttribute('id', 'titleBar');

@@ -5,6 +5,102 @@
     "KEYWORDS":["var", "let", "const"],
     "TYPES":["bead", "Integer", "Color"],
     "FUNCTIONS": {
+      "PS.init":{
+        "NAME": "PS.init",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.touch":{
+        "NAME": "PS.touch",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.release":{
+        "NAME": "PS.release",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.enter":{
+        "NAME": "PS.enter",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.exit":{
+        "NAME": "PS.exit",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.exitGrid":{
+        "NAME": "PS.exitGrid",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.keyDown":{
+        "NAME": "PS.keyDown",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.keyUp":{
+        "NAME": "PS.keyUp",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.input":{
+        "NAME": "PS.input",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.shutdown":{
+        "NAME": "PS.shutdown",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridSize":{
+        "NAME": "PS.gridSize",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridColor":{
+        "NAME": "PS.gridColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridFade":{
+        "NAME": "PS.gridFade",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridShadow":{
+        "NAME": "PS.gridShadow",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridPlane":{
+        "NAME": "PS.gridPlane",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.gridRefresh":{
+        "NAME": "PS.gridRefresh",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
       "PS.color":{
         "NAME": "PS.color",
         "PARAMETERS":[
@@ -49,6 +145,378 @@
           "NAME":"Bead Alpha",
           "TYPE":"Integer"
         },
+        "TEXT":""
+      },
+      "PS.fade":{
+        "NAME": "PS.fade",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.scale":{
+        "NAME": "PS.scale",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.radius":{
+        "NAME": "PS.radius",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.minimum":{
+        "NAME": "PS.minimum",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.bgColor":{
+        "NAME": "PS.bgColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.bgAlpha":{
+        "NAME": "PS.bgAlpha",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.data":{
+        "NAME": "PS.data",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.exec":{
+        "NAME": "PS.exec",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.visible":{
+        "NAME": "PS.visible",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.active":{
+        "NAME": "PS.active",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.border":{
+        "NAME": "PS.border",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.borderColor":{
+        "NAME": "PS.borderColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.borderAlpha":{
+        "NAME": "PS.borderAlpha",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.borderFade":{
+        "NAME": "PS.borderFade",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.glyph":{
+        "NAME": "PS.glyph",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.glyphColor":{
+        "NAME": "PS.glyphColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.glyphAlpha":{
+        "NAME": "PS.glyphAlpha",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.glyphScale":{
+        "NAME": "PS.glyphScale",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.glyphFade":{
+        "NAME": "PS.glyphFade",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.timerStart":{
+        "NAME": "PS.timerStart",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.timerStop":{
+        "NAME": "PS.timerStop",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.audioLoad":{
+        "NAME": "PS.audioLoad",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.audioPlay":{
+        "NAME": "PS.audioPlay",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.audioPause":{
+        "NAME": "PS.audioPause",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.audioStop":{
+        "NAME": "PS.audioStop",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.piano":{
+        "NAME": "PS.piano",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.harpsicord":{
+        "NAME": "PS.harpsicord",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.xylophone":{
+        "NAME": "PS.xylophone",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.statusText":{
+        "NAME": "PS.statusText",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.statusColor":{
+        "NAME": "PS.statusColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.statusFade":{
+        "NAME": "PS.statusFade",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.statusInput":{
+        "NAME": "PS.statusInput",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.imageLoad":{
+        "NAME": "PS.imageLoad",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.imageBlit":{
+        "NAME": "PS.imageBlit",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.imageCapture":{
+        "NAME": "PS.imageCapture",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.imageDump":{
+        "NAME": "PS.imageDump",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.line":{
+        "NAME": "PS.line",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.pathMap":{
+        "NAME": "PS.pathMap",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.pathFind":{
+        "NAME": "PS.pathFind",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.pathData":{
+        "NAME": "PS.pathData",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.pathDelete":{
+        "NAME": "PS.pathDelete",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteSolid":{
+        "NAME": "PS.spriteSolid",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteSolidColor":{
+        "NAME": "PS.spriteSolidColor",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteSolidAlpha":{
+        "NAME": "PS.spriteSolidAlpha",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteImage":{
+        "NAME": "PS.spriteImage",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spritePlane":{
+        "NAME": "PS.spritePlane",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteAxis":{
+        "NAME": "PS.spriteAxis",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteMove":{
+        "NAME": "PS.spriteMove",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteCollide":{
+        "NAME": "PS.spriteCollide",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.spriteDelete":{
+        "NAME": "PS.spriteDelete",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.debug":{
+        "NAME": "PS.debug",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.debugClear":{
+        "NAME": "PS.debugClear",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.debugClose":{
+        "NAME": "PS.debugClose",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.random":{
+        "NAME": "PS.random",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.seed":{
+        "NAME": "PS.seed",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.date":{
+        "NAME": "PS.date",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.elapsed":{
+        "NAME": "PS.elapsed",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.makeRGB":{
+        "NAME": "PS.makeRGB",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.unmakeRGB":{
+        "NAME": "PS.unmakeRGB",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.applyRect":{
+        "NAME": "PS.applyRect",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.hex":{
+        "NAME": "PS.hex",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.keyRepeat":{
+        "NAME": "PS.keyRepeat",
+        "PARAMETERS":[],
+        "RETURNS":{},
         "TEXT":""
       }
     }

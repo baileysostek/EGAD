@@ -44,9 +44,9 @@ module.exports = class languageParser{
         let keys = Object.keys(FUNCTIONS);
         let suggestionSet = [];
 
-        for(let i = 0; i < keys.length; i++){
-            console.log(keys[i],":",FUNCTIONS[keys[i]].getNAME());
-        }
+        // for(let i = 0; i < keys.length; i++){
+        //     console.log(keys[i],":",FUNCTIONS[keys[i]].getNAME());
+        // }
 
         for(let i = 0; i < keys.length; i++){
             let key = keys[i];
@@ -73,7 +73,7 @@ module.exports = class languageParser{
                     workingStrings.splice(j, 1);
                 }
             }
-            console.log("toAdd:", toAdd);
+            // console.log("toAdd:", toAdd);
             workingStrings = workingStrings.concat(toAdd);
         }
         tokens = workingStrings;

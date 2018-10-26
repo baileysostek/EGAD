@@ -46,6 +46,17 @@ function init() {
             lineNumbers: true,
         });
 
+        editor.on('change', function () {
+            let value = $('textArea').val();
+            console.log(value);
+            let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)));
+            if(l_function){
+                for(let i = 0; i < l_function.length; i++){
+                    console.log('Suggestion:', l_function[i].getNAME());
+                }
+            }
+        });
+
         //Initialize the language from the language configuration file.
         language = new languageParser(result);
 
@@ -192,9 +203,12 @@ function copy(){
     //This is the OSX copy function
     if(process.platform == 'darwin') {
         let proc = require('child_process').spawn('pbcopy');
-        proc.stdin.write($('textArea').val());
+        let value = $('textArea').val();
+        proc.stdin.write(value);
         proc.stdin.end();
+        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value))));
     }
+    console.log(editor.getCursor());
 }
 
 function paste(){

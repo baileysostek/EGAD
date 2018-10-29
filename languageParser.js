@@ -44,13 +44,9 @@ module.exports = class languageParser{
         let keys = Object.keys(FUNCTIONS);
         let suggestionSet = [];
 
-        // for(let i = 0; i < keys.length; i++){
-        //     console.log(keys[i],":",FUNCTIONS[keys[i]].getNAME());
-        // }
-
         for(let i = 0; i < keys.length; i++){
             let key = keys[i];
-            if(key.includes(string)){
+            if(key.toLowerCase().includes(string)){
                 suggestionSet.push(FUNCTIONS[key]);
             }
         }
@@ -107,6 +103,28 @@ module.exports = class languageParser{
             getTEXT:function(){
                 return TEXT;
             }
+        }
+    }
+
+    inverse(n1, n2){
+        let found = false;
+        let itteration = 0;
+        let wrongNumbers = {};
+        while(!found){
+            let result = (itteration * n1)%n2;
+            if(result == 1){
+                console.log("inverse of ",n1," is ",itteration);
+                found = true;
+            }else{
+                if(!wrongNumbers[itteration+'']){
+                    console.log("Adding", result, "to result set.");
+                    wrongNumbers[itteration+''] = result;
+                }else{
+                    console.log("Number ",n1,"%",n2,"has no Inverse");
+                    found = true;
+                }
+            }
+            itteration++;
         }
     }
 }

@@ -83,9 +83,9 @@ var init = function(){
 
 	//COMMENT THIS BACK IN
 	// PS.audioPlay( SOUND_BG_MUSIC, { lock : true, path:"sound/",loop:true});
-	// addFace("test", [[16,2,6072443],[28,28,4478406],[2,28,8193143]]);
 
 	addCube([16,16,0],"cube", 18);
+  	//addTriangle([16,16,0],"triangle", 18);
 }
 
 
@@ -501,6 +501,19 @@ var addCube = function(point, id, size){
 	addFace(point, id+"t",[CUBE_VERTICES[4],CUBE_VERTICES[5],CUBE_VERTICES[1],CUBE_VERTICES[0]]);
 	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_ORANGE);
 	addFace(point, id+"o",[CUBE_VERTICES[3],CUBE_VERTICES[2],CUBE_VERTICES[6],CUBE_VERTICES[7]]);
+}
+
+var addTriangle = function(point, id, size){
+	var CUBE_COLOR = PS.random(16777215)-1;
+	var CUBE_VERTICES = [
+		[.5 * size * -1, .5 * size * -1, .5 * size , PS.COLOR_RED],
+		[.5 * size, .5 * size * -1, .5 * size, PS.COLOR_ORANGE],
+		[.5 * size, .5 * size, .5 * size, PS.COLOR_YELLOW],
+	]
+	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_RED);
+	addFace(point, id+"f",[CUBE_VERTICES[0],CUBE_VERTICES[1],CUBE_VERTICES[2],CUBE_VERTICES[2]]);
+	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_GREEN);
+
 }
 
 var setVerticesColors = function(vertices, color){

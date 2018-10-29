@@ -2,7 +2,7 @@
   "MAIN_PROJECT":"cube",
   "LANGUAGE":{
     "NAME":"Perlenspeil 3",
-    "KEYWORDS":["var", "let", "const"],
+    "VARIABLE_KEYWORDS":["var", "let", "const"],
     "TYPES":["bead", "Integer", "Color"],
     "FUNCTIONS": {
       "PS.init":{

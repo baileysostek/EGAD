@@ -1,8 +1,8 @@
-let languageName    = '';
-let FUNCTIONS       = {};
-let KEYWORDS        = [];
-let TYPES           = [];
-let fileAssociation = '';
+let languageName        = '';
+let FUNCTIONS           = {};
+let VARIABLE_KEYWORDS   = [];
+let TYPES               = [];
+let fileAssociation     = '';
 
 //Any characters within array determine where a token break should occur.
 let tokenConstraints = [' ', '.', '='];
@@ -23,6 +23,8 @@ module.exports = class languageParser{
         let functionData = languageInformation.LANGUAGE.FUNCTIONS;
         //Parse the object passed into this function and create language objects and type objects.
         let functionKeySet = Object.keys(functionData);
+        //Load keywords into this file, so the lexer can determine what variables to add to intelligence.
+        VARIABLE_KEYWORDS = languageInformation.LANGUAGE.VARIABLE_KEYWORDS;
 
         //Loop through all of the passed functions and generate objects out of them. Essentially a local wrapper of remote json data.
         for(let i = 0; i < functionKeySet.length; i++){
@@ -39,45 +41,47 @@ module.exports = class languageParser{
         this.clearLocalSuggestions();
         let fileLines = fileData.split('\n');
         let index = 0;
+        //Scope creation can be a stack, every time a new open character is found a scope is pushed onto the stack
+        //this scope is parented to the previous top of stack. Every time an end character is found, a scope is
+        //popped off of the stack. This creates a tree that can be reversed
+        let scopeSet = [];
+        scopeSet.push(this.createScope('uuid', [], null));
         for(let i = 0; i < fileLines.length; i++){
             let line = fileLines[i];
-            let lineTokens = this.tokeniseString(line);
-            let hasToken = this.hasToken(lineTokens, 'var');
             for(let j = 0; j < line.length; j++){
                 if(line[j] === scopeConstraints[0]){
                     //Open
                     index++;
+                    var newScope = this.createScope('uuid', [], null);
+                    newScope.setParent(scopeSet[scopeSet.length-1]);
+                    scopeSet.push(newScope);
+                    // console.log("Adding new Scope");
                 }
                 if(line[j] === scopeConstraints[1]){
                     //Close
                     index--;
+                    scopeSet.pop();
                 }
             }
-            //Only variables defined within the first scope are globally visible.
-            if(hasToken != false && index == 0){
-                //TODO determine what block this variable is visible within.
-                let varToken = this.getTokenAtIndex(lineTokens, hasToken.index+1);
-                console.log("Var:", varToken," is inside scope:"+index);
-                let suggestion = this.createFunction(varToken, [], {});
-                this.addFunction(suggestion);
-                FILE_VARS.push(suggestion)
+            let lineTokens = this.tokeniseString(line);
+            for(let j = 0; j < VARIABLE_KEYWORDS.length; j++) {
+                let hasToken = this.hasToken(lineTokens, VARIABLE_KEYWORDS[j]);
+                //Only variables defined within the first scope are globally visible.
+                if (hasToken != false) {
+                    //TODO determine what block this variable is visible within.
+                    let varToken = this.getTokenAtIndex(lineTokens, hasToken.index + 1);
+                    console.log(VARIABLE_KEYWORDS[j],":", varToken, " is inside scope:" + index);
+                    let suggestion = this.createFunction(varToken, [], {});
+                    this.addFunction(suggestion);
+                    FILE_VARS.push(suggestion)
+                    scopeSet[scopeSet.length-1].addVar(suggestion);
+                }
             }
         }
+
+        console.log("Scope Set:",scopeSet);
     }
 
-    findAllScopes(fileData){
-        let index = 0;
-        for(let i = 0; i < fileData.length; i++){
-            if(fileData[i] === scopeConstraints[0]){
-                //Open
-                index++;
-            }
-            if(fileData[i] === scopeConstraints[0]){
-                //Open
-                index--;
-            }
-        }
-    }
 
     cursorToScope(cursor){
 
@@ -187,16 +191,28 @@ module.exports = class languageParser{
         }
     }
 
-    createScope(uuid, vars, uuids){
+    createScope(uuid, vars, parentScope){
         return {
             uuid:uuid,
             vars:vars,
-            uuids:uuids,
+            parentScope:parentScope,
+            children:[],
             addVar(varName){
                 this.vars.push(varName);
             },
-            addScope(scope){
-                this.uuids.push(scope);
+            setParent(scope){
+                this.parentScope = scope;
+                this.parentScope.children.push(this);
+            },
+            getVars(){
+                let outVars = this.vars;
+
+                let parent = this.parentScope;
+                while(parent){
+                    outVars.concat(parent.vars);
+                    parent = parent.parentScope;
+                }
+                return outVars;
             }
         }
     }

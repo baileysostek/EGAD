@@ -48,14 +48,12 @@ var DELTA = {'x':0, 'y':0};
 //Prefabs for models
 //CUBE
 
-
 // PS.init( system, options )
 // Initializes the game
 PS.init = function( system, options ) {
 	"use strict";
 	init();
 };
-
 
 var init = function(){
 	// Preload & lock sounds
@@ -78,7 +76,6 @@ var init = function(){
 			PS.border ( i, j, 0);
 		}
 	}
-
 
 	//set status line stuff
 	PS.statusText("");

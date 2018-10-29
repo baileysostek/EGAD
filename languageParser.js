@@ -4,7 +4,15 @@ let KEYWORDS        = [];
 let TYPES           = [];
 let fileAssociation = '';
 
-let tokenConstraints = [' ', '.'];
+//Any characters within array determine where a token break should occur.
+let tokenConstraints = [' ', '.', '='];
+//When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
+//If an additional scope-opening character is found a sub-scope will be created recursively. This way infinitely many scopes can be defined within each other.
+let scopeConstraints = ['{', '}'];
+
+//File specific suggestions
+let FILE_VARS = [];
+let FILE_FUNCTIONS = [];
 
 module.exports = class languageParser{
     constructor(languageInformation){
@@ -24,6 +32,55 @@ module.exports = class languageParser{
         }
 
         //At this point FUNCTIONS is a hashMap mapping the name of the function to the object representing the function.
+    }
+
+    loadFileSpecificData(fileData){
+        // this.findAllScopes(fileData);
+        this.clearLocalSuggestions();
+        let fileLines = fileData.split('\n');
+        let index = 0;
+        for(let i = 0; i < fileLines.length; i++){
+            let line = fileLines[i];
+            let lineTokens = this.tokeniseString(line);
+            let hasToken = this.hasToken(lineTokens, 'var');
+            for(let j = 0; j < line.length; j++){
+                if(line[j] === scopeConstraints[0]){
+                    //Open
+                    index++;
+                }
+                if(line[j] === scopeConstraints[1]){
+                    //Close
+                    index--;
+                }
+            }
+            //Only variables defined within the first scope are globally visible.
+            if(hasToken != false && index == 0){
+                //TODO determine what block this variable is visible within.
+                let varToken = this.getTokenAtIndex(lineTokens, hasToken.index+1);
+                console.log("Var:", varToken," is inside scope:"+index);
+                let suggestion = this.createFunction(varToken, [], {});
+                this.addFunction(suggestion);
+                FILE_VARS.push(suggestion)
+            }
+        }
+    }
+
+    findAllScopes(fileData){
+        let index = 0;
+        for(let i = 0; i < fileData.length; i++){
+            if(fileData[i] === scopeConstraints[0]){
+                //Open
+                index++;
+            }
+            if(fileData[i] === scopeConstraints[0]){
+                //Open
+                index--;
+            }
+        }
+    }
+
+    cursorToScope(cursor){
+
     }
 
     addFunction(l_function){
@@ -50,6 +107,14 @@ module.exports = class languageParser{
                 suggestionSet.push(FUNCTIONS[key]);
             }
         }
+
+        //Sort the array by probability of correctness rather than alphabetically.
+        suggestionSet = suggestionSet.sort(function(a, b){
+            let pos1 = a.getNAME().indexOf(string);
+            let pos2 = b.getNAME().indexOf(string);
+            return (pos2 - pos1);
+        });
+
         return suggestionSet;
     }
 
@@ -84,6 +149,22 @@ module.exports = class languageParser{
         }
     }
 
+    hasToken(tokens, token){
+        for(let i = 0; i < tokens.length; i++){
+            if(tokens[i] === token){
+                return {
+                    "index":i,
+                    "token":tokens[i]
+                }
+            }
+        }
+        return false;
+    }
+
+    getTokenAtIndex(tokens, index){
+        return tokens[index];
+    }
+
     createFunction(name, parameters, returns){
         let NAME        = name;
         let PARAMETERS  = parameters;
@@ -102,6 +183,20 @@ module.exports = class languageParser{
             },
             getTEXT:function(){
                 return TEXT;
+            }
+        }
+    }
+
+    createScope(uuid, vars, uuids){
+        return {
+            uuid:uuid,
+            vars:vars,
+            uuids:uuids,
+            addVar(varName){
+                this.vars.push(varName);
+            },
+            addScope(scope){
+                this.uuids.push(scope);
             }
         }
     }
@@ -126,5 +221,10 @@ module.exports = class languageParser{
             }
             itteration++;
         }
+    }
+
+    clearLocalSuggestions(){
+        this.FILE_VARS = [];
+        this.FILE_FUNCTIONS = [];
     }
 }

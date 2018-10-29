@@ -70,6 +70,7 @@ function init() {
         //Set the Editor data to be the game.js of the current project.
         myFileManager.loadFile('game.js').then(function(result) {
             editor.setValue(result);
+            language.loadFileSpecificData(result);
         }, function(err) {
             console.log(err);
         });

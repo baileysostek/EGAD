@@ -15,6 +15,7 @@ let Perlenspeil;
 let editor;
 
 let clipboard = '';
+let suggestions = [];
 
 function init() {
     //Initialize JQuery
@@ -55,6 +56,7 @@ function init() {
                     console.log('Suggestion:', l_function[i].getNAME());
                 }
             }
+            suggestions = l_function;
         });
 
         //Initialize the language from the language configuration file.
@@ -219,5 +221,22 @@ function paste(){
             value = data.toString();
             editor.replaceRange(value, editor.getCursor(), editor.getCursor());
         });
+    }
+}
+
+function suggest(){
+    if(suggestions){
+        console.log("Suggesting@",editor.getCursor());
+        console.log("Line:",editor.getLine(editor.getCursor().line));
+        console.log("Token:",language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))));
+        console.log("Token Length:", language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length);
+
+        let lastToken = language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line)));
+        let startPos = {
+            line:editor.getCursor().line,
+            ch:editor.getCursor().ch - lastToken[0].length
+        };
+        console.log("Start Pos:", startPos);
+        editor.replaceRange(suggestions[0].getNAME(), startPos, editor.getCursor());
     }
 }

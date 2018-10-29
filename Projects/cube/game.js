@@ -91,6 +91,8 @@ var init = function(){
 	addCube([16,16,0],"cube", 18);
 }
 
+
+
 var tick = function(){
 	rotateY(getFace("cubef"), -DELTA.y);
 	rotateY(getFace("cubeb"), -DELTA.y);
@@ -462,6 +464,7 @@ var drawAllFaces = function(){
                     if(draw>0){
                         // lastColor = PS.glyph(k,j,count);
                         PS.color(k,j, crossFadeColors(lastColor[0].color,lastColor[1].color,(k-lastColor[0].xPos)/(lastColor[1].xPos-lastColor[0].xPos)));
+                    	//PS.color(k,j, PS.COLOR_GREEN);
                     }
                 }
 			}

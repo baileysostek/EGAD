@@ -86,12 +86,13 @@ var init = function(){
 
 	addCube([16,16,0],"cube", 18);
   	//addTriangle([16,16,0],"triangle", 18);
+  	
 }
 
 
 
 var tick = function(){
-	rotateY(getFace("cubef"), -DELTA.y);
+  	rotateY(getFace("cubef"), -DELTA.y);
 	rotateY(getFace("cubeb"), -DELTA.y);
 	rotateY(getFace("cubel"), -DELTA.y);
 	rotateY(getFace("cuber"), -DELTA.y);
@@ -109,7 +110,7 @@ var tick = function(){
 	DELTA.y = DELTA.y * 0.95;
 
 	// PS.debug("Before clean up Faces:"+FACES.length+" Add:"+TO_ADD.length+"remove:"+TO_REMOVE.length+"\n");
-cleanupFaces();
+	cleanupFaces();
 	// PS.debug("After clean up Faces:"+FACES.length+" Add:"+TO_ADD.length+"remove:"+TO_REMOVE.length+"\n");
 }
 
@@ -244,7 +245,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
         rotateX(getFace("cubet"), amount);
         rotateX(getFace("cubeo"), amount);
     }
-
+  	
     cleanupFaces();
 };
 

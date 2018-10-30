@@ -5,13 +5,14 @@ let TYPES               = [];
 let fileAssociation     = '';
 
 //Any characters within array determine where a token break should occur.
-let tokenConstraints = [' ', '.', '='];
+let tokenConstraints = [' ', '.', '=', ';'];
 //When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
 //If an additional scope-opening character is found a sub-scope will be created recursively. This way infinitely many scopes can be defined within each other.
 let scopeConstraints = ['{', '}'];
+let SCOPE_SET = [];
 
 //File specific suggestions
-let FILE_VARS = [];
+let FILE_VARS = {};
 let FILE_FUNCTIONS = [];
 
 module.exports = class languageParser{
@@ -44,23 +45,29 @@ module.exports = class languageParser{
         //Scope creation can be a stack, every time a new open character is found a scope is pushed onto the stack
         //this scope is parented to the previous top of stack. Every time an end character is found, a scope is
         //popped off of the stack. This creates a tree that can be reversed
-        let scopeSet = [];
-        scopeSet.push(this.createScope('uuid', [], null));
+        SCOPE_SET = [];
+        SCOPE_SET.push(this.createScope('uuid', [], null));
         for(let i = 0; i < fileLines.length; i++){
             let line = fileLines[i];
+            while(line.startsWith(' ') || line.startsWith('\t')){
+                line = line.substr(1, line.length);
+            }
             for(let j = 0; j < line.length; j++){
                 if(line[j] === scopeConstraints[0]){
                     //Open
                     index++;
                     var newScope = this.createScope('uuid', [], null);
-                    newScope.setParent(scopeSet[scopeSet.length-1]);
-                    scopeSet.push(newScope);
-                    // console.log("Adding new Scope");
+                    //I == Line
+                    //J == Character
+                    newScope.setStart(i, j);
+                    newScope.setParent(SCOPE_SET[SCOPE_SET.length-1]);
+                    SCOPE_SET.push(newScope);
                 }
                 if(line[j] === scopeConstraints[1]){
                     //Close
                     index--;
-                    scopeSet.pop();
+                    SCOPE_SET[SCOPE_SET.length-1].setEnd(i, j);
+                    SCOPE_SET.pop();
                 }
             }
             let lineTokens = this.tokeniseString(line);
@@ -72,19 +79,71 @@ module.exports = class languageParser{
                     let varToken = this.getTokenAtIndex(lineTokens, hasToken.index + 1);
                     console.log(VARIABLE_KEYWORDS[j],":", varToken, " is inside scope:" + index);
                     let suggestion = this.createFunction(varToken, [], {});
-                    this.addFunction(suggestion);
-                    FILE_VARS.push(suggestion)
-                    scopeSet[scopeSet.length-1].addVar(suggestion);
+                    FILE_VARS[suggestion.getNAME()] = suggestion;
+                    SCOPE_SET[SCOPE_SET.length-1].addVar(suggestion);
                 }
             }
         }
 
-        console.log("Scope Set:",scopeSet);
+        console.log("Scope Set:",SCOPE_SET);
+        console.log("FILE_VARS:",FILE_VARS);
+        console.log("getSubScope", this.getSubScope(SCOPE_SET[0]));
     }
 
 
     cursorToScope(cursor){
+        let SCOPE = this.getSubScope(SCOPE_SET[0]);
+        for (let i = SCOPE.length - 1; i > 0; i--){
+            let thisScope = SCOPE[i];
+            if(this.cursorInScope(cursor, thisScope)){
+                return thisScope;
+            }
+        }
+        return SCOPE_SET[0];
+    }
 
+    cursorInScope(cursor, scope){
+        if (cursor.line == scope.start.line) {
+            if (cursor.ch > scope.start.ch) {
+                if(cursor.line < scope.end.line){
+                    return true;
+                }else if(cursor.line = scope.end.line){
+                    if(cursor.ch < scope.end.ch){
+                        return true;
+                    }
+                }
+            }
+        }else if(cursor.line < scope.end.line){
+            if(cursor.line > scope.start.line) {
+                return true;
+            }
+        }else if (cursor.line == scope.end.line) {
+            if (cursor.ch < scope.end.ch) {
+                if(cursor.line > scope.start.line){
+                    return true;
+                }else if(cursor.line == scope.start.line){
+                    if(cursor.ch > scope.start.ch){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    getSubScope(scope){
+        let out = [scope];
+        for(let i = 0; i < scope.children.length; i++){
+            out = out.concat(this.getSubScope(scope.children[i]));
+        }
+        return out;
+    }
+
+    offsetScopes(delta, cursor){
+        let scopes = this.getSubScope(SCOPE_SET[0]); //Get all scopes
+        for(let i = 0 ; i< scopes.length; i++){
+
+        }
     }
 
     addFunction(l_function){
@@ -101,14 +160,28 @@ module.exports = class languageParser{
 
     }
 
-    getSuggestion(string){
+    getSuggestion(string, cursor){
+        console.log("FUNCTIONS",FUNCTIONS," FILE_VARS",FILE_VARS);
+        console.log("SCOPE:", this.cursorToScope(cursor), "Cursor:",cursor);
         let keys = Object.keys(FUNCTIONS);
+        let scopedVariables = this.cursorToScope(cursor);
+        let scopedVariablesObject = {};
+        for(let i = 0; i < scopedVariables.vars.length; i++){
+            scopedVariablesObject[scopedVariables.vars[i].getNAME()] = scopedVariables.vars[i];
+        }
+        console.log("Scoped Variables:",scopedVariablesObject);
+        keys = keys.concat(Object.keys(scopedVariablesObject));
         let suggestionSet = [];
 
         for(let i = 0; i < keys.length; i++){
             let key = keys[i];
             if(key.toLowerCase().includes(string)){
-                suggestionSet.push(FUNCTIONS[key]);
+                if(scopedVariablesObject[key]){
+                    suggestionSet.push(scopedVariablesObject[key]);
+                }
+                if(FUNCTIONS[key]) {
+                    suggestionSet.push(FUNCTIONS[key]);
+                }
             }
         }
 
@@ -197,6 +270,14 @@ module.exports = class languageParser{
             vars:vars,
             parentScope:parentScope,
             children:[],
+            start:{
+              line:0,
+              char:0
+            },
+            end:{
+                line:Infinity,
+                char:Infinity
+            },
             addVar(varName){
                 this.vars.push(varName);
             },
@@ -205,37 +286,27 @@ module.exports = class languageParser{
                 this.parentScope.children.push(this);
             },
             getVars(){
-                let outVars = this.vars;
-
+                let outVars = {};
+                for(let i = 0; i < this.vars.length; i++){
+                    outVars[this.vars[i].getNAME()] = this.vars[i];
+                }
                 let parent = this.parentScope;
                 while(parent){
-                    outVars.concat(parent.vars);
+                    for(let i = 0; i < parent.vars.length; i++){
+                        outVars[parent.vars[i].getNAME()] = parent.vars[i];
+                    }
                     parent = parent.parentScope;
                 }
                 return outVars;
+            },
+            setStart(line, char){
+                this.start.line = line;
+                this.start.char = char;
+            },
+            setEnd(line, char){
+                this.end.line = line;
+                this.end.char = char;
             }
-        }
-    }
-
-    inverse(n1, n2){
-        let found = false;
-        let itteration = 0;
-        let wrongNumbers = {};
-        while(!found){
-            let result = (itteration * n1)%n2;
-            if(result == 1){
-                console.log("inverse of ",n1," is ",itteration);
-                found = true;
-            }else{
-                if(!wrongNumbers[itteration+'']){
-                    console.log("Adding", result, "to result set.");
-                    wrongNumbers[itteration+''] = result;
-                }else{
-                    console.log("Number ",n1,"%",n2,"has no Inverse");
-                    found = true;
-                }
-            }
-            itteration++;
         }
     }
 

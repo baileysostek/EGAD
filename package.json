@@ -1,12 +1,11 @@
 {
-  "name": "pside",
+  "name": "electron-tutorial-app",
   "version": "1.0.0",
   "description": "Integrated Development Envronment for the Perlenspiel game engine",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "name": "electron-tutorial-app",
   "productName": "Perlenspeil IDE",
   "author": "Bailey Sostek",
   "license": "MIT",

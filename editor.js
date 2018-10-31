@@ -15,6 +15,10 @@ let Perlenspeil;
 let editor;
 
 let clipboard = '';
+let suggestions = [];
+
+//deboucer
+let lastSize = 0;
 
 function init() {
     //Initialize JQuery
@@ -46,17 +50,6 @@ function init() {
             lineNumbers: true,
         });
 
-        editor.on('change', function () {
-            let value = $('textArea').val();
-            console.log(value);
-            let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)));
-            if(l_function){
-                for(let i = 0; i < l_function.length; i++){
-                    console.log('Suggestion:', l_function[i].getNAME());
-                }
-            }
-        });
-
         //Initialize the language from the language configuration file.
         language = new languageParser(result);
 
@@ -68,6 +61,33 @@ function init() {
         //Set the Editor data to be the game.js of the current project.
         myFileManager.loadFile('game.js').then(function(result) {
             editor.setValue(result);
+            language.loadFileSpecificData(result);
+            lastSize = editor.doc.size;
+            editor.on('change', function () {
+                let newSize = editor.doc.size;
+                let value = $('textArea').val();
+                console.log(value);
+                console.log("lastSize:",lastSize,"new Size:",newSize);
+                if(!(newSize == lastSize)){
+                    let delta = newSize - lastSize;
+                    if(delta > 0){
+                        console.log("Added ", delta, " lines.");
+                    }
+                    if(delta < 0){
+                        console.log("Removed ", Math.abs(delta), " lines.");
+                    }
+                    language.offsetScopes(delta, editor.getCursor());
+                }
+                lastSize = newSize;
+                let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), editor.getCursor());
+                if(l_function){
+                    console.log(l_function);
+                    for(let i = 0; i < l_function.length; i++){
+                        console.log('Suggestion:', l_function[i].getNAME());
+                    }
+                }
+                suggestions = l_function;
+            });
         }, function(err) {
             console.log(err);
         });
@@ -206,7 +226,7 @@ function copy(){
         let value = $('textArea').val();
         proc.stdin.write(value);
         proc.stdin.end();
-        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value))));
+        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value)), editor.getCursor()));
     }
     console.log(editor.getCursor());
 }
@@ -219,5 +239,22 @@ function paste(){
             value = data.toString();
             editor.replaceRange(value, editor.getCursor(), editor.getCursor());
         });
+    }
+}
+
+function suggest(){
+    if(suggestions){
+        console.log("Suggesting@",editor.getCursor());
+        console.log("Line:",editor.getLine(editor.getCursor().line));
+        console.log("Token:",language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))));
+        console.log("Token Length:", language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length);
+
+        let lastToken = language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line)));
+        let startPos = {
+            line:editor.getCursor().line,
+            ch:editor.getCursor().ch - lastToken[0].length
+        };
+        console.log("Start Pos:", startPos);
+        editor.replaceRange(suggestions[0].getNAME(), startPos, editor.getCursor());
     }
 }

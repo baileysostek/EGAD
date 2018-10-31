@@ -77,6 +77,13 @@ const mainMenuTemplate = [
                 }
             },
             {
+                label:'Suggest',
+                accelerator: process.platform == 'darwin' ? 'Command+`' : 'Ctrl+`',
+                click(){
+                    mainWindow.webContents.executeJavaScript('suggest()');
+                }
+            },
+            {
                 label:'Copy',
                 accelerator: process.platform == 'darwin' ? 'Command+C' : 'Ctrl+C',
                 click(){

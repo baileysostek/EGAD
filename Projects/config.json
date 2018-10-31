@@ -1,8 +1,8 @@
 {
-  "MAIN_PROJECT":"cube",
+  "MAIN_PROJECT":"PS3.2",
   "LANGUAGE":{
     "NAME":"Perlenspeil 3",
-    "KEYWORDS":["var", "let", "const"],
+    "VARIABLE_KEYWORDS":["var", "let", "const"],
     "TYPES":["bead", "Integer", "Color"],
     "FUNCTIONS": {
       "PS.init":{
@@ -498,6 +498,8 @@
       "PS.unmakeRGB":{
         "NAME": "PS.unmakeRGB",
         "PARAMETERS":[],
+
+
         "RETURNS":{},
         "TEXT":""
       },

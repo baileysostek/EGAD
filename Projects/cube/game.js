@@ -48,14 +48,12 @@ var DELTA = {'x':0, 'y':0};
 //Prefabs for models
 //CUBE
 
-
 // PS.init( system, options )
 // Initializes the game
 PS.init = function( system, options ) {
 	"use strict";
 	init();
 };
-
 
 var init = function(){
 	// Preload & lock sounds
@@ -79,20 +77,22 @@ var init = function(){
 		}
 	}
 
-
 	//set status line stuff
 	PS.statusText("");
 	PS.statusColor(COLOR_STATUS);
 
 	//COMMENT THIS BACK IN
 	// PS.audioPlay( SOUND_BG_MUSIC, { lock : true, path:"sound/",loop:true});
-	// addFace("test", [[16,2,6072443],[28,28,4478406],[2,28,8193143]]);
 
 	addCube([16,16,0],"cube", 18);
+  	//addTriangle([16,16,0],"triangle", 18);
+  	
 }
 
+
+
 var tick = function(){
-	rotateY(getFace("cubef"), -DELTA.y);
+  	rotateY(getFace("cubef"), -DELTA.y);
 	rotateY(getFace("cubeb"), -DELTA.y);
 	rotateY(getFace("cubel"), -DELTA.y);
 	rotateY(getFace("cuber"), -DELTA.y);
@@ -110,7 +110,7 @@ var tick = function(){
 	DELTA.y = DELTA.y * 0.95;
 
 	// PS.debug("Before clean up Faces:"+FACES.length+" Add:"+TO_ADD.length+"remove:"+TO_REMOVE.length+"\n");
-cleanupFaces();
+	cleanupFaces();
 	// PS.debug("After clean up Faces:"+FACES.length+" Add:"+TO_ADD.length+"remove:"+TO_REMOVE.length+"\n");
 }
 
@@ -245,7 +245,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
         rotateX(getFace("cubet"), amount);
         rotateX(getFace("cubeo"), amount);
     }
-
+  	
     cleanupFaces();
 };
 
@@ -462,6 +462,7 @@ var drawAllFaces = function(){
                     if(draw>0){
                         // lastColor = PS.glyph(k,j,count);
                         PS.color(k,j, crossFadeColors(lastColor[0].color,lastColor[1].color,(k-lastColor[0].xPos)/(lastColor[1].xPos-lastColor[0].xPos)));
+                    	//PS.color(k,j, PS.COLOR_GREEN);
                     }
                 }
 			}
@@ -501,6 +502,19 @@ var addCube = function(point, id, size){
 	addFace(point, id+"t",[CUBE_VERTICES[4],CUBE_VERTICES[5],CUBE_VERTICES[1],CUBE_VERTICES[0]]);
 	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_ORANGE);
 	addFace(point, id+"o",[CUBE_VERTICES[3],CUBE_VERTICES[2],CUBE_VERTICES[6],CUBE_VERTICES[7]]);
+}
+
+var addTriangle = function(point, id, size){
+	var CUBE_COLOR = PS.random(16777215)-1;
+	var CUBE_VERTICES = [
+		[.5 * size * -1, .5 * size * -1, .5 * size , PS.COLOR_RED],
+		[.5 * size, .5 * size * -1, .5 * size, PS.COLOR_ORANGE],
+		[.5 * size, .5 * size, .5 * size, PS.COLOR_YELLOW],
+	]
+	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_RED);
+	addFace(point, id+"f",[CUBE_VERTICES[0],CUBE_VERTICES[1],CUBE_VERTICES[2],CUBE_VERTICES[2]]);
+	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_GREEN);
+
 }
 
 var setVerticesColors = function(vertices, color){

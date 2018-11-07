@@ -133,7 +133,9 @@ function init() {
         });
 
         let outputConsole = document.createElement('div');
+        outputConsole.setAttribute('id', 'outputConsole');
         outputConsole.innerText = 'Console';
+        outputConsole.style.color = '#a9b7c6';
         let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, outputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
@@ -150,6 +152,10 @@ function init() {
         // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
         psTest.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
         psTest.style.height = 100+'%';
+        psTest.addEventListener('console-message', (e) => {
+            outputConsole.innerText += JSON.stringify(e) +'\n';
+            $("#outputConsole").parent().scrollTop($("#outputConsole").parent().scrollHeight);
+        });
 
         Perlenspeil = psTest;
 
@@ -163,7 +169,6 @@ function init() {
         column3.addChild(watchedVariables);
 
         myFileManager.getProjectData('WIDTHS').then(function(result) {
-            console.log("WIDTHS", result);
             //This is an array of arrays.
             myGrid.initializeGrid(result);
         }, function(err) {

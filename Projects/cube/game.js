@@ -148,6 +148,7 @@ PS.touch = function( x, y, data, options ) {
 		LAST_X = x;
 		LAST_Y = y;
 	}
+	console.log("Stop TOUCHING ME!!!!!! @"+x+","+y);
 };
 
 // All event functions must be present to prevent startup errors,

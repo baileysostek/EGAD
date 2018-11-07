@@ -520,6 +520,60 @@
         "PARAMETERS":[],
         "RETURNS":{},
         "TEXT":""
+      },
+      "PS.COLOR_RED":{
+        "NAME": "PS.COLOR_RED",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_RED":{
+        "NAME": "PS.COLOR_RED",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_ORANGE":{
+        "NAME": "PS.COLOR_ORANGE",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_YELLOW":{
+        "NAME": "PS.COLOR_YELLOW",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_GREEN":{
+        "NAME": "PS.COLOR_GREEN",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_BLUE":{
+        "NAME": "PS.COLOR_BLUE",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_MAGENTA":{
+        "NAME": "PS.COLOR_MAGENTA",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_BLACK":{
+        "NAME": "PS.COLOR_BLACK",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
+      },
+      "PS.COLOR_WHITE":{
+        "NAME": "PS.COLOR_WHITE",
+        "PARAMETERS":[],
+        "RETURNS":{},
+        "TEXT":""
       }
     }
   }

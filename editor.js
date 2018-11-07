@@ -59,6 +59,7 @@ function init() {
         // document.body.appendChild(titleBar);
 
         let testDiv4 = document.createElement('div');
+        testDiv4.style.overflow = 'auto';
         testDiv4.innerText = '';
 
         //Set the Editor data to be the game.js of the current project.
@@ -134,10 +135,11 @@ function init() {
         let outputConsole = document.createElement('div');
         outputConsole.innerText = 'Console';
         let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, outputConsole], {'color':'#232323'}));
-        column2.registerCallback(editorDiv, function (data) {
-            // console.log("Callback for this editorDiv being resized:",data);
-            editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
-        });
+        // column2.registerCallback(editorDiv, function (data) {
+        //     // console.log("Callback for this editorDiv being resized:",data);
+        //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
+        // });
+        editor.setSize('auto', 'auto');
 
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));

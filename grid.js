@@ -66,6 +66,7 @@ module.exports = class Grid{
             row.style.width  = 100+'%';
             row.style.height = (1 / 1 * 100)+'%';
             row.style.top    = (0 / 1 * 100)+'%';
+            row.style.overflow = 'auto';
             row.style.position = "absolute";
             row.appendChild(elements);
             rows.push(row);
@@ -80,6 +81,7 @@ module.exports = class Grid{
                     row.style.height = (1 / elementCount * 100)+'%';
                     row.style.top    = (i / elementCount * 100)+'%';
                     row.style.position = "absolute";
+                    row.style.overflow = 'auto';
                     //Append the htmlElement to this row. This parents the content to the row, so that the elements content can be resized to the divs dimensions.
                     row.appendChild(elements[i]);
                     rows.push(row);
@@ -136,6 +138,7 @@ module.exports = class Grid{
                 row.style.height = (33)+'%';
                 row.style.top    = (33)+'%';
                 row.style.position = "absolute";
+                row.style.overflow = 'auto';
                 //Append the htmlElement to this row. This parents the content to the row, so that the elements content can be resized to the divs dimensions.
                 row.appendChild(child);
                 this.ROWS.push(row);

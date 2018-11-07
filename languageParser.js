@@ -314,4 +314,8 @@ module.exports = class languageParser{
         this.FILE_VARS = [];
         this.FILE_FUNCTIONS = [];
     }
+
+    letterFrequencyDecrypt(){
+
+    }
 }

@@ -75,7 +75,6 @@ module.exports = class languageParser{
                 let hasToken = this.hasToken(lineTokens, VARIABLE_KEYWORDS[j]);
                 //Only variables defined within the first scope are globally visible.
                 if (hasToken != false) {
-                    //TODO determine what block this variable is visible within.
                     let varToken = this.getTokenAtIndex(lineTokens, hasToken.index + 1);
                     console.log(VARIABLE_KEYWORDS[j],":", varToken, " is inside scope:" + index);
                     let suggestion = this.createFunction(varToken, [], {});
@@ -140,9 +139,17 @@ module.exports = class languageParser{
     }
 
     offsetScopes(delta, cursor){
+        let lastCursorPosition = {line:cursor.line, ch:cursor.ch};
+        lastCursorPosition.line -= delta;
         let scopes = this.getSubScope(SCOPE_SET[0]); //Get all scopes
         for(let i = 0 ; i< scopes.length; i++){
-
+            let scope = scopes[i];
+            if(scope.start.line > lastCursorPosition.line){
+                scope.start.line += delta;
+            }
+            if(scope.end.line > lastCursorPosition.line){
+                scope.end.line += delta;
+            }
         }
     }
 

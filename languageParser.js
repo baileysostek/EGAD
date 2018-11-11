@@ -5,7 +5,7 @@ let TYPES               = [];
 let fileAssociation     = '';
 
 //Any characters within array determine where a token break should occur.
-let tokenConstraints = [' ', '.', '=', ';'];
+let tokenConstraints = [' ', '=', ';'];
 //When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
 //If an additional scope-opening character is found a sub-scope will be created recursively. This way infinitely many scopes can be defined within each other.
 let scopeConstraints = ['{', '}'];
@@ -229,7 +229,7 @@ module.exports = class languageParser{
         if(tokenArray.length > 1) {
             return tokenArray[tokenArray.length - 1];
         }else{
-            return tokenArray;
+            return tokenArray[0];
         }
     }
 
@@ -315,6 +315,17 @@ module.exports = class languageParser{
                 this.end.char = char;
             }
         }
+    }
+
+    removeFrontSpacing(string){
+        while(string.startsWith(' ') || string.startsWith('\t')){
+            if(string.length > 1){
+                string = string.substring(1, string.length);
+            }else{
+                return "";
+            }
+        }
+        return string;
     }
 
     clearLocalSuggestions(){

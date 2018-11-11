@@ -48,6 +48,7 @@ function init() {
             theme: "darcula",
             autofocus:true,
             lineNumbers: true,
+            gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
 
         //Initialize the language from the language configuration file.
@@ -69,8 +70,8 @@ function init() {
             lastSize = editor.doc.size;
             editor.on('change', function () {
                 let newSize = editor.doc.size;
-                let value = $('textArea').val();
-                console.log(value);
+                let value = language.removeFrontSpacing(editor.getLine(editor.getCursor().line));
+
                 console.log("lastSize:",lastSize,"new Size:",newSize);
                 if(!(newSize == lastSize)){
                     let delta = newSize - lastSize;
@@ -82,7 +83,8 @@ function init() {
                     }
                     language.offsetScopes(delta, editor.getCursor());
                 }
-                lastSize = newSize;
+
+                console.log("Value:"+value);
                 let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), editor.getCursor());
                 if(l_function){
                     console.log(l_function);
@@ -143,6 +145,21 @@ function init() {
         // });
         editor.setSize('auto', 'auto');
 
+        editor.on("gutterClick", function(cm, n) {
+            var info = cm.lineInfo(n);
+            cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+            console.log("Clicked on :",info);
+            //Then determine if there are variables on that line
+            console.log("vars in scope:",language.cursorToScope({line:info.line, ch:0}).getVars());
+        });
+
+        function makeMarker() {
+            var marker = document.createElement("div");
+            marker.style.color = "#822";
+            marker.innerHTML = "●";
+            return marker;
+        }
+
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
         // myGrid.addColumn(myGrid.createColumn("test", '#002341'));
@@ -153,8 +170,10 @@ function init() {
         psTest.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
         psTest.style.height = 100+'%';
         psTest.addEventListener('console-message', (e) => {
-            outputConsole.innerText += JSON.stringify(e) +'\n';
-            $("#outputConsole").parent().scrollTop($("#outputConsole").parent().scrollHeight);
+            outputConsole.innerText += e.message;
+            // outputConsole.scrollTop = 90+'px';
+            // console.log("Height:",$("#outputConsole")[0].scrollHeight);
+            // console.log("Top:",$("#outputConsole")[0].scrollTop);
         });
 
         Perlenspeil = psTest;
@@ -177,6 +196,8 @@ function init() {
 
         myGrid.refresh();
         editor.refresh();
+
+
 
     }, function(err) {
         console.log(err);
@@ -260,13 +281,13 @@ function suggest(){
     if(suggestions){
         console.log("Suggesting@",editor.getCursor());
         console.log("Line:",editor.getLine(editor.getCursor().line));
-        console.log("Token:",language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))));
+        console.log("Token:",language.getLastToken(language.tokeniseString(language.removeFrontSpacing(editor.getLine(editor.getCursor().line)))));
         console.log("Token Length:", language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length);
 
         let lastToken = language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line)));
         let startPos = {
             line:editor.getCursor().line,
-            ch:editor.getCursor().ch - lastToken[0].length
+            ch:editor.getCursor().ch - language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length
         };
         console.log("Start Pos:", startPos);
         editor.replaceRange(suggestions[0].getNAME(), startPos, editor.getCursor());

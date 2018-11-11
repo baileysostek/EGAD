@@ -85,13 +85,16 @@ var init = function(){
 	// PS.audioPlay( SOUND_BG_MUSIC, { lock : true, path:"sound/",loop:true});
 
 	addCube([16,16,0],"cube", 18);
-  	//addTriangle([16,16,0],"triangle", 18);
-  	
+  	//addTriangle([16,16,0],"triangle", 18); 
 }
 
 
 
 var tick = function(){
+	if(DELTA.x != 0 || DELTA.y != 0){
+		console.log(JSON.stringify(DELTA));
+	}
+
   	rotateY(getFace("cubef"), -DELTA.y);
 	rotateY(getFace("cubeb"), -DELTA.y);
 	rotateY(getFace("cubel"), -DELTA.y);
@@ -108,6 +111,14 @@ var tick = function(){
 
 	DELTA.x = DELTA.x * 0.95;
 	DELTA.y = DELTA.y * 0.95;
+
+	if(Math.abs(DELTA.x) < 0.1){
+		DELTA.x = 0;
+	}
+
+    if(Math.abs(DELTA.y) < 0.1){
+        DELTA.y = 0;
+    }
 
 	// PS.debug("Before clean up Faces:"+FACES.length+" Add:"+TO_ADD.length+"remove:"+TO_REMOVE.length+"\n");
 	cleanupFaces();
@@ -148,7 +159,7 @@ PS.touch = function( x, y, data, options ) {
 		LAST_X = x;
 		LAST_Y = y;
 	}
-	console.log("Stop TOUCHING ME!!!!!! @"+x+","+y);
+	console.log("Screen was pressed @"+x+","+y);
 };
 
 // All event functions must be present to prevent startup errors,
@@ -463,7 +474,7 @@ var drawAllFaces = function(){
                     if(draw>0){
                         // lastColor = PS.glyph(k,j,count);
                         PS.color(k,j, crossFadeColors(lastColor[0].color,lastColor[1].color,(k-lastColor[0].xPos)/(lastColor[1].xPos-lastColor[0].xPos)));
-                    	//PS.color(k,j, PS.COLOR_GREEN);
+                    	//.color(k,j, PS.COLOR_GREEN);
                     }
                 }
 			}

@@ -48,6 +48,8 @@ function init() {
             theme: "darcula",
             autofocus:true,
             lineNumbers: true,
+            autoCloseBrackets: true,
+            autoMatchBrackets: true,
             gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
 

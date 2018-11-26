@@ -53,6 +53,23 @@ function init() {
             gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
 
+        let editorTable = document.createElement('table');
+        let tabs = document.createElement('div');
+        let tabBar = document.createElement('tr');
+        let tabData = document.createElement('td');
+        let editorBar = document.createElement('tr');
+        let editorData = document.createElement('td');
+
+        tabs.innerText = "This is a test.";
+        tabs.style.overflow = 'auto';
+
+        tabData.appendChild(tabs);
+        tabBar.appendChild(tabData);
+        editorTable.appendChild(tabBar);
+        editorData.appendChild(editorDiv);
+        editorBar.appendChild(editorData);
+        editorTable.appendChild(editorBar);
+
         //Initialize the language from the language configuration file.
         language = new languageParser(result);
 
@@ -140,7 +157,7 @@ function init() {
         outputConsole.setAttribute('id', 'outputConsole');
         outputConsole.innerText = 'Console';
         outputConsole.style.color = '#a9b7c6';
-        let column2 = myGrid.addColumn(myGrid.createColumn([editorDiv, outputConsole], {'color':'#232323'}));
+        let column2 = myGrid.addColumn(myGrid.createColumn([editorTable, outputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
@@ -161,6 +178,10 @@ function init() {
             marker.innerHTML = "●";
             return marker;
         }
+
+        language.registerInterestInTokens(['var', 'color'], function(data){
+            editor.setGutterMarker(data.n, "breakpoints", makeMarker());
+        });
 
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));

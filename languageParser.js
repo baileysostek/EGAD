@@ -15,6 +15,15 @@ let SCOPE_SET = [];
 let FILE_VARS = {};
 let FILE_FUNCTIONS = [];
 
+//Start of new CSS overriding system, we can add cool css effects to the document dynamically, we just need to register input.
+let INTERESTING_TOKENS = []; //This is an array of objects, the structure is as follows
+//key(s): The key that we are interested in looking for and finding.
+//An array or single token that bust be contained within a line.
+//callback: this is the callback that is executed when the keyword is found.
+//If a line contains the key that is desired, the entire line is passed to the callback function
+//A line must contain all desired tokens in order to trigger the callback function.
+
+
 module.exports = class languageParser{
     constructor(languageInformation){
         languageName = languageInformation.LANGUAGE.NAME;
@@ -35,8 +44,11 @@ module.exports = class languageParser{
         }
 
         //At this point FUNCTIONS is a hashMap mapping the name of the function to the object representing the function.
+        //
+
     }
 
+    //Take in data from a file, and generate a tree structure for this file representing the scope of this file.
     loadFileSpecificData(fileData){
         // this.findAllScopes(fileData);
         this.clearLocalSuggestions();
@@ -52,7 +64,7 @@ module.exports = class languageParser{
             while(line.startsWith(' ') || line.startsWith('\t')){
                 line = line.substr(1, line.length);
             }
-            for(let j = 0; j < line.length; j++){
+            for(let j = 0; j < line.length; j++){ //Look for scope start characters
                 if(line[j] === scopeConstraints[0]){
                     //Open
                     index++;
@@ -82,6 +94,37 @@ module.exports = class languageParser{
                     SCOPE_SET[SCOPE_SET.length-1].addVar(suggestion);
                 }
             }
+
+            //Look through the line tokens to detect css Overrides
+            for(let k_criteria in INTERESTING_TOKENS) {
+                let criteria = INTERESTING_TOKENS[k_criteria];
+                let satisfies = {};
+                //Build the satisfaction object
+                for (let k_token in criteria.tokens) {
+                    let token = criteria.tokens[k_token];
+                    satisfies[token] = false;
+                    for(let k_lineToken in lineTokens){
+                        if(lineTokens[k_lineToken].toLowerCase().includes(token.toLowerCase())){
+                            satisfies[token] = true;
+                        }
+                    }
+                }
+
+                let isSatisfied = true;
+
+                for(let k_satisfies in satisfies){
+                    if(!satisfies[k_satisfies]){
+                        isSatisfied = false;
+                        break;
+                    }
+                }
+
+                if(isSatisfied){//IF this line satisfies
+                    console.log("Satisfaction:",satisfies);
+                    criteria.function({n:i, lineTokens:lineTokens});
+                }
+            }
+
         }
 
         console.log("Scope Set:",SCOPE_SET);
@@ -182,7 +225,7 @@ module.exports = class languageParser{
 
         for(let i = 0; i < keys.length; i++){
             let key = keys[i];
-            if(key.toLowerCase().includes(string)){
+            if(key.toLowerCase().includes(string.toLowerCase())){
                 if(scopedVariablesObject[key]){
                     suggestionSet.push(scopedVariablesObject[key]);
                 }
@@ -333,7 +376,12 @@ module.exports = class languageParser{
         this.FILE_FUNCTIONS = [];
     }
 
-    letterFrequencyDecrypt(){
-
+    registerInterestInTokens(tokens, f_callback){
+        let i_tokens = [tokens];
+        if(Array.isArray(tokens)){
+            i_tokens = tokens;
+        }
+        INTERESTING_TOKENS.push({tokens:i_tokens, function:f_callback});
     }
+
 }

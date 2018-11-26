@@ -7,14 +7,13 @@ let myFileBrowser;
 let myGrid;
 let language;
 
-let version = '18w39a';
+let version = '18w39';
 
 //This is the perlenspeil instance
 let Perlenspeil;
 
 let editor;
 
-let clipboard = '';
 let suggestions = [];
 
 //deboucer
@@ -53,23 +52,6 @@ function init() {
             gutters: ["CodeMirror-linenumbers", "breakpoints"],
         });
 
-        let editorTable = document.createElement('table');
-        let tabs = document.createElement('div');
-        let tabBar = document.createElement('tr');
-        let tabData = document.createElement('td');
-        let editorBar = document.createElement('tr');
-        let editorData = document.createElement('td');
-
-        tabs.innerText = "This is a test.";
-        tabs.style.overflow = 'auto';
-
-        tabData.appendChild(tabs);
-        tabBar.appendChild(tabData);
-        editorTable.appendChild(tabBar);
-        editorData.appendChild(editorDiv);
-        editorBar.appendChild(editorData);
-        editorTable.appendChild(editorBar);
-
         //Initialize the language from the language configuration file.
         language = new languageParser(result);
 
@@ -84,12 +66,12 @@ function init() {
 
         //Set the Editor data to be the game.js of the current project.
         myFileManager.loadFile('game.js').then(function(result) {
-            editor.setValue(result);
+            getEditor().setValue(result);
             language.loadFileSpecificData(result);
-            lastSize = editor.doc.size;
-            editor.on('change', function () {
-                let newSize = editor.doc.size;
-                let value = language.removeFrontSpacing(editor.getLine(editor.getCursor().line));
+            lastSize = getEditor().doc.size;
+            getEditor().on('change', function () {
+                let newSize = getEditor().doc.size;
+                let value = language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line));
 
                 console.log("lastSize:",lastSize,"new Size:",newSize);
                 if(!(newSize == lastSize)){
@@ -100,11 +82,11 @@ function init() {
                     if(delta < 0){
                         console.log("Removed ", Math.abs(delta), " lines.");
                     }
-                    language.offsetScopes(delta, editor.getCursor());
+                    language.offsetScopes(delta, getEditor().getCursor());
                 }
 
                 console.log("Value:"+value);
-                let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), editor.getCursor());
+                let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor());
                 if(l_function){
                     console.log(l_function);
                     let tableText = '<table>';
@@ -155,16 +137,18 @@ function init() {
 
         let outputConsole = document.createElement('div');
         outputConsole.setAttribute('id', 'outputConsole');
-        outputConsole.innerText = 'Console';
         outputConsole.style.color = '#a9b7c6';
-        let column2 = myGrid.addColumn(myGrid.createColumn([editorTable, outputConsole], {'color':'#232323'}));
+
+        let tabs = document.createElement('div');
+
+        let column2 = myGrid.addColumn(myGrid.createColumn([tabs, editorDiv, outputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
         // });
         editor.setSize('auto', 'auto');
 
-        editor.on("gutterClick", function(cm, n) {
+        getEditor().on("gutterClick", function(cm, n) {
             var info = cm.lineInfo(n);
             cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
             console.log("Clicked on :",info);
@@ -194,9 +178,7 @@ function init() {
         psTest.style.height = 100+'%';
         psTest.addEventListener('console-message', (e) => {
             outputConsole.innerText += e.message;
-            // outputConsole.scrollTop = 90+'px';
-            // console.log("Height:",$("#outputConsole")[0].scrollHeight);
-            // console.log("Top:",$("#outputConsole")[0].scrollTop);
+            outputConsole.parentNode.scrollTop = outputConsole.parentNode.scrollHeight;
         });
 
         Perlenspeil = psTest;
@@ -226,6 +208,11 @@ function init() {
         console.log(err);
     });
 }
+
+function getEditor() {
+    return editor;
+}
+
 
 /**
  * Callback function executed when the windows close button is pressed.
@@ -269,7 +256,7 @@ function open(path){
 
 function save(){
     console.log("Save");
-    myFileManager.writeToFile('game.js', editor.getValue()).then(function(result) {
+    myFileManager.writeToFile('game.js', getEditor().getValue()).then(function(result) {
         Perlenspeil.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
     }, function(err) {
         console.log(err);
@@ -284,9 +271,9 @@ function copy(){
         let value = $('textArea').val();
         proc.stdin.write(value);
         proc.stdin.end();
-        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value)), editor.getCursor()));
+        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor()));
     }
-    console.log(editor.getCursor());
+    console.log(getEditor().getCursor());
 }
 
 function paste(){
@@ -295,24 +282,24 @@ function paste(){
         let proc =  require('child_process').spawn('pbpaste');
         proc.stdout.on('data', function(data) {
             value = data.toString();
-            editor.replaceRange(value, editor.getCursor(), editor.getCursor());
+            getEditor().replaceRange(value, getEditor().getCursor(), getEditor().getCursor());
         });
     }
 }
 
 function suggest(){
     if(suggestions){
-        console.log("Suggesting@",editor.getCursor());
-        console.log("Line:",editor.getLine(editor.getCursor().line));
-        console.log("Token:",language.getLastToken(language.tokeniseString(language.removeFrontSpacing(editor.getLine(editor.getCursor().line)))));
-        console.log("Token Length:", language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length);
+        console.log("Suggesting@",getEditor().getCursor());
+        console.log("Line:",getEditor().getLine(getEditor().getCursor().line));
+        console.log("Token:",language.getLastToken(language.tokeniseString(language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line)))));
+        console.log("Token Length:", language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line))).length);
 
-        let lastToken = language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line)));
+        let lastToken = language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line)));
         let startPos = {
-            line:editor.getCursor().line,
-            ch:editor.getCursor().ch - language.getLastToken(language.tokeniseString(editor.getLine(editor.getCursor().line))).length
+            line:getEditor().getCursor().line,
+            ch:getEditor().getCursor().ch - language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line))).length
         };
         console.log("Start Pos:", startPos);
-        editor.replaceRange(suggestions[0].getNAME(), startPos, editor.getCursor());
+        getEditor().replaceRange(suggestions[0].getNAME(), startPos, getEditor().getCursor());
     }
 }

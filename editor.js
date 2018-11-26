@@ -1,32 +1,36 @@
+//Initialize jquery and FancyTree
 const jqueryUI = require('jquery-ui');
 const fancyTree = require('jquery.fancytree');
 
-
+//create references to subclasses so that we can interface with them.
+//These are the modules that are loaded and specific to Perlenspeil IDE
 let myFileManager;
 let myFileBrowser;
 let myGrid;
 let language;
 
+//Version number of this project.
 let version = '18w39';
 
 //This is the perlenspeil instance
 let Perlenspeil;
 
+//This is the reference to the codeMirror editor.
 let editor;
 
+//This is the set of all current suggestions
+//TODO encapsulate this
 let suggestions = [];
 
-//deboucer
+//TODO encapsulate this as a 'lineResize' event
 let lastSize = 0;
 
 function init() {
-    //Initialize JQuery
-
     //Include all needed modules
-    const grid = require('./grid');
-    const fileManager = require('./fileManager');
-    const fileBrowser = require('./fileBrowser');
-    const languageParser = require('./languageParser');
+    const grid              = require('./grid');
+    const fileManager       = require('./fileManager');
+    const fileBrowser       = require('./fileBrowser');
+    const languageParser    = require('./languageParser');
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
@@ -139,9 +143,12 @@ function init() {
         outputConsole.setAttribute('id', 'outputConsole');
         outputConsole.style.color = '#a9b7c6';
 
+        let inputConsole = document.createElement('input');
+        inputConsole.setAttribute('type', 'text');
+
         let tabs = document.createElement('div');
 
-        let column2 = myGrid.addColumn(myGrid.createColumn([tabs, editorDiv, outputConsole], {'color':'#232323'}));
+        let column2 = myGrid.addColumn(myGrid.createColumn([tabs, editorDiv, outputConsole,inputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
@@ -179,6 +186,16 @@ function init() {
         psTest.addEventListener('console-message', (e) => {
             outputConsole.innerText += e.message;
             outputConsole.parentNode.scrollTop = outputConsole.parentNode.scrollHeight;
+        });
+
+        inputConsole.addEventListener("keyup", function(event) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                // Trigger the button element with a click
+                psTest.executeJavaScript("PS.debug("+inputConsole.value+"\n);");
+            }
         });
 
         Perlenspeil = psTest;
@@ -289,10 +306,10 @@ function paste(){
 
 function suggest(){
     if(suggestions){
-        console.log("Suggesting@",getEditor().getCursor());
-        console.log("Line:",getEditor().getLine(getEditor().getCursor().line));
-        console.log("Token:",language.getLastToken(language.tokeniseString(language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line)))));
-        console.log("Token Length:", language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line))).length);
+        // console.log("Suggesting@",getEditor().getCursor());
+        // console.log("Line:",getEditor().getLine(getEditor().getCursor().line));
+        // console.log("Token:",language.getLastToken(language.tokeniseString(language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line)))));
+        // console.log("Token Length:", language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line))).length);
 
         let lastToken = language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line)));
         let startPos = {

@@ -385,3 +385,11 @@ function comment(){
 
     getEditor().setSelection(min,max);
 }
+
+function find(){
+    getEditor().execCommand("find");
+}
+
+function replace(){
+    getEditor().execCommand("replace");
+}

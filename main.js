@@ -118,6 +118,20 @@ const mainMenuTemplate = [
                     app.quit();
                 }
             },
+            {
+                label:'Find',
+                accelerator: process.platform == 'darwin' ? 'Command+F' : 'Ctrl+F',
+                click(){
+                    mainWindow.webContents.executeJavaScript('find()');
+                }
+            },
+            {
+                label:'Replace',
+                accelerator: process.platform == 'darwin' ? 'Command+R' : 'Ctrl+R',
+                click(){
+                    mainWindow.webContents.executeJavaScript('replace()');
+                }
+            }
         ]
     },
     {

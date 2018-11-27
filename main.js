@@ -98,6 +98,13 @@ const mainMenuTemplate = [
                 }
             },
             {
+                label:'Comment',
+                accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
+                click(){
+                    mainWindow.webContents.executeJavaScript('comment()');
+                }
+            },
+            {
                 label:'Developer Tools',
                 accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
                 click(){

@@ -8,6 +8,7 @@ let myFileManager;
 let myFileBrowser;
 let myGrid;
 let language;
+let tabManager;
 
 //Version number of this project.
 let version = '18w39';
@@ -31,6 +32,7 @@ function init() {
     const fileManager       = require('./fileManager');
     const fileBrowser       = require('./fileBrowser');
     const languageParser    = require('./languageParser');
+    const tabs              = require('./tabManager');
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
@@ -58,6 +60,9 @@ function init() {
 
         //Initialize the language from the language configuration file.
         language = new languageParser(result);
+
+        //Initialize the tab manager
+        tabManager = new tabs();
 
         // let titleBar = document.createElement('div');
         // titleBar.setAttribute('id', 'titleBar');
@@ -150,9 +155,8 @@ function init() {
         inputConsole.style.height = '100%';
         inputConsole.style.position = 'absolute';
 
-        let tabs = document.createElement('div');
 
-        let column2 = myGrid.addColumn(myGrid.createColumn([tabs, editorDiv, outputConsole,inputConsole], {'color':'#232323'}));
+        let column2 = myGrid.addColumn(myGrid.createColumn([tabManager.getElement(), editorDiv, outputConsole,inputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
@@ -337,5 +341,42 @@ function suggest(){
 }
 
 function comment(){
+    let max;
+    let min;
 
+    if(getEditor().getCursor('head').line > getEditor().getCursor('anchor').line){
+        max = getEditor().getCursor('head');
+        min = getEditor().getCursor('anchor');
+    }else{
+        max = getEditor().getCursor('anchor');
+        min = getEditor().getCursor('head');
+    }
+
+    let value = getEditor().getRange(min,max);
+    value = value.split('\n');
+
+    //Check if this is a comment or uncomment action.
+    let uncommnet = true;
+
+    for(let i = 0; i < value.length; i++){
+        if(!value[i].includes('//')){
+            uncommnet = false;
+            break;
+        }
+    }
+
+
+    if(uncommnet){
+        for(let i = 0; i < value.length; i++){
+            value[i] = value[i].replace("//", "");
+        }
+    }else{
+        for(let i = 0; i < value.length; i++){
+            value[i] = "//"+value[i];
+        }
+    }
+    //Buffer the selection set
+
+    getEditor().replaceRange(value,min,max);
+    getEditor().setSelection(min,max);
 }

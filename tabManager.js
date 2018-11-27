@@ -7,7 +7,9 @@ let TAB_ELEMENT; //DOM element for this class
 module.exports = class tabs{
     constructor(){
         TAB_ELEMENT = document.createElement('div');
-        TAB_ELEMENT.style.width
+        TAB_ELEMENT.style.backgroundColor = '#53ffff';
+        TAB_ELEMENT.style.width = '100%';
+        TAB_ELEMENT.style.height = '100%';
     }
 
     synchElement(){

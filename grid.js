@@ -163,7 +163,7 @@ module.exports = class Grid{
      */
     createDrag(col1, col2){
         let drag = document.createElement(DRAG_TAG);
-        drag.style.backgroundColor = "#36c249";
+        drag.style.backgroundColor = "#b8b8b8";
         drag.style.position = "absolute";
         drag.style.height = 100+'%';
         drag.style.width = DRAG_WIDTH+'px';
@@ -189,7 +189,7 @@ module.exports = class Grid{
 
     createVDrag(row1, row2){
         let drag = document.createElement(V_DRAG_TAG);
-        drag.style.backgroundColor = "#36c249";
+        drag.style.backgroundColor = "#b8b8b8";
         drag.style.position = "absolute";
         drag.style.height = DRAG_WIDTH+'px';
         drag.style.width = 100+'%';
@@ -276,6 +276,9 @@ module.exports = class Grid{
     }
 
     onVDrag(event, row1, row2){
+        if(!this.getHEIGHT){
+            console.log("This is wrong",this);
+        }
         if(event.screenY > 0) {
             let screenPercentPos = ((event.screenY / this.getHEIGHT()) * 100);
             //Index 1 Left is never Going to change

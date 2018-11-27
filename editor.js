@@ -67,6 +67,7 @@ function init() {
         let testDiv4 = document.createElement('div');
         testDiv4.style.overflow = 'auto';
         testDiv4.innerText = '';
+        testDiv4.style.color = '#a9b7c6';
 
         //Set the Editor data to be the game.js of the current project.
         myFileManager.loadFile('game.js').then(function(result) {
@@ -89,15 +90,15 @@ function init() {
                     language.offsetScopes(delta, getEditor().getCursor());
                 }
 
-                console.log("Value:"+value);
                 let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor());
                 if(l_function){
                     console.log(l_function);
+
                     let tableText = '<table>';
                     for(let i = 0; i < l_function.length; i++){
                         tableText += '<tr>';
                         tableText += '<td>';
-                        tableText += 'Suggestion:'+l_function[i].getNAME();
+                        tableText += l_function[i].getNAME();
                         tableText += '</td>';
                         tableText += '</tr>';
                     }
@@ -115,7 +116,7 @@ function init() {
         let testDiv3 = document.createElement('div');
         testDiv3.setAttribute('id', 'tree');
 
-        let column1 = myGrid.addColumn(myGrid.createColumn([testDiv3, testDiv4] , {'color':'#414141'}));
+        let column1 = myGrid.addColumn(myGrid.createColumn([testDiv3, testDiv4] , {'color':'#232323'}));
         myFileManager.getProjectFiles().then(function(result) {
             $("#tree").fancytree({
                 checkbox: true,
@@ -145,6 +146,9 @@ function init() {
 
         let inputConsole = document.createElement('input');
         inputConsole.setAttribute('type', 'text');
+        inputConsole.style.width = '100%';
+        inputConsole.style.height = '100%';
+        inputConsole.style.position = 'absolute';
 
         let tabs = document.createElement('div');
 
@@ -166,15 +170,22 @@ function init() {
         function makeMarker() {
             var marker = document.createElement("div");
             marker.style.color = "#822";
-            marker.innerHTML = "●";
+            marker.innerHTML = "▢";
             return marker;
         }
 
-        language.registerInterestInTokens(['var', 'color'], function(data){
+        function colorPicker() {
+            var marker = document.createElement("div");
+            marker.style.color = "#822";
+            marker.innerHTML = "▢";
+            return marker;
+        }
+
+        language.registerInterestInTokens(['PS', 'COLOR'], function(data){
             editor.setGutterMarker(data.n, "breakpoints", makeMarker());
         });
 
-        let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#414141'}));
+        let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#232323'}));
         // myGrid.addColumn(myGrid.createColumn("Test" , '#004106'));
         // myGrid.addColumn(myGrid.createColumn("test", '#002341'));
 
@@ -184,7 +195,11 @@ function init() {
         psTest.setAttribute("src", 'Projects/'+myFileManager.loadedProject+'/game.html');
         psTest.style.height = 100+'%';
         psTest.addEventListener('console-message', (e) => {
-            outputConsole.innerText += e.message;
+            if(!e.message.includes('\n')){
+                outputConsole.innerText += e.message + '\n';
+            }else{
+                outputConsole.innerText += e.message;
+            }
             outputConsole.parentNode.scrollTop = outputConsole.parentNode.scrollHeight;
         });
 
@@ -194,7 +209,8 @@ function init() {
             // Number 13 is the "Enter" key on the keyboard
             if (event.keyCode === 13) {
                 // Trigger the button element with a click
-                psTest.executeJavaScript("PS.debug("+inputConsole.value+"\n);");
+                psTest.executeJavaScript(inputConsole.value);
+                psTest.executeJavaScript("PS.gridRefresh();");
             }
         });
 
@@ -202,7 +218,8 @@ function init() {
 
         let watchedVariables = document.createElement("webview");
         // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
-        watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
+        // watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
+        watchedVariables.setAttribute("src", 'http://cadmiumgames.com');
         watchedVariables.style.height = 100+'%';
 
 
@@ -288,9 +305,7 @@ function copy(){
         let value = $('textArea').val();
         proc.stdin.write(value);
         proc.stdin.end();
-        console.log(language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor()));
     }
-    console.log(getEditor().getCursor());
 }
 
 function paste(){
@@ -314,9 +329,13 @@ function suggest(){
         let lastToken = language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line)));
         let startPos = {
             line:getEditor().getCursor().line,
-            ch:getEditor().getCursor().ch - language.getLastToken(language.tokeniseString(getEditor().getLine(getEditor().getCursor().line))).length
+            ch:getEditor().getCursor().ch - lastToken.length
         };
         console.log("Start Pos:", startPos);
         getEditor().replaceRange(suggestions[0].getNAME(), startPos, getEditor().getCursor());
     }
+}
+
+function comment(){
+
 }

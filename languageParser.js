@@ -257,11 +257,16 @@ module.exports = class languageParser{
             for(let j = 0; j < workingStrings.length; j++){
                 var splitToken = workingStrings[j].split(tokenConstraints[i]);
                 if(splitToken.length > 1) {
-                    toAdd = toAdd.concat(splitToken);
+                    let filteredTokens = []; // Tokens that are not empty
+                    for(let k = 0; k < splitToken.length; k++){
+                        if(splitToken[k].length > 0){
+                            filteredTokens.push(splitToken[k]);
+                        }
+                    }
+                    toAdd = toAdd.concat(filteredTokens);
                     workingStrings.splice(j, 1);
                 }
             }
-            // console.log("toAdd:", toAdd);
             workingStrings = workingStrings.concat(toAdd);
         }
         tokens = workingStrings;

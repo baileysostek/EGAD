@@ -344,6 +344,9 @@ function comment(){
     let max;
     let min;
 
+    let commentHead = language.getCommentHead();
+    let commentTail = language.getCommentTail();
+
     if(getEditor().getCursor('head').line > getEditor().getCursor('anchor').line){
         max = getEditor().getCursor('head');
         min = getEditor().getCursor('anchor');
@@ -359,7 +362,7 @@ function comment(){
     let uncommnet = true;
 
     for(let i = 0; i < value.length; i++){
-        if(!value[i].includes('//')){
+        if(!value[i].includes(commentHead)){
             uncommnet = false;
             break;
         }
@@ -368,15 +371,17 @@ function comment(){
 
     if(uncommnet){
         for(let i = 0; i < value.length; i++){
-            value[i] = value[i].replace("//", "");
+            value[i] = value[i].replace(commentHead, '').replace(commentTail, '');
         }
     }else{
         for(let i = 0; i < value.length; i++){
-            value[i] = "//"+value[i];
+            value[i] = commentHead+value[i]+commentTail;
         }
     }
     //Buffer the selection set
 
     getEditor().replaceRange(value,min,max);
+    max.ch += commentHead.length + commentTail.length;
+
     getEditor().setSelection(min,max);
 }

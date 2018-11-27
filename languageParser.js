@@ -4,6 +4,9 @@ let VARIABLE_KEYWORDS   = [];
 let TYPES               = [];
 let fileAssociation     = '';
 
+let comment_head        = '';
+let comment_tail        = '';
+
 //Any characters within array determine where a token break should occur.
 let tokenConstraints = [' ', '=', ';'];
 //When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
@@ -35,6 +38,9 @@ module.exports = class languageParser{
         let functionKeySet = Object.keys(functionData);
         //Load keywords into this file, so the lexer can determine what variables to add to intelligence.
         VARIABLE_KEYWORDS = languageInformation.LANGUAGE.VARIABLE_KEYWORDS;
+
+        comment_head = languageInformation.LANGUAGE.COMMENT_HEAD;
+        comment_tail = languageInformation.LANGUAGE.COMMENT_TAIL;
 
         //Loop through all of the passed functions and generate objects out of them. Essentially a local wrapper of remote json data.
         for(let i = 0; i < functionKeySet.length; i++){
@@ -387,6 +393,14 @@ module.exports = class languageParser{
             i_tokens = tokens;
         }
         INTERESTING_TOKENS.push({tokens:i_tokens, function:f_callback});
+    }
+
+    getCommentHead(){
+        return comment_head;
+    }
+
+    getCommentTail(){
+        return comment_tail;
     }
 
 }

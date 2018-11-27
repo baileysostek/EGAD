@@ -4,6 +4,8 @@
     "NAME":"Perlenspeil 3",
     "VARIABLE_KEYWORDS":["var", "let", "const"],
     "TYPES":["bead", "Integer", "Color"],
+    "COMMENT_HEAD":"<!--",
+    "COMMENT_TAIL":"-->",
     "FUNCTIONS": {
       "PS.init":{
         "NAME": "PS.init",

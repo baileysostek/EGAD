@@ -1,0 +1,23 @@
+﻿Perlenspiel 3.3.x employs the Howler.js library by James Simpson for browser audio management, and the String.fromCodePoint polyfill by Mathias Bynens.
+
+Howler.js <https://howlerjs.com> is Copyright © 2013-2018 by James Simpson and GoldFire Studios, Inc.
+
+The String.fromCodePoint polyfill is Copyright © 2014 by Mathias Bynens.
+
+Howler.js and String.fromCodePoint are offered under the terms of the MIT License, which requires the inclusion of the text provided in the accompanying <MIT_License.txt> file with all software distributions.
+
+Consult <https://opensource.org/licenses/MIT> for more information.
+
+Perlenspiel also incorporates miscellaneous code snippets, shims, polyfills, shortcuts, workarounds and other programming suggestions freely offered by Doug Crockford, Paul Irish, Erik Möller, V. Rubinetti and Tino Zijdel.
+
+Special thanks to Mark Diehr, who has generously provided numerous enhancements and bug fixes to Perlenspiel over the years.
+
+The Perlenspiel Web site employs the JSColor color-picking widget.
+
+JSColor <http://jscolor.com/> is Copyright © 2008–2018 by Jan Odvárko – East Desire. It is offered for use by open-source projects under the terms of the GNU General Public License (Version 3), which requires the inclusion of the text provided in the accompanying <GPU_License.txt> file with all software distributions.
+
+Consult <https://www.gnu.org/licenses/gpl-3.0.txt> for more information.
+
+
+
+

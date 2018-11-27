@@ -60,7 +60,6 @@ var init = function(){
 	// PS.audioLoad( SOUND_PING, { lock : true, path:"sound/"} );
 
 	// PS.debug("Init\n");
-	goalsID = PS.dbInit("goals",{ discard : true });
 	tickID = PS.timerStart(1, tick);
 	renderID = PS.timerStart(1, render);
 
@@ -92,7 +91,7 @@ var init = function(){
 
 var tick = function(){
 	if(DELTA.x != 0 || DELTA.y != 0){
-		console.log(JSON.stringify(DELTA));
+		//console.log(JSON.stringify(DELTA));
 	}
 
   	rotateY(getFace("cubef"), -DELTA.y);
@@ -129,7 +128,7 @@ var render = function(){
 	//reset the background
 	for(var j = 0; j < grid.height; j++){
 		for(var i = 0; i < grid.width; i++){
-			PS.color(i,j,PS.COLOR_WHITE);
+			PS.color(i,j,COLOR_WEB_PAGE);
 		}
 	}
 	//draw all faces from the face buffer

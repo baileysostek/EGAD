@@ -1,5 +1,5 @@
 {
-  "MAIN_PROJECT":"PS3.3",
+  "MAIN_PROJECT":"cube",
   "LANGUAGE":{
     "NAME":"Perlenspeil 3",
     "VARIABLE_KEYWORDS":["var", "let", "const"],
@@ -19,7 +19,7 @@
       },
       "PS.release":{
         "NAME": "PS.release",
-        "PARAMETERS":[],
+        "PARAMETERS":[],        
         "RETURNS":{},
         "TEXT":""
       },

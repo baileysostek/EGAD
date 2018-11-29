@@ -26,6 +26,10 @@ let suggestions = [];
 //TODO encapsulate this as a 'lineResize' event
 let lastSize = 0;
 
+//TODO encapulate the console into its own class
+let consoleCommands = [];
+let consoleIndex = -1;
+
 function init() {
     //Include all needed modules
     const grid              = require('./grid');
@@ -156,12 +160,15 @@ function init() {
         inputConsole.style.position = 'absolute';
 
 
+
         let column2 = myGrid.addColumn(myGrid.createColumn([tabManager.getElement(), editorDiv, outputConsole,inputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
         // });
         editor.setSize('auto', 'auto');
+
+        tabManager.getElement().parentNode.style.overflow = 'visible';
 
         getEditor().on("gutterClick", function(cm, n) {
             var info = cm.lineInfo(n);
@@ -207,14 +214,58 @@ function init() {
             outputConsole.parentNode.scrollTop = outputConsole.parentNode.scrollHeight;
         });
 
-        inputConsole.addEventListener("keyup", function(event) {
-            // Cancel the default action, if needed
-            event.preventDefault();
-            // Number 13 is the "Enter" key on the keyboard
-            if (event.keyCode === 13) {
-                // Trigger the button element with a click
-                psTest.executeJavaScript(inputConsole.value);
-                psTest.executeJavaScript("PS.gridRefresh();");
+        //Wait for the
+        inputConsole.parentNode.style.overflow = 'visible';
+        inputConsole.addEventListener("keydown", function(event) {
+            loop:{
+                if (event.keyCode === 13) { //Enter
+                    event.preventDefault();
+                    if(inputConsole.value.length > 0) {
+                        psTest.executeJavaScript(inputConsole.value);
+                        psTest.executeJavaScript("PS.gridRefresh();");
+                        if (consoleIndex == -1) {
+                            if (consoleCommands.length > 0) {
+                                consoleCommands.splice(0, 0, inputConsole.value);
+                            } else {
+                                consoleCommands.push(inputConsole.value);
+                            }
+                            // console.log(consoleCommands);
+                        }
+                        inputConsole.value = '';
+                        consoleIndex = -1;
+                        break loop;
+                    }
+                }
+                if (event.keyCode === 38) { //UP arrow
+                    event.preventDefault();
+                    if (consoleIndex < consoleCommands.length - 1) {
+                        consoleIndex++;
+                    } else {
+                        //Noise maybe
+                    }
+                    if(consoleCommands[consoleIndex]) {
+                        inputConsole.value = consoleCommands[consoleIndex];
+                    }
+                    // console.log('index',consoleIndex);
+                    break loop;
+                }
+                if (event.keyCode === 40) { //Down arrow
+                    event.preventDefault();
+                    if (consoleIndex >= 0) {
+                        consoleIndex--;
+                    } else {
+                        //Noise maybe
+                    }
+                    if (consoleIndex >= 0) {
+                        inputConsole.value = consoleCommands[consoleIndex];
+                    } else {
+                        inputConsole.value = '';
+                    }
+                    // console.log('index',consoleIndex);
+                    break loop;
+                }
+                //IF the editor text is changed then flag this new command to be pushed onto the command stack
+                consoleIndex = -1;
             }
         });
 

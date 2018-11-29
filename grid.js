@@ -88,6 +88,18 @@ module.exports = class Grid{
                     //
                     column.appendChild(row);
 
+
+                    if(i > 0){
+                        elements[i].style.paddingTop    = Math.floor(DRAG_WIDTH/2)+'px';
+                    }
+                    if(i < elementCount){
+                        elements[i].style.paddingBottom = Math.floor(DRAG_WIDTH/2)+'px';
+                    }
+                    if(COLUMNS.length > 0){
+                        elements[i].style.paddingLeft   = Math.floor(DRAG_WIDTH/2)+'px';
+                        elements[i].style.paddingRIGHT  = Math.floor(DRAG_WIDTH/2)+'px';
+                    }
+
                     if(rows.length > 1) {
                         let vDrag = this.createVDrag(rows[rows.length-2], rows[rows.length-1]);
                         column.appendChild(vDrag.element);
@@ -168,6 +180,7 @@ module.exports = class Grid{
         drag.style.height = 100+'%';
         drag.style.width = DRAG_WIDTH+'px';
         drag.style.cursor = 'col-resize';
+        drag.setAttribute('class', 'btn');
         var that = this;
         drag.addEventListener("drag", function( event) {
             that.onDrag(event, col1.index, col2.index);
@@ -194,6 +207,7 @@ module.exports = class Grid{
         drag.style.height = DRAG_WIDTH+'px';
         drag.style.width = 100+'%';
         drag.style.cursor = 'row-resize';
+        drag.setAttribute('class', 'btn');
         var that = this;
         drag.addEventListener("drag", function( event) {
             that.onVDrag(event, row1, row2);

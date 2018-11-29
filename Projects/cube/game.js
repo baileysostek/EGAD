@@ -93,7 +93,7 @@ var tick = function(){
 	if(DELTA.x != 0 || DELTA.y != 0){
 		//console.log(JSON.stringify(DELTA));
 	}
-
+  
   	rotateY(getFace("cubef"), -DELTA.y);
 	rotateY(getFace("cubeb"), -DELTA.y);
 	rotateY(getFace("cubel"), -DELTA.y);

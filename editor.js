@@ -273,8 +273,8 @@ function init() {
 
         let watchedVariables = document.createElement("webview");
         // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
-        // watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
-        watchedVariables.setAttribute("src", 'http://cadmiumgames.com');
+        watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
+        // watchedVariables.setAttribute("src", 'http://cadmiumgames.com');
         watchedVariables.style.height = 100+'%';
 
 
@@ -290,6 +290,12 @@ function init() {
 
         myGrid.refresh();
         editor.refresh();
+
+        //Disable drag abilities on the Webviews
+        psTest.addEventListener('dragover', event => event.preventDefault());
+        psTest.addEventListener('drop', event => event.preventDefault());
+        watchedVariables.addEventListener('dragover', event => event.preventDefault());
+        watchedVariables.addEventListener('drop', event => event.preventDefault());
 
 
 

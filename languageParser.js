@@ -8,7 +8,7 @@ let comment_head        = '';
 let comment_tail        = '';
 
 //Any characters within array determine where a token break should occur.
-let tokenConstraints = [' ', '=', ';'];
+let tokenConstraints = [' ', '=', ';', ',', '[', ']', '(', ')'];
 //When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
 //If an additional scope-opening character is found a sub-scope will be created recursively. This way infinitely many scopes can be defined within each other.
 let scopeConstraints = ['{', '}'];
@@ -17,6 +17,9 @@ let SCOPE_SET = [];
 //File specific suggestions
 let FILE_VARS = {};
 let FILE_FUNCTIONS = [];
+
+//Store all of the data associated with this file in this object.
+let FILE_DATA;
 
 //Start of new CSS overriding system, we can add cool css effects to the document dynamically, we just need to register input.
 let INTERESTING_TOKENS = []; //This is an array of objects, the structure is as follows
@@ -56,6 +59,7 @@ module.exports = class languageParser{
 
     //Take in data from a file, and generate a tree structure for this file representing the scope of this file.
     loadFileSpecificData(fileData){
+        this.FILE_DATA = fileData;
         // this.findAllScopes(fileData);
         this.clearLocalSuggestions();
         let fileLines = fileData.split('\n');
@@ -101,7 +105,7 @@ module.exports = class languageParser{
                 }
             }
 
-            //Look through the line tokens to detect css Overrides
+            // //Look through the line tokens to detect css Overrides
             for(let k_criteria in INTERESTING_TOKENS) {
                 let criteria = INTERESTING_TOKENS[k_criteria];
                 let satisfies = {};
@@ -401,6 +405,46 @@ module.exports = class languageParser{
 
     getCommentTail(){
         return comment_tail;
+    }
+
+    lookForInterestingTokens(){
+        let fileLines = this.FILE_DATA.split('\n');
+        for(let i = 0; i < fileLines.length; i++) {
+            let line = fileLines[i];
+            while(line.startsWith(' ') || line.startsWith('\t')){
+                line = line.substr(1, line.length);
+            }
+            let lineTokens = this.tokeniseString(line);
+            //Look through the line tokens to detect css Overrides
+            for(let k_criteria in INTERESTING_TOKENS) {
+                let criteria = INTERESTING_TOKENS[k_criteria];
+                let satisfies = {};
+                //Build the satisfaction object
+                for (let k_token in criteria.tokens) {
+                    let token = criteria.tokens[k_token];
+                    satisfies[token] = false;
+                    for(let k_lineToken in lineTokens){
+                        if(lineTokens[k_lineToken].toLowerCase().includes(token.toLowerCase())){
+                            satisfies[token] = true;
+                        }
+                    }
+                }
+
+                let isSatisfied = true;
+
+                for(let k_satisfies in satisfies){
+                    if(!satisfies[k_satisfies]){
+                        isSatisfied = false;
+                        break;
+                    }
+                }
+
+                if(isSatisfied){//IF this line satisfies
+                    console.log("Satisfaction:",satisfies);
+                    criteria.function({n:i, lineTokens:lineTokens});
+                }
+            }
+        }
     }
 
 }

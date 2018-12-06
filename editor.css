@@ -9,3 +9,7 @@ body{
 }
 
 .btn:hover {opacity: 1}
+
+.colorPicker {
+    width: .8em;
+}

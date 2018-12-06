@@ -178,22 +178,8 @@ function init() {
             console.log("vars in scope:",language.cursorToScope({line:info.line, ch:0}).getVars());
         });
 
-        function makeMarker() {
-            var marker = document.createElement("div");
-            marker.style.color = "#822";
-            marker.innerHTML = "▢";
-            return marker;
-        }
-
-        function colorPicker() {
-            var marker = document.createElement("div");
-            marker.style.color = "#822";
-            marker.innerHTML = "▢";
-            return marker;
-        }
-
-        language.registerInterestInTokens(['PS', 'COLOR'], function(data){
-            editor.setGutterMarker(data.n, "breakpoints", makeMarker());
+        language.registerInterestInTokens(['PS.COLOR'], function(data){
+            editor.setGutterMarker(data.n, "breakpoints", colorPicker(data));
         });
 
         let column3 = myGrid.addColumn(myGrid.createColumn("test", {'color':'#232323'}));
@@ -271,15 +257,15 @@ function init() {
 
         Perlenspeil = psTest;
 
-        let watchedVariables = document.createElement("webview");
+        let apiDocumentation = document.createElement("webview");
         // psTest.setAttribute("src", "http://users.wpi.edu/~bhsostek/Assignment13/game.html");
-        watchedVariables.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
-        // watchedVariables.setAttribute("src", 'http://cadmiumgames.com');
-        watchedVariables.style.height = 100+'%';
+        apiDocumentation.setAttribute("src", 'http://users.wpi.edu/~bmoriarty/ps/api.html');
+        // apiDocumentation.setAttribute("src", 'http://cadmiumgames.com');
+        apiDocumentation.style.height = 100+'%';
 
 
         column3.addChild(psTest);
-        column3.addChild(watchedVariables);
+        column3.addChild(apiDocumentation);
 
         myFileManager.getProjectData('WIDTHS').then(function(result) {
             //This is an array of arrays.
@@ -294,10 +280,8 @@ function init() {
         //Disable drag abilities on the Webviews
         psTest.addEventListener('dragover', event => event.preventDefault());
         psTest.addEventListener('drop', event => event.preventDefault());
-        watchedVariables.addEventListener('dragover', event => event.preventDefault());
-        watchedVariables.addEventListener('drop', event => event.preventDefault());
-
-
+        apiDocumentation.addEventListener('dragover', event => event.preventDefault());
+        apiDocumentation.addEventListener('drop', event => event.preventDefault());
 
     }, function(err) {
         console.log(err);
@@ -307,6 +291,32 @@ function init() {
 function getEditor() {
     return editor;
 }
+
+function makeMarker() {
+    let marker = document.createElement("div");
+    marker.style.color = "#822";
+    marker.innerHTML = "▢";
+    return marker;
+}
+
+function colorPicker(data) {
+    let marker = document.createElement("div");
+    let color;
+    for(let i = 0; i < data.lineTokens.length; i++){
+        if(data.lineTokens[i].includes("PS.COLOR")){
+            color = data.lineTokens[i];
+        }
+    }
+    if(color) {
+        Perlenspeil.executeJavaScript(color, function(result) {
+            console.log("Result:",toHex(result));
+            marker.style.color = toHex(result);
+            marker.innerHTML = "■";
+        });
+    }
+    return marker;
+}
+
 
 
 /**
@@ -357,6 +367,7 @@ function save(){
         console.log(err);
     });
     console.log(myGrid.getGridSize());
+    language.lookForInterestingTokens();
 }
 
 function copy(){
@@ -449,4 +460,12 @@ function find(){
 
 function replace(){
     getEditor().execCommand("replace");
+}
+
+function toHex(decimal){
+    let out = decimal.toString(16);
+    while(out.length < 6){
+        out = '0'+out;
+    }
+    return '#'+out;
 }

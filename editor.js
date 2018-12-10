@@ -142,7 +142,11 @@ function init() {
                     $("#statusLine").text(
                         event.type + ": " + data.node.isSelected() + " " + data.node
                     );
-                }
+
+                },
+                dblclick:function(event, data) {
+                    tabManager.openFile(data);
+                },
             });
 
         }, function(err) {

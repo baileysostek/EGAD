@@ -13,3 +13,20 @@ body{
 .colorPicker {
     width: .8em;
 }
+
+.tab {
+    background-color: #414141;
+    transition: 0.3s;
+}
+
+.tab:hover {
+    background-color: #808080;
+}
+
+.selected{
+    background-color: #bababa;
+}
+
+.colorPicker {
+    width: .8em;
+}

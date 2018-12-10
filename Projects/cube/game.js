@@ -16,6 +16,7 @@ var OVER = false;
 var COLOR_STATUS = PS.COLOR_BLACK;
 //the color of the web page
 var COLOR_WEB_PAGE = PS.COLOR_WHITE;
+PS.COLOR_PINK = 0xff9999;
 
 //If the mouse is pressed
 var MOUSE_IN_GRID = false;
@@ -498,7 +499,7 @@ var addCube = function(point, id, size){
 		[.5 * size * -1, .5 * size, .5 * size, PS.COLOR_GREEN],
 		[.5 * size * -1, .5 * size * -1, .5 * size * -1, PS.COLOR_CYAN],
 		[.5 * size, .5 * size * -1, .5 * size * -1, PS.COLOR_BLUE],
-		[.5 * size, .5 * size, .5 * size * -1, PS.COLOR_BLACK],
+		[.5 * size, .5 * size, .5 * size * -1, PS.COLOR_PINK],
 		[.5 * size * -1, .5 * size, .5 * size * -1, PS.COLOR_MAGENTA]
 	]
 	// CUBE_VERTICES = setVerticesColors(CUBE_VERTICES, PS.COLOR_RED);

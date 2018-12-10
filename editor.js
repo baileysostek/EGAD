@@ -78,47 +78,7 @@ function init() {
         testDiv4.innerText = '';
         testDiv4.style.color = '#a9b7c6';
 
-        //Set the Editor data to be the game.js of the current project.
-        myFileManager.loadFile('game.js').then(function(result) {
-            getEditor().setValue(result);
-            language.loadFileSpecificData(result);
-            lastSize = getEditor().doc.size;
-            getEditor().on('change', function () {
-                let newSize = getEditor().doc.size;
-                let value = language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line));
 
-                console.log("lastSize:",lastSize,"new Size:",newSize);
-                if(!(newSize == lastSize)){
-                    let delta = newSize - lastSize;
-                    if(delta > 0){
-                        console.log("Added ", delta, " lines.");
-                    }
-                    if(delta < 0){
-                        console.log("Removed ", Math.abs(delta), " lines.");
-                    }
-                    language.offsetScopes(delta, getEditor().getCursor());
-                }
-
-                let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor());
-                if(l_function){
-                    console.log(l_function);
-
-                    let tableText = '<table>';
-                    for(let i = 0; i < l_function.length; i++){
-                        tableText += '<tr>';
-                        tableText += '<td>';
-                        tableText += l_function[i].getNAME();
-                        tableText += '</td>';
-                        tableText += '</tr>';
-                    }
-                    tableText += '</table>';
-                    testDiv4.innerHTML = tableText;
-                }
-                suggestions = l_function;
-            });
-        }, function(err) {
-            console.log(err);
-        });
 
         // editor.setSize('auto', 'auto');
 
@@ -173,6 +133,54 @@ function init() {
         editor.setSize('auto', 'auto');
 
         tabManager.getElement().parentNode.style.overflow = 'visible';
+
+        tabManager.registerFiletype('png', (name) => {
+            console.log("path","Projects/"+myFileManager.loadedProject+'/'+name);
+            editorDiv.innerHTML = "<img src=Projects/"+myFileManager.loadedProject+'/'+name+"></img>"
+        });
+        tabManager.registerFiletype('js', (name) => {
+            //Set the Editor data to be the game.js of the current project.
+            myFileManager.loadFile(name).then(function(result) {
+                getEditor().setValue(result);
+                language.loadFileSpecificData(result);
+                lastSize = getEditor().doc.size;
+                getEditor().on('change', function () {
+                    let newSize = getEditor().doc.size;
+                    let value = language.removeFrontSpacing(getEditor().getLine(getEditor().getCursor().line));
+
+                    console.log("lastSize:",lastSize,"new Size:",newSize);
+                    if(!(newSize == lastSize)){
+                        let delta = newSize - lastSize;
+                        if(delta > 0){
+                            console.log("Added ", delta, " lines.");
+                        }
+                        if(delta < 0){
+                            console.log("Removed ", Math.abs(delta), " lines.");
+                        }
+                        language.offsetScopes(delta, getEditor().getCursor());
+                    }
+
+                    let l_function = language.getSuggestion(language.getLastToken(language.tokeniseString(value)), getEditor().getCursor());
+                    if(l_function){
+                        console.log(l_function);
+
+                        let tableText = '<table>';
+                        for(let i = 0; i < l_function.length; i++){
+                            tableText += '<tr>';
+                            tableText += '<td>';
+                            tableText += l_function[i].getNAME();
+                            tableText += '</td>';
+                            tableText += '</tr>';
+                        }
+                        tableText += '</table>';
+                        testDiv4.innerHTML = tableText;
+                    }
+                    suggestions = l_function;
+                });
+            }, function(err) {
+                console.log(err);
+            });
+        });
 
         getEditor().on("gutterClick", function(cm, n) {
             var info = cm.lineInfo(n);

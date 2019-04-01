@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -176,7 +176,7 @@
         "infix", "infixl", "infixr",
         "type", "alias",
         "input", "output", "foreign", "loopback",
-        "module", "where", "import", "exposing",
+        "widgit", "where", "import", "exposing",
         "_", "..", "|", ":", "=", "\\", "\"", "->", "<-"
       ];
 

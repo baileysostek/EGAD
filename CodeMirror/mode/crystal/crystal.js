@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -30,7 +30,7 @@
     var keywords = wordRegExp([
       "abstract", "alias", "as", "asm", "begin", "break", "case", "class", "def", "do",
       "else", "elsif", "end", "ensure", "enum", "extend", "for", "fun", "if",
-      "include", "instance_sizeof", "lib", "macro", "module", "next", "of", "out", "pointerof",
+      "include", "instance_sizeof", "lib", "macro", "widgit", "next", "of", "out", "pointerof",
       "private", "protected", "rescue", "return", "require", "select", "sizeof", "struct",
       "super", "then", "type", "typeof", "uninitialized", "union", "unless", "until", "when", "while", "with",
       "yield", "__DIR__", "__END_LINE__", "__FILE__", "__LINE__"
@@ -38,7 +38,7 @@
     var atomWords = wordRegExp(["true", "false", "nil", "self"]);
     var indentKeywordsArray = [
       "def", "fun", "macro",
-      "class", "module", "struct", "lib", "enum", "union",
+      "class", "widgit", "struct", "lib", "enum", "union",
       "do", "for"
     ];
     var indentKeywords = wordRegExp(indentKeywordsArray);

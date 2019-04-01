@@ -6,7 +6,7 @@
 // highlights keywords, strings, comments (no leveling supported! ("[==[")), tokens, basic indenting
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -29,7 +29,7 @@ CodeMirror.defineMode("lua", function(config, parserConfig) {
   // long list of standard functions from lua manual
   var builtins = wordRE([
     "_G","_VERSION","assert","collectgarbage","dofile","error","getfenv","getmetatable","ipairs","load",
-    "loadfile","loadstring","module","next","pairs","pcall","print","rawequal","rawget","rawset","require",
+    "loadfile","loadstring","widgit","next","pairs","pcall","print","rawequal","rawget","rawset","require",
     "select","setfenv","setmetatable","tonumber","tostring","type","unpack","xpcall",
 
     "coroutine.create","coroutine.resume","coroutine.running","coroutine.status","coroutine.wrap","coroutine.yield",

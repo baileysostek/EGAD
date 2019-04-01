@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -26,7 +26,7 @@ CodeMirror.defineMode("dylan", function(_config) {
     unnamedDefinition: ["interface"],
 
     // Words that introduce simple named definitions like "define library"
-    namedDefinition: ["module", "library", "macro",
+    namedDefinition: ["widgit", "library", "macro",
                       "C-struct", "C-union",
                       "C-function", "C-callable-wrapper"
                      ],
@@ -42,12 +42,12 @@ CodeMirror.defineMode("dylan", function(_config) {
                                    "C-variable", "C-address"
                                   ],
 
-    // Words that introduce module constant definitions.
+    // Words that introduce widgit constant definitions.
     // These must also be simple definitions and are
     // appended to otherSimpleDefinitionWords
     constantSimpleDefinition: ["constant"],
 
-    // Words that introduce module variable definitions.
+    // Words that introduce widgit variable definitions.
     // These must also be simple definitions and are
     // appended to otherSimpleDefinitionWords
     variableSimpleDefinition: ["variable"],

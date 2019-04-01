@@ -5,6 +5,7 @@ let tabClass = 'tab'; //CSS class for this tab
 let selectedClass = 'selected'; //CSS class for this tab
 
 let TAB_ELEMENT; //DOM element for this class
+let selectedPath = '';
 
 module.exports = class tabs{
     constructor(){
@@ -25,32 +26,37 @@ module.exports = class tabs{
     }
 
     openFile(filePath){
+        if(filePath.node.folder){ //Do not open a tab for a folder
+            return;
+        }
         console.log("Opening:",filePath);
-        if(!OPEN_TABS[filePath.node.title]) {//Not found
+        let pathName = this.getPath(filePath.node);
+        this.selectedPath = pathName;
+        if(!OPEN_TABS[pathName]) {//Not found
             let tab = document.createElement('div');
             tab.className += ' '+tabClass;
             tab.style.height = '100%';
             tab.style.position = 'absolute';
-            tab.innerText = filePath.node.title;
+            tab.innerText = pathName;
             tab.addEventListener("click",() => {
                 for(let openTab in OPEN_TABS){
                     OPEN_TABS[openTab].element.classList.remove(selectedClass);
                 }
                 tab.className += ' '+selectedClass;
-                this.performCallbackForFileType(filePath.node.title);
+                this.performCallbackForFileType(pathName);
             });
             TAB_ELEMENT.appendChild(tab);
-            OPEN_TABS[filePath.node.title] = {
+            OPEN_TABS[pathName] = {
                 element:tab,
-                filePath:filePath.node.title
+                filePath:pathName
             };
         }
         for(let openTab in OPEN_TABS){
             OPEN_TABS[openTab].element.classList.remove(selectedClass);
         }
-        (OPEN_TABS[filePath.node.title].element).className += ' '+selectedClass;
+        (OPEN_TABS[pathName].element).className += ' '+selectedClass;
         this.resizeTabs();
-        this.performCallbackForFileType(filePath.node.title);
+        this.performCallbackForFileType(pathName);
     }
 
     getElement(){
@@ -80,5 +86,20 @@ module.exports = class tabs{
         }else{
             //is directory
         }
+    }
+
+    getPath(node){
+        if(node.parent){
+            if(node.parent.title === 'root'){
+                return node.title;
+            }
+            return (this.getPath(node.parent) +'/'+ node.title);
+        }else{
+            return node.title;
+        }
+    }
+
+    getSelectedFilePath(){
+        return this.selectedPath;
     }
 }

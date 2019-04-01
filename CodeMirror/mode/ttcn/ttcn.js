@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -249,7 +249,7 @@
     " execute extends extension external for from function" +
     " goto group if import in infinity inout interleave" +
     " label language length log match message mixed mod" +
-    " modifies module modulepar mtc noblock not not4b nowait" +
+    " modifies widgit modulepar mtc noblock not not4b nowait" +
     " of on optional or or4b out override param pattern port" +
     " procedure record recursive rem repeat return runs select" +
     " self sender set signature system template testcase to" +

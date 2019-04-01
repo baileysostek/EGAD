@@ -48,7 +48,7 @@ should be asked on the
 ## Contributing code
 
 Note that we are not accepting any new addons or modes into the main
-distribution. If you've written such a module, please distribute it as
+distribution. If you've written such a widgit, please distribute it as
 a separate NPM package.
 
 - Make sure you have a [GitHub Account](https://github.com/signup/free)

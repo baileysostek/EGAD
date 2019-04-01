@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"), require("../htmlmixed/htmlmixed"),
         require("../../addon/mode/overlay"));
   else if (typeof define == "function" && define.amd) // AMD
@@ -17,7 +17,7 @@
     var keywords = ["and","as","assert","autoescape","block","break","class","comment","context",
                     "continue","datetime","def","del","elif","else","end","escape","except",
                     "exec","extends","false","finally","for","from","global","if","import","in",
-                    "include","is","json_encode","lambda","length","linkify","load","module",
+                    "include","is","json_encode","lambda","length","linkify","load","widgit",
                     "none","not","or","pass","print","put","raise","raw","return","self","set",
                     "squeeze","super","true","try","url_escape","while","with","without","xhtml_escape","yield"];
     keywords = new RegExp("^((" + keywords.join(")|(") + "))\\b");

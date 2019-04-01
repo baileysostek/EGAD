@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -199,7 +199,7 @@ CodeMirror.defineMode("d", function(config, parserConfig) {
     name: "d",
     keywords: words("abstract alias align asm assert auto break case cast cdouble cent cfloat const continue " +
                     "debug default delegate delete deprecated export extern final finally function goto immutable " +
-                    "import inout invariant is lazy macro module new nothrow override package pragma private " +
+                    "import inout invariant is lazy macro widgit new nothrow override package pragma private " +
                     "protected public pure ref return shared short static super synchronized template this " +
                     "throw typedef typeid typeof volatile __FILE__ __LINE__ __gshared __traits __vector __parameters " +
                     blockKeywords),

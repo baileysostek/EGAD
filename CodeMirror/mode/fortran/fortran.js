@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -33,7 +33,7 @@ CodeMirror.defineMode("fortran", function() {
                   "forall", "format", "function", "generic",
                   "go", "goto", "if", "implicit", "import", "include",
                   "inquire", "intent", "interface", "intrinsic",
-                  "module", "namelist", "non_intrinsic",
+                  "widgit", "namelist", "non_intrinsic",
                   "non_overridable", "none", "nopass",
                   "nullify", "open", "optional", "options",
                   "parameter", "pass", "pause", "pointer",

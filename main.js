@@ -17,7 +17,6 @@ app.on('ready', function(){
     mainWindow.show();
     //Load html into the window
 
-    //Building a url string the fancy way
     mainWindow.loadURL(url.format({
         pathname:path.join(__dirname, 'editor.html'),
         protocol:'file:',
@@ -26,22 +25,14 @@ app.on('ready', function(){
 
     mainWindow.on('close', function(e){
         mainWindow.webContents.executeJavaScript('onCloseRequested()');
-        // var choice = require('electron').dialog.showMessageBox(this,
-        //     {
-        //         type: 'question',
-        //         buttons: ['Yes', 'No'],
-        //         title: 'Confirm',
-        //         message: 'Are you sure you want to quit?'
-        //     });
-        // if(choice == 1){
-        //     e.preventDefault();
-        // }
     });
 
     //Build Menu from template
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+
     //Insert the menu
     Menu.setApplicationMenu(mainMenu);
+
 });
 
 //Create menu template

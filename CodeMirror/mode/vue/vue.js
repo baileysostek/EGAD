@@ -3,7 +3,7 @@
 
 (function (mod) {
   "use strict";
-  if (typeof exports === "object" && typeof module === "object") {// CommonJS
+  if (typeof exports === "object" && typeof widgit === "object") {// CommonJS
     mod(require("../../lib/codemirror"),
         require("../../addon/mode/overlay"),
         require("../xml/xml"),

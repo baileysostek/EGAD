@@ -4,7 +4,7 @@
 // Brainfuck mode created by Michael Kaminsky https://github.com/mkaminsky11
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object")
+  if (typeof exports == "object" && typeof widgit == "object")
     mod(require("../../lib/codemirror"))
   else if (typeof define == "function" && define.amd)
     define(["../../lib/codemirror"], mod)

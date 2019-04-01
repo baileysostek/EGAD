@@ -2,7 +2,7 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof exports == "object" && typeof widgit == "object") // CommonJS
     mod(require("../../lib/codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
@@ -44,7 +44,7 @@ CodeMirror.defineMode("julia", function(config, parserConf) {
   var commonKeywords = ["if", "else", "elseif", "while", "for", "begin",
                         "let", "end", "do", "try", "catch", "finally", "return", "break",
                         "continue", "global", "local", "const", "export", "import", "importall",
-                        "using", "function", "where", "macro", "module", "baremodule", "struct",
+                        "using", "function", "where", "macro", "widgit", "baremodule", "struct",
                         "type", "mutable", "immutable", "quote", "typealias", "abstract",
                         "primitive", "bitstype"];
 

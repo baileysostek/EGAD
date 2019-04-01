@@ -102,7 +102,7 @@
 &lt;link rel="stylesheet" href="lib/codemirror.css">
 &lt;script src="mode/javascript/javascript.js">&lt;/script></pre>
 
-    <p>(Alternatively, use a module loader. <a href="#modloader">More
+    <p>(Alternatively, use a widgit loader. <a href="#modloader">More
     about that later.</a>)</p>
 
     <p>Having done this, an editor instance can be created like
@@ -154,7 +154,7 @@
     <p>The files in the CodeMirror distribution contain shims for
     loading them (and their dependencies) in AMD or CommonJS
     environments. If the variables <code>exports</code>
-    and <code>module</code> exist and have type object, CommonJS-style
+    and <code>widgit</code> exist and have type object, CommonJS-style
     require will be used. If not, but there is a
     function <code>define</code> with an <code>amd</code> property
     present, AMD-style (RequireJS) will be used.</p>
@@ -3173,7 +3173,7 @@ editor.setOption("extraKeys", {
     a mode object.</p>
 
     <p>Typically, you should use this second argument
-    to <code>defineMode</code> as your module scope function (modes
+    to <code>defineMode</code> as your widgit scope function (modes
     should not leak anything into the global scope!), i.e. write your
     whole mode inside this function.</p>
 

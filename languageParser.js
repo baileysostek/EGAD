@@ -7,7 +7,7 @@ let fileAssociation     = '';
 let comment_head        = '';
 let comment_tail        = '';
 
-//Any characters within array determine where a token break should occur.
+//Any characters within the array determine where a token break should occur.
 let tokenConstraints = [' ', '=', ';', ',', '[', ']', '(', ')'];
 //When the parser passes the character at [0] a scope is defined, the scope will exist until the corresponding character [1] is found.
 //If an additional scope-opening character is found a sub-scope will be created recursively. This way infinitely many scopes can be defined within each other.

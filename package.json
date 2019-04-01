@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "productName": "Perlenspeil IDE",
+  "productName": "Web Grid Framework",
   "author": "Bailey Sostek",
   "license": "MIT",
   "dependencies": {

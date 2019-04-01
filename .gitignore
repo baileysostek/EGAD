@@ -3,4 +3,6 @@
 .idea/**
 audio/**
 node_modules/**
-Projects/*/properties.json
+Projects/**
+out/**
+

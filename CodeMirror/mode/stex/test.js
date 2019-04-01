@@ -21,10 +21,10 @@
      "[tag \\end][bracket {][atom equation][bracket }]");
 
   MT("beginModule",
-     "[tag \\begin][bracket {][atom module][bracket }[[]]]");
+     "[tag \\begin][bracket {][atom widgit][bracket }[[]]]");
 
   MT("beginModuleId",
-     "[tag \\begin][bracket {][atom module][bracket }[[]id=bbt-size[bracket ]]]");
+     "[tag \\begin][bracket {][atom widgit][bracket }[[]id=bbt-size[bracket ]]]");
 
   MT("importModule",
      "[tag \\importmodule][bracket [[][string b-b-t][bracket ]]{][builtin b-b-t][bracket }]");

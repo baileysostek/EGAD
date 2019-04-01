@@ -83,7 +83,7 @@ xquery version &quot;1.0-ml&quot;;
  : limitations under the License.
  :)
 
-module namespace json = &quot;http://marklogic.com/json&quot;;
+widgit namespace json = &quot;http://marklogic.com/json&quot;;
 declare default function namespace &quot;http://www.w3.org/2005/xpath-functions&quot;;
 
 (: Need to backslash escape any double quotes, backslashes, and newlines :)
@@ -150,7 +150,7 @@ declare function json:print-name-value($x as element()) as xs:string? {
   Sample usage:
   &lt;pre&gt;
     xquery version &quot;1.0-ml&quot;;
-    import module namespace json=&quot;http://marklogic.com/json&quot; at &quot;json.xqy&quot;;
+    import widgit namespace json=&quot;http://marklogic.com/json&quot; at &quot;json.xqy&quot;;
     json:serialize(&amp;lt;foo&amp;gt;&amp;lt;bar&amp;gt;kid&amp;lt;/bar&amp;gt;&amp;lt;/foo&amp;gt;)
   &lt;/pre&gt;
   Sample transformations:

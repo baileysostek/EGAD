@@ -13,7 +13,7 @@ let projectData;
  * Creates a file manager. This class can read and write files.
  * @class
  */
-module.exports = class FileManager{
+class FileManager{
     constructor(){
 
     }
@@ -121,20 +121,23 @@ module.exports = class FileManager{
         }
     }
 
-    getProjectFiles(){
+    getProjectFiles(subdir){
         if(!this.INITIALIZED){
             console.error('getProjectFiles was called before the FS was initialized.');
             return;
         }
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            fs.readdir(that.PATH, function (err, files) {
+
+        return new Promise((resolve, reject) => {
+            fs.readdir(this.PATH+subdir, (err, files) => {
+                console.log("Directory:",this.PATH+subdir);
                 if (err) {
                     reject(err);
                 }
                 let outputFiles = [];
-                that.getProjectData("IGNORE").then(function(result) {
-                    console.log("Ignored files:", result);
+                this.getProjectData("IGNORE").then((result) => {
+                    if(!subdir) {
+                        console.log("Ignored files:", result);
+                    }
                     let ignoreObject = {};
 
                     for(var i = 0; i < result.length; i++) {
@@ -152,30 +155,30 @@ module.exports = class FileManager{
                         let fileName  = file.split('.')[0];
                         let extension = file.split('.')[1];
                         //Is this file extension in the list of ignored file extensions?
-                        if(ignoreObject[extension]) {
-                            for(var i = 0; i < ignoreObject[extension].length; i++) {
-                                let ignoreIdentifier = ignoreObject[extension][i];
-                                if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
+                        if(extension) {
+                            if (ignoreObject[extension]) {
+                                for (var i = 0; i < ignoreObject[extension].length; i++) {
+                                    let ignoreIdentifier = ignoreObject[extension][i];
+                                    if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
-                                } else { //Add this file
-                                    outputFiles.push(that.convertFileToObject(file));
+                                    } else { //Add this file
+                                        outputFiles.push(this.convertFileToObject(file));
+                                    }
                                 }
+                            } else { //If not then there is no way this file is ignored, so push it.
+                                outputFiles.push(this.convertFileToObject(file));
                             }
-                        }else{ //If not then there is no way this file is ignored, so push it.
-                            outputFiles.push(that.convertFileToObject(file));
+                        } else { //This is a directory because it does not have a file extension, we will recursivly load this directory
+                            this.convertFileToFolderObject(subdir, file).then(function(result) {
+                                outputFiles.push(result);
+                            }, function(err) {
+                                console.error(err);
+                            });
                         }
 
                     });
-                    let outObject = [{
-                        "title":that.loadedProject,
-                        "expanded":true,
-                        "folder":true,
-                        "children":outputFiles
-                    }];
 
-                    console.log(outObject);
-
-                    resolve(outObject);
+                    resolve(outputFiles);
                 }, function(err) {
                     reject(err);
                 });
@@ -185,7 +188,89 @@ module.exports = class FileManager{
 
     convertFileToObject(fileName){
         return{
-            "title":fileName
+            title:fileName,
+            folder: false
         }
     }
+
+    convertFileToFolderObject(subdir, fileName){
+        return new Promise((resolve, reject) => {
+            this.getProjectFiles(subdir + '/' + fileName).then(function (result) {
+                resolve({
+                    title: fileName,
+                    folder: true,
+                    children: result
+                });
+            }, function (err) {
+                reject(err);
+            });
+        });
+    }
+
+    getProjectFiles(subdir){
+        if(!this.INITIALIZED){
+            console.error('getProjectFiles was called before the FS was initialized.');
+            return;
+        }
+
+        return new Promise((resolve, reject) => {
+            fs.readdir(subdir, (err, files) => {
+                console.log("Directory:",subdir);
+                if (err) {
+                    reject(err);
+                }
+                let outputFiles = [];
+                this.getProjectData("IGNORE").then((result) => {
+                    if(!subdir) {
+                        console.log("Ignored files:", result);
+                    }
+                    let ignoreObject = {};
+
+                    for(var i = 0; i < result.length; i++) {
+                        let fileName = result[i].split('.')[0];
+                        let extension = result[i].split('.')[1];
+                        if (ignoreObject[extension]) {
+                            ignoreObject[extension].push(fileName);
+                        }else{
+                            ignoreObject[extension] = []; //Initialize the array
+                            ignoreObject[extension].push(fileName);
+                        }
+                    }
+
+                    files.forEach(file => {
+                        let fileName  = file.split('.')[0];
+                        let extension = file.split('.')[1];
+                        //Is this file extension in the list of ignored file extensions?
+                        if(extension) {
+                            if (ignoreObject[extension]) {
+                                for (var i = 0; i < ignoreObject[extension].length; i++) {
+                                    let ignoreIdentifier = ignoreObject[extension][i];
+                                    if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
+
+                                    } else { //Add this file
+                                        outputFiles.push(this.convertFileToObject(file));
+                                    }
+                                }
+                            } else { //If not then there is no way this file is ignored, so push it.
+                                outputFiles.push(this.convertFileToObject(file));
+                            }
+                        } else { //This is a directory because it does not have a file extension, we will recursivly load this directory
+                            this.convertFileToFolderObject(subdir, file).then(function(result) {
+                                outputFiles.push(result);
+                            }, function(err) {
+                                console.error(err);
+                            });
+                        }
+
+                    });
+
+                    resolve(outputFiles);
+                }, function(err) {
+                    reject(err);
+                });
+            })
+        });
+    }
 };
+
+module.exports = FileManager;

@@ -1,5 +1,0 @@
-Experience Goal: Complete the level in the fewest number of moves, to maintain high accuracy<br>
-Experience Goal: Spend at least two minutes playing the game</br>
-
-Presentation</br>
-<a href="Assignment12/presentation.pptx">Assignment 12 Presentation</a></br>

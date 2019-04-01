@@ -1,10 +1,13 @@
 //Created by Bailey Sostek 9/5/2018
+
+//These are the width and height of the grid as a whole. This determines the relative size of the rest of the grid.
 let WIDTH = 0;
 let HEIGHT = 0;
 
 let COLUMNS = [];
 let DRAGS = [];
 
+const GRID_TAG = 'grid';
 const COLUMN_TAG = 'column';
 const DRAG_TAG = 'drag';
 const V_DRAG_TAG = 'vdrag';
@@ -13,46 +16,123 @@ const ROW_TAG = 'row';
 const COLUMN_MIN_WIDTH = 5;
 const DRAG_WIDTH = 9 ;
 
+let gridContainer;
+let loadingContainer;
+
+//If this is true, the grid will display a grey screen while loading.
+let BLOCKING_LOAD = false;
+
 /**
- * Creates a new Grid, this contains columns and drag elements.
- * @class
+ * Creates a new Grid, this contains columns, rows, and drag elements.
+ * Columns are vertical and can have n rows inside them.
+ * Rows are containers for divs, as the rows are resided, the div content will also be resided to fit.
  */
-module.exports = class Grid{
+class Grid{
     /**
-     * The Grid class takes in the window width and height, passed in to establish a basic window size.
-     * @param {Number, Number} width, height
+     * The Grid class takes in the window width and height, passed in to establish a basic window size. The default grid has no rows or columns within it. To add content call the {@link Grid#createColumn} method.
+     * @param {Number} width - This is the width of the grid in pixels.
+     * @param {Number} height - This is the height of the grid in pixels.
+     * @param {Number} columns - This is the number of columns that the grid should be initialized with.
+     * @param {Number} rows - This is the number of rows that each column should have.
      * @returns {Grid} Returns an instance of the Grid class.
      */
-    constructor(width, height){
+    constructor(width, height, columns, rows){
         this.WIDTH = width;
         this.HEIGHT = height;
+
         console.log("Initializing Columns API");
         console.log("Width:"+this.WIDTH);
         console.log("Height:"+this.HEIGHT);
-        let that = this;
-        window.addEventListener('resize', function(e){
+
+        if(BLOCKING_LOAD) {
+            //Create the basic background div to show while loading
+            loadingContainer = document.createElement('div');
+            loadingContainer.setAttribute('id', "loading");
+            loadingContainer.style.width = this.WIDTH + 'px';
+            loadingContainer.style.height = this.HEIGHT + 'px';
+            loadingContainer.style.position = "absolute";
+            loadingContainer.style.backgroundColor = "#191919";
+            document.body.appendChild(loadingContainer);
+        }
+
+        //Create the gird and hide it
+        gridContainer = document.createElement('div');
+        gridContainer.setAttribute('id', GRID_TAG);
+        if(BLOCKING_LOAD) {
+            gridContainer.style.visibility = "hidden";
+        }
+        document.body.appendChild(gridContainer);
+
+
+        //Capture the windows resize event, on resize the local grid resize function is called.
+        window.addEventListener('resize', (e) => {
             e.preventDefault();
-            that.resize();
-        })
+            this.resize();
+        });
+
+        this.resize();
+
+        for(let i = 0; i < rows; i++) {
+            let rows = [];
+            for(let j = 0; j < columns; j++){
+                rows.push(document.createElement('div'));
+            }
+            this.addColumn(this.createColumn(rows, {'color': '#002303'}));
+        }
+
+        this.onDragEnd();
+
     }
+
+    //DEFINE ALL DATA-TYPES FOR THIS CLASS
+
+    /**
+     * @typedef {Object} Column
+     * @property {Element}  element                 - The dom element for this column.
+     * @property {Integer}  index                   - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
+     * @property {Array}    ROWS                    - An array of Row Objects representing the content inside of this column
+     * @property {Array}    V_DRAGS                 - An array of Vertical Drag dom elements, these elements have a drag watcher attached to them and a callback function resize two rows in this column.
+     * @property {Function} onDragEnd               - A callback function that is executed whenever this column has been drug, and the mouse is released
+     * @property {Function} onVDrag                 - A callback function that is executed whenever this column is in the process of being drug.
+     * @property {Function} createVDrag             - A function to add a Vertical Drag to this column, the vertical drag will enable rows to be resided dynamically.
+     * @property {Array}    callbacks               - An array of callback functions to be executed when this column is resided.
+     * @property {Function} executeElementsCallback - This is the function which is executed whenever this column is resided, it then in part executes all of the functions defined in the callback array.
+     * @property {Function} registerCallback        - This function is called to register interest in a specific row. A callback function is also passed, this callback will be executed when that specific element is resided.
+     */
+
+    /**
+     * @typedef {Object} H_Drag
+     * @property {Integer}  offset  - Im not sure what this dose
+     * @property {Column}   column1 - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
+     * @property {Column}   column2 - An array of Row Objects representing the content inside of this column.
+     * @property {Element}  element - The dom element for this drag.
+     * @property {Function} width   - The size of this drags dom element in terms of window%
+     */
 
     /**
      * Creates a Column. A column is a resizable container for data.
-     * Columns contain an index (left to right) starting at 0, a list of children
+     * Columns contain an index (left to right) starting at 0,
      * representing which column they are numerically on the screen.
-     * @class
-     * @param {Array, Object} elements, properties
-     * @param {String} properties.color - A hexedecimal color to apply to the background of this column.
-     * @returns {String, Element} Returns a json object representing a Column.
+     * Columns also contain  a list of children
+     * @param {Array} elements - This is an array or a single html element. For every dom element passed, a new unique row will be created in this column
+     * @param {Object} properties - These are additional configuration parameters that can be passed into a column.
+     * @param {String} properties.color - A hexadecimal color to apply to the background of this column.
+     * @param {String} properties.id - a string representing the ID that should be associated with this column
+     * @returns {Column} A json object representing a Column.
      */
     createColumn(elements, properties){
+        //Create an element with the configurable COLUMN_TAG tag type
         let column = document.createElement(COLUMN_TAG);
+
+        //The following block of code defines what properties we are interested in on the passed configuration element.
         if(properties['color']) {
             column.style.backgroundColor = properties.color;
         }
         if(properties['id']) {
             column.id = properties.id;
         }
+
+        //Initial css styling.
         column.style.height = 100+'%';
         column.style.position = "absolute";
 
@@ -60,7 +140,7 @@ module.exports = class Grid{
         let rows = [];
         let vDrags = [];
 
-        //Determine if the passed elements are an array
+        //Depending on if element is an arrary or not, we need to treat the object differently. This determines if 'element' is an array or not.
         if(elements instanceof HTMLElement) {    //Pass a single element.
             let row = document.createElement(ROW_TAG);
             row.style.width  = 100+'%';
@@ -73,6 +153,7 @@ module.exports = class Grid{
             column.appendChild(row);
         }else if(elements.constructor === Array){//Pass an array of elements.
             let elementCount = elements.length;
+            //For each passed element create a unique row.
             for(var i = 0; i < elementCount; i++){
                 if(elements[i] instanceof HTMLElement) {
                     //Create our row element
@@ -88,18 +169,20 @@ module.exports = class Grid{
                     //
                     column.appendChild(row);
 
-
+                    //The drag elements that we create take up a non-trivial ammount of space, any element that is created needs to have its margins offset such that it dose not overlap with the drag element.
                     if(i > 0){
-                        elements[i].style.paddingTop    = Math.floor(DRAG_WIDTH/2)+'px';
+                        elements[i].style.paddingTop    = Math.ceil(DRAG_WIDTH/2)+'px';
                     }
                     if(i < elementCount){
-                        elements[i].style.paddingBottom = Math.floor(DRAG_WIDTH/2)+'px';
+                        elements[i].style.paddingBottom = Math.ceil(DRAG_WIDTH/2)+'px';
                     }
                     if(COLUMNS.length > 0){
-                        elements[i].style.paddingLeft   = Math.floor(DRAG_WIDTH/2)+'px';
-                        elements[i].style.paddingRIGHT  = Math.floor(DRAG_WIDTH/2)+'px';
+                        elements[i].style.paddingLeft   = Math.ceil(DRAG_WIDTH/2)+'px';
+                        elements[i].style.paddingRIGHT  = Math.ceil(DRAG_WIDTH/2)+'px';
                     }
 
+                    //Rows can be drug vertically, we need there to be n-1 vertical drag elements because each drag controlls 2 rows.
+                    //We skip adding a drag to the very first row in a column because this drag would appear at the very top of the page, and would only have the first element to modify.
                     if(rows.length > 1) {
                         let vDrag = this.createVDrag(rows[rows.length-2], rows[rows.length-1]);
                         column.appendChild(vDrag.element);
@@ -109,6 +192,7 @@ module.exports = class Grid{
             }
         }
 
+        //This is the row object that is returned.
         return {
             element:column,
             index:0,
@@ -167,11 +251,11 @@ module.exports = class Grid{
     }
 
     /**
-     * Creates a Drag. A drag is a small element conjoining two Columns. Clicking and dragging on a Drag will change the
+     * Creates a horizontal Drag. A horizontal drag is a small element conjoining two Columns. Clicking and dragging on a Drag will change the
      * relative scale of the linked columns.
-     * @class
-     * @param {COLUMN, COLUMN} col1, col2
-     * @returns {String, Element} Returns a json object representing a Column.
+     * @param {Column} col1 - The first column
+     * @param {Column} col2 - The second column
+     * @returns {H_Drag} Returns a json object representing a horizontal drag.
      */
     createDrag(col1, col2){
         let drag = document.createElement(DRAG_TAG);
@@ -181,12 +265,11 @@ module.exports = class Grid{
         drag.style.width = DRAG_WIDTH+'px';
         drag.style.cursor = 'col-resize';
         drag.setAttribute('class', 'btn');
-        var that = this;
-        drag.addEventListener("drag", function( event) {
-            that.onDrag(event, col1.index, col2.index);
+        drag.addEventListener("drag", (event) => {
+            this.onDrag(event, col1.index, col2.index);
         }, false);
-        drag.addEventListener("dragend", function() {
-            that.onDragEnd();
+        drag.addEventListener("dragend", (event) => {
+            this.onDragEnd();
         }, false);
         drag.setAttribute("draggable", true);
         return{
@@ -200,6 +283,22 @@ module.exports = class Grid{
         }
     }
 
+    /**
+     * @typedef {Object} V_Drag
+     * @property {Integer}  offset  - Im not sure what this dose
+     * @property {Element}  row1    - The first dom element, this drag will be positioned after this element.
+     * @property {Element}  row2    - The second dom element, this drag will be positioned before this element.
+     * @property {Element}  element - The dom element for this drag.
+     * @property {Function} width   - The size of this drags dom element in terms of window%
+     */
+
+    /**
+     * Creates a vertical Drag. A vertical drag is a small element conjoining two rows. Clicking and dragging on a vertical Drag will change the
+     * relative scale of the linked rows.
+     * @param {Element} row1
+     * @param {Element} row2
+     * @returns {V_Drag} Returns a json object representing a Column.
+     */
     createVDrag(row1, row2){
         let drag = document.createElement(V_DRAG_TAG);
         drag.style.backgroundColor = "#b8b8b8";
@@ -208,12 +307,12 @@ module.exports = class Grid{
         drag.style.width = 100+'%';
         drag.style.cursor = 'row-resize';
         drag.setAttribute('class', 'btn');
-        var that = this;
-        drag.addEventListener("drag", function( event) {
-            that.onVDrag(event, row1, row2);
+
+        drag.addEventListener("drag", (event) =>  {
+            this.onVDrag(event, row1, row2);
         }, false);
-        drag.addEventListener("dragend", function() {
-            that.onDragEnd();
+        drag.addEventListener("dragend", () => {
+            this.onDragEnd();
         }, false);
         drag.setAttribute("draggable", true);
         return{
@@ -227,9 +326,14 @@ module.exports = class Grid{
         }
     }
 
+    /**
+     * This method can be called to add a column to the current grid. The grid is flexible, and has a constants size of 100%, when a new column is added, the default width of the column is (1/n)% where n is the number of columns in the grid.
+     * This method can be called at any time to add a new column.
+     * @param {Column} column - The Column that will be added.
+     */
     addColumn(column){
         if(column['element']) {
-            document.body.appendChild(column.element);
+            gridContainer.appendChild(column.element);
             column.index = COLUMNS.length;
             COLUMNS.push(column);
             /*
@@ -240,6 +344,7 @@ module.exports = class Grid{
                 //Link the column at (n) to the column at (n-1)
                 this.addDrag(this.createDrag(COLUMNS[COLUMNS.length-2], COLUMNS[COLUMNS.length-1]));
             }
+            //When a new column is added, resize the existing columns to fit this new column.
             let count = COLUMNS.length;
             for(var i = 0; i < count; i++){
                 COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
@@ -252,15 +357,22 @@ module.exports = class Grid{
         }
     }
 
+    /**
+     * This method lets the user register a new drag to appear on the window.
+     * @param {H_Drag} drag - The Horizontal drag to add to the window.
+     */
     addDrag(drag){
         if(drag['element']) {
-            document.body.appendChild(drag.element);
+            gridContainer.appendChild(drag.element);
             DRAGS.push(drag);
         }else{
             console.log("Tried to add an object that was not a drag element.",drag);
         }
     }
 
+    /**
+     * This function is called to reposition all of the drags and grid elements to proper positions after a drag has occurred, or any externalmovementt actions.
+     */
     refresh(){
         for(var i = 0; i < DRAGS.length; i++){
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
@@ -338,7 +450,11 @@ module.exports = class Grid{
         HEIGHT = document.body.clientHeight;
     }
 
-    initializeGrid(widthArray){
+    /**
+     * This method is called on editor load. It takes in an array of size configuration data. This data is used to position all grid elements such that they retain the positions they were in the last time the editor was closed.
+     * @param {Array} sizes - The sizes of the grid elements.
+     */
+    loadGridSizes(widthArray){
         if(widthArray.length != COLUMNS.length){
             console.error(widthArray.length + ' widths passed into column initialize. Expected '+COLUMNS.length+" to be passed.");
         }else{
@@ -365,6 +481,10 @@ module.exports = class Grid{
         }
     }
 
+    /**
+     * This method is called when the editor is saving the active configuration. All columns and rows report their widths and heights respectivly. A multi-dimensional array object is constructed. This array has all of the height data needed to recreacte the current editor spacing on the next editor load.
+     * @returns {Array} sizes - The widths and heights of the current window configuration.
+     */
     getGridSize(){
         let out = [];
         console.log(COLUMNS);
@@ -381,12 +501,74 @@ module.exports = class Grid{
         return out;
     }
 
+    /**
+     * Get the grid width.
+     * @returns {Integer} WIDTH - The width of the window.
+     */
     getWIDTH(){
         return this.WIDTH;
     }
 
+    /**
+     * Get the grid height.
+     * @returns {Integer} HEIGHT - The height of the window.
+     */
     getHEIGHT(){
-        return this.HEIGHT
+        return this.HEIGHT;
+    }
+
+    getCOLUMNS(){
+        return COLUMNS;
+    }
+
+    //This call wraps the widget promise constructor inside of another promise.
+    //The return value of this function is awaited upon inside of the initialize method.
+    initializeWidgit(test) {
+        return new Promise(resolve => {
+            test.init().then(function(result) {
+                resolve(result);
+            }, function(err) {
+                console.log(err);
+            });
+        });
+    }
+
+    //Synchronous loop that populates a cell with a widget.
+    async initalize(widgets, COLUMNS) {
+        for(let i = 0; i < widgets.length; i++){
+            let widget = widgets[i];
+            let result = await this.initializeWidgit(widget);
+            console.log("widgetsName:",result," Element:",result.getElement());
+            console.log("COLUMN["+result.configData.col+"]",COLUMNS[result.configData.col]);
+            COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
+        }
+        console.log("Initialized.");
+        for(let i = 0; i < COLUMNS.length; i++){
+            for(let j= 0; j < COLUMNS[i].ROWS.length; j++){
+                COLUMNS[i].ROWS[j].style.backgroundColor = '#442222';
+            }
+        }
+
+        if(BLOCKING_LOAD) {
+            gridContainer.style.visibility = "visible";
+            loadingContainer.style.visibility = "hidden";
+        }
+    }
+
+    /**
+     * Initializes the grid with Widgets. A Widget is a synchronously spawned promise. This function will iterate through the widgets array and initialize one widget after another.
+     * This way later widgets can have earlier widgets passed into them. Example [Document(requires:[]), Tab(requires:[Document])] In this example the Widget Document requires nothing
+     * and is the first widget to be initialized in the program. Tab is the second widget to be initialized, and it requires Document. When Tab's initialize method is called, the value
+     * of Document will be stable and usable. This chaining method can be propagated forwards to allow widgets to require previously initialized widgets.
+     * <pre>
+     * See {@link Widget} for information on built in widgets and how to create your own.
+     * <pre>
+     * @param {Array} widgets - This is an array of Widget elements that will be initialized in array order.
+     */
+    init(widgets){
+        console.log("COLUMNS",COLUMNS);
+        this.initalize(widgets, this.getCOLUMNS());
     }
 
 };
+module.exports = Grid;

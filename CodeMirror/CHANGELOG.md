@@ -194,7 +194,7 @@ New themes: [oceanic-next](https://codemirror.net/demo/theme.html#oceanic-next) 
 
 Increase contrast on default bracket-matching colors.
 
-[javascript mode](https://codemirror.net/mode/javascript/): Recognize TypeScript type parameters for calls, type guards, and type parameter defaults. Improve handling of `enum` and `module` keywords.
+[javascript mode](https://codemirror.net/mode/javascript/): Recognize TypeScript type parameters for calls, type guards, and type parameter defaults. Improve handling of `enum` and `widgit` keywords.
 
 [comment addon](https://codemirror.net/doc/manual.html#addon_comment): Fix bug when uncommenting a comment that spans all but the last selected line.
 
@@ -880,7 +880,7 @@ Fix a [bug](https://github.com/codemirror/CodeMirror/issues/3834) that caused ph
 *   New themes: [dracula](https://codemirror.net/demo/theme.html#dracula), [seti](https://codemirror.net/demo/theme.html#seti), [yeti](https://codemirror.net/demo/theme.html#yeti), [material](https://codemirror.net/demo/theme.html#material), and [icecoder](https://codemirror.net/demo/theme.html#icecoder)
 *   New modes: [Brainfuck](https://codemirror.net/mode/brainfuck/index.html), [VHDL](https://codemirror.net/mode/vhdl/index.html), Squirrel ([clike](https://codemirror.net/mode/clike/index.html) dialect)
 *   Define a `findPersistent` command in the [search](https://codemirror.net/demo/search.html) addon, for a dialog that stays open as you cycle through matches
-*   From this release on, the NPM module doesn't include documentation and demos
+*   From this release on, the NPM widgit doesn't include documentation and demos
 *   Full [list of patches](https://github.com/codemirror/CodeMirror/compare/5.4.0...5.5.0)
 
 ## 5.4.0 (2015-06-25)
@@ -1179,7 +1179,7 @@ Single-bugfix release. Fixes a problem that prevents CodeMirror instances from b
 
 *   **Incompatible:** key handlers may now _return_, rather than _throw_ `CodeMirror.Pass` to signal they didn't handle the key.
 *   Make documents a [first-class construct](https://codemirror.net/doc/manual.html#api_doc), support split views and subviews.
-*   Add a [new module](https://codemirror.net/doc/manual.html#addon_show-hint) for showing completion hints. Deprecate `simple-hint.js`.
+*   Add a [new widgit](https://codemirror.net/doc/manual.html#addon_show-hint) for showing completion hints. Deprecate `simple-hint.js`.
 *   Extend [htmlmixed mode](https://codemirror.net/mode/htmlmixed/index.html) to allow custom handling of script types.
 *   Support an `insertLeft` option to [`setBookmark`](https://codemirror.net/doc/manual.html#setBookmark).
 *   Add an [`eachLine`](https://codemirror.net/doc/manual.html#eachLine) method to iterate over a document.

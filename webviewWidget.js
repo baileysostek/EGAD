@@ -9,8 +9,15 @@ class WebviewWidget extends Widget{
         return await new Promise((resolve, reject) => {
             this.element = document.createElement("webview");
             this.element.setAttribute("src", this.configData.url);
-            resolve(this);
+;           resolve(this);
         });
+    }
+
+
+    postinit(){
+        //Set height correctly
+        this.element.style.height = 100+'%';
+        this.element.parentElement.style.height = 100+'%';
     }
 
 

@@ -30,7 +30,7 @@ function init() {
 
         myGrid = new grid(screen.width, screen.height, 2, 1);
         myGrid.init([
-            // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/Assignment13/game.html"),
+            new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project2/example.html"),
             // new webviewWidget(0, 1, "http://youtube.com"),
             // new webviewWidget(0, 2, "http://facebook.com"),
             // new webviewWidget(0, 3, "http://twitter.com"),

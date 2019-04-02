@@ -1,5 +1,12 @@
 const Widget = require('./widget');
 
+let transform = [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1,
+];
+
 class TransformWidget extends Widget{
     constructor(x, y){
         super({
@@ -10,6 +17,25 @@ class TransformWidget extends Widget{
             y:43,
             z:189
         }, {});
+
+        //Sync the sliders with the value of transform.
+        this.setPosition(
+            super.getConfigData()['x'],
+            super.getConfigData()['y'],
+            super.getConfigData()['z']
+        );
+    }
+
+    setX(x){
+        transform[3]   = x;
+    }
+
+    setY(y){
+        transform[7]   = y;
+    }
+
+    setZ(z){
+        transform[11]  = z;
     }
 
     async init(){
@@ -149,6 +175,11 @@ class TransformWidget extends Widget{
             slider_x.setAttribute('value', this.configData.x);
             slider_x.setAttribute('class', 'slider_r');
             x_col.appendChild(slider_x);
+            slider_x.addEventListener("change", () => {
+                this.setX(parseFloat(slider_x.value));
+                console.log(this.getPosition());
+            }, false);
+
 
             let slider_y = document.createElement('input');
             slider_y.setAttribute('type', 'range');
@@ -157,6 +188,10 @@ class TransformWidget extends Widget{
             slider_y.setAttribute('value', this.configData.y);
             slider_y.setAttribute('class', 'slider_g');
             y_col.appendChild(slider_y);
+            slider_y.addEventListener("change", () => {
+                this.setY(parseFloat(slider_y.value));
+                console.log(this.getPosition());
+            }, false);
 
             let slider_z = document.createElement('input');
             slider_z.setAttribute('type', 'range');
@@ -165,6 +200,10 @@ class TransformWidget extends Widget{
             slider_z.setAttribute('value', this.configData.z);
             slider_z.setAttribute('class', 'slider_b');
             z_col.appendChild(slider_z);
+            slider_z.addEventListener("change", () => {
+                this.setZ(parseFloat(slider_z.value));
+                console.log(this.getPosition());
+            }, false);
 
             container.appendChild(table);
 
@@ -172,6 +211,25 @@ class TransformWidget extends Widget{
             resolve(this);
         });
     }
+
+    setPosition(x, y, z){
+        transform[3]  = x;
+        transform[7]  = y;
+        transform[11] = z;
+    }
+
+    setScale(w){
+        transform[15] = w;
+    }
+
+    getPosition(){
+        return {
+            x:transform[3],
+            y:transform[7],
+            z:transform[11],
+            w:transform[15],
+        }
+    };
 
 
 };

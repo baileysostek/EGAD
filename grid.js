@@ -541,6 +541,7 @@ class Grid{
             console.log("widgetsName:",result," Element:",result.getElement());
             console.log("COLUMN["+result.configData.col+"]",COLUMNS[result.configData.col]);
             COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
+            result.postinit();
         }
         console.log("Initialized.");
         for(let i = 0; i < COLUMNS.length; i++){

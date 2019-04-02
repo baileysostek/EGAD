@@ -53,6 +53,10 @@ class Widget{
         console.log("Initing superclass, this should not be called, and rather return a promise from a child class.");
     }
 
+    postinit(){
+        console.log("added " + this.name + " to DOM.");
+    }
+
     generateSaveObject(){
         return configData;
     }

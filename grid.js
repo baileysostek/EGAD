@@ -36,7 +36,7 @@ class Grid{
      * @param {Number} rows - This is the number of rows that each column should have.
      * @returns {Grid} Returns an instance of the Grid class.
      */
-    constructor(width, height, columns, rows){
+    constructor(width, height, rows, columns){
         this.WIDTH = width;
         this.HEIGHT = height;
 

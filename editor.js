@@ -16,6 +16,7 @@ function init() {
     const fileManager       = require('./fileManager');
     const fileBrowser       = require('./fileBrowser');
     const webviewWidget     = require('./webviewWidget');
+    const transfromWidget   = require('./transformWidget');
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
@@ -27,38 +28,39 @@ function init() {
 
         //Initialize the Grid API with the screen width and height. This will create a reasponsive grid that can hold the rest of the editor elements.
 
-        myGrid = new grid(screen.width, screen.height, 5, 5);
+        myGrid = new grid(screen.width, screen.height, 2, 1);
         myGrid.init([
-            new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/Assignment13/game.html"),
-            new webviewWidget(0, 1, "http://youtube.com"),
-            new webviewWidget(0, 2, "http://facebook.com"),
-            new webviewWidget(0, 3, "http://twitter.com"),
-            new webviewWidget(0, 4, "http://imgur.com"),
+            // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/Assignment13/game.html"),
+            // new webviewWidget(0, 1, "http://youtube.com"),
+            // new webviewWidget(0, 2, "http://facebook.com"),
+            // new webviewWidget(0, 3, "http://twitter.com"),
+            // new webviewWidget(0, 4, "http://imgur.com"),
             // new fileBrowser(0, 0, "~Animations", myFileManager),
             // new fileBrowser(0, 1, "~Documentation", myFileManager),
             // new fileBrowser(0, 2, "~Font", myFileManager),
             // new fileBrowser(0, 3, "~Images", myFileManager),
             // new fileBrowser(0, 4, "~/jdk-11.0.1", myFileManager),
-            new fileBrowser(1, 0, "~Levels", myFileManager),
-            new fileBrowser(1, 1, "~Logs", myFileManager),
-            new fileBrowser(1, 2, "~Models", myFileManager),
-            new fileBrowser(1, 3, "~Natives", myFileManager),
-            new fileBrowser(1, 4, "~res", myFileManager),
-            new fileBrowser(2, 0, "~saves", myFileManager),
-            new fileBrowser(2, 1, "~Scripting", myFileManager),
-            new fileBrowser(2, 2, "~Shaders", myFileManager),
-            new fileBrowser(2, 3, "~Sounds", myFileManager),
-            new fileBrowser(2, 4, "~Web", myFileManager),
-            new fileBrowser(3, 0, "~", myFileManager),
-            new fileBrowser(3, 1, "~", myFileManager),
-            new fileBrowser(3, 2, "~", myFileManager),
-            new fileBrowser(3, 3, "~", myFileManager),
-            new fileBrowser(3, 4, "~", myFileManager),
-            new fileBrowser(4, 0, "~", myFileManager),
-            new fileBrowser(4, 1, "~", myFileManager),
-            new fileBrowser(4, 2, "~", myFileManager),
-            new fileBrowser(4, 3, "~", myFileManager),
-            new fileBrowser(4, 4, "~", myFileManager),
+            // new fileBrowser(1, 0, "~Levels", myFileManager),
+            // new fileBrowser(1, 1, "~Logs", myFileManager),
+            // new fileBrowser(1, 2, "~Models", myFileManager),
+            // new fileBrowser(1, 3, "~Natives", myFileManager),
+            // new fileBrowser(1, 4, "~res", myFileManager),
+            // new fileBrowser(2, 0, "~saves", myFileManager),
+            // new fileBrowser(2, 1, "~Scripting", myFileManager),
+            // new fileBrowser(2, 2, "~Shaders", myFileManager),
+            // new fileBrowser(2, 3, "~Sounds", myFileManager),
+            // new fileBrowser(2, 4, "~Web", myFileManager),
+            // new fileBrowser(3, 0, "~", myFileManager),
+            // new fileBrowser(3, 1, "~", myFileManager),
+            // new fileBrowser(3, 2, "~", myFileManager),
+            // new fileBrowser(3, 3, "~", myFileManager),
+            // new fileBrowser(3, 4, "~", myFileManager),
+            // new fileBrowser(4, 0, "~", myFileManager),
+            // new fileBrowser(4, 1, "~", myFileManager),
+            // new fileBrowser(4, 2, "~", myFileManager),
+            // new fileBrowser(4, 3, "~", myFileManager),
+            // new fileBrowser(4, 4, "~", myFileManager),
+            new transfromWidget(1,0)
         ]);
 
 

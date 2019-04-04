@@ -509,16 +509,15 @@ class Grid{
         for(let i = 0; i < COLUMNS.length; i++){
             let column = [];
             column.push(parseFloat(COLUMNS[i].element.style.width));
-            console.log("Column",i," has ",COLUMNS[i].ROWS.length," widgets.");
-            console.log(COLUMNS[i].ROWS);
             for(let j = 0; j < COLUMNS[i].ROWS.length; j++){
-                console.log("j",j);
                 column.push(parseFloat(COLUMNS[i].ROWS[j].style.height));
                 loop:{
                     if(COLUMNS[i]){
                         if(COLUMNS[i].WIDGETS[j]){
                             if (COLUMNS[i].WIDGETS[j]['save']) {
-                                out.data.push(COLUMNS[i].WIDGETS[j].save());
+                                let saveData = COLUMNS[i].WIDGETS[j];
+                                console.log("Column[",j,"]:",saveData);
+                                out.data.push(saveData.save());
                                 break loop;
                             }
                         }
@@ -579,7 +578,8 @@ class Grid{
                 }else{
                     console.warn("Trying to add an element to cell [",result.configData.col,",",result.configData.row,"] but there is already a widget there.");
                     COLUMNS[result.configData.col].addChild(result.getElement());
-                    COLUMNS[result.configData.col].WIDGETS[COLUMNS[result.configData.col].ROWS.length] = result;
+                    let widget_index = COLUMNS[result.configData.col].ROWS.length - 1;
+                    COLUMNS[result.configData.col].WIDGETS[widget_index] = result;
                     this.onDragEnd();
                     result.postinit();
                 }

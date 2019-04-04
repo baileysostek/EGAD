@@ -42,6 +42,7 @@ class Widget{
             this.rowIndex = configData.row;
         }
         this.dependencies = dependencies;
+
         this['save'] = this.save;
     }
     /**

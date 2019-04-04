@@ -1,12 +1,5 @@
 const Widget = require('./widget');
 
-let transform = [
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1,
-];
-
 let transformElement;
 
 class TransformWidget extends Widget{
@@ -17,7 +10,14 @@ class TransformWidget extends Widget{
             row:y,
             x:12,
             y:43,
-            z:189
+            z:189,
+            id:Math.random(),
+            transform:[
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            ]
         }, {});
 
         //Sync the sliders with the value of transform.
@@ -227,33 +227,33 @@ class TransformWidget extends Widget{
     }
 
     setPosition(x, y, z){
-        transform[3]  = x;
-        transform[7]  = y;
-        transform[11] = z;
+        super.getConfigData()['transform'][3]  = x;
+        super.getConfigData()['transform'][7]  = y;
+        super.getConfigData()['transform'][11] = z;
     }
 
     setX(x){
-        transform[3]   = x;
+        super.getConfigData()['transform'][3]   = x;
     }
 
     setY(y){
-        transform[7]   = y;
+        super.getConfigData()['transform'][7]   = y;
     }
 
     setZ(z){
-        transform[11]  = z;
+        super.getConfigData()['transform'][11]  = z;
     }
 
     setScale(w){
-        transform[15] = w;
+        super.getConfigData()['transform'][15] = w;
     }
 
     getPosition(){
         return {
-            x:transform[3],
-            y:transform[7],
-            z:transform[11],
-            w:transform[15],
+            x:super.getConfigData()['transform'][3],
+            y:super.getConfigData()['transform'][7],
+            z:super.getConfigData()['transform'][11],
+            w:super.getConfigData()['transform'][15],
         }
     }
 
@@ -352,15 +352,15 @@ class TransformWidget extends Widget{
     }
 
     syncTransformWithElement(){
-        for(let i = 0; i < transform.length; i++){
-            transformElement.cells[i].innerText = transform[i];
+        for(let i = 0; i < super.getConfigData()['transform'].length; i++){
+            transformElement.cells[i].innerText = super.getConfigData()['transform'][i];
         }
     }
 
     save(){
         this.syncTransformWithElement();
         return {
-            transform:transform
+            transform:super.getConfigData()['transform']
         };
     }
 };

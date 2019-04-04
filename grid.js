@@ -40,7 +40,7 @@ class Grid{
         this.WIDTH = width;
         this.HEIGHT = height;
 
-        console.log("Initializing Columns API");
+        console.log("Creating Grid [",rows,",",columns,']');
         console.log("Width:"+this.WIDTH);
         console.log("Height:"+this.HEIGHT);
 
@@ -137,8 +137,9 @@ class Grid{
         column.style.position = "absolute";
 
         //Object attributes initialized here.
-        let rows = [];
-        let vDrags = [];
+        let rows    = [];
+        let vDrags  = [];
+        let widgets = [];
 
         //Depending on if element is an arrary or not, we need to treat the object differently. This determines if 'element' is an array or not.
         if(elements instanceof HTMLElement) {    //Pass a single element.
@@ -150,11 +151,12 @@ class Grid{
             row.style.position = "absolute";
             row.appendChild(elements);
             rows.push(row);
+            widgets.push({});
             column.appendChild(row);
         }else if(elements.constructor === Array){//Pass an array of elements.
             let elementCount = elements.length;
             //For each passed element create a unique row.
-            for(var i = 0; i < elementCount; i++){
+            for(let i = 0; i < elementCount; i++){
                 if(elements[i] instanceof HTMLElement) {
                     //Create our row element
                     let row = document.createElement(ROW_TAG);
@@ -166,20 +168,21 @@ class Grid{
                     //Append the htmlElement to this row. This parents the content to the row, so that the elements content can be resized to the divs dimensions.
                     row.appendChild(elements[i]);
                     rows.push(row);
+                    widgets.push({});
                     //
                     column.appendChild(row);
 
                     //The drag elements that we create take up a non-trivial ammount of space, any element that is created needs to have its margins offset such that it dose not overlap with the drag element.
-                    if(i > 0){
-                        elements[i].style.paddingTop    = Math.ceil(DRAG_WIDTH/2)+'px';
-                    }
-                    if(i < elementCount){
-                        elements[i].style.paddingBottom = Math.ceil(DRAG_WIDTH/2)+'px';
-                    }
-                    if(COLUMNS.length > 0){
-                        elements[i].style.paddingLeft   = Math.ceil(DRAG_WIDTH/2)+'px';
-                        elements[i].style.paddingRIGHT  = Math.ceil(DRAG_WIDTH/2)+'px';
-                    }
+                    // if(i > 0){
+                    //     elements[i].style.paddingTop    = Math.ceil(DRAG_WIDTH/2)+'px';
+                    // }
+                    // if(i < elementCount){
+                    //     elements[i].style.paddingBottom = Math.ceil(DRAG_WIDTH/2)+'px';
+                    // }
+                    // if(COLUMNS.length > 0){
+                    //     elements[i].style.paddingLeft   = Math.ceil(DRAG_WIDTH/2)+'px';
+                    //     elements[i].style.paddingRIGHT  = Math.ceil(DRAG_WIDTH/2)+'px';
+                    // }
 
                     //Rows can be drug vertically, we need there to be n-1 vertical drag elements because each drag controlls 2 rows.
                     //We skip adding a drag to the very first row in a column because this drag would appear at the very top of the page, and would only have the first element to modify.
@@ -197,13 +200,17 @@ class Grid{
             element:column,
             index:0,
             ROWS:rows,
+            WIDGETS:widgets,
             V_DRAGS:vDrags,
             onDragEnd:this.onDragEnd,
             onVDrag:this.onVDrag,
             createVDrag:this.createVDrag,
             callbacks:[],
+            getHEIGHT:()=>{
+                return this.HEIGHT;
+            },
             executeElementsCallback:function(element, data){
-                for (var i = 0; i < this.ROWS.length; i++) {
+                for (let i = 0; i < this.ROWS.length; i++) {
                     if (this.ROWS[i].childNodes[0] === element || this.ROWS[i] === element) { //IF this row element is exactly the callback element OR a row contained within this column is passed.
                         if(this.callbacks[i]){ //If the element has a registered callback execute it.
                             this.callbacks[i](data);
@@ -214,7 +221,7 @@ class Grid{
             registerCallback: function(element, callback){
                 findLoop:{
                     //Look for the passed in element, to regester a callback
-                    for (var i = 0; i < this.ROWS.length; i++) {
+                    for (let i = 0; i < this.ROWS.length; i++) {
                         if (this.ROWS[i].childNodes[0] === element) { //IF this row element is exactly this element.
                             this.callbacks[i] = callback;
                             console.log("Callback registered.");
@@ -227,18 +234,27 @@ class Grid{
             },
             //TODO build a row here.
             addChild: function(child){
+                //Scale our existing elements
+                let scalar = (100.0/(this.ROWS.length+1));
+                let runningHeight = 0;
+
+                console.log("RowLength:",scalar);
+                for(let i = 0; i < this.ROWS.length; i++){
+                    this.ROWS[i].style.height = (scalar) + '%';
+                    this.ROWS[i].style.top = runningHeight + '%';
+                    runningHeight += (scalar);
+                }
+
                 //Create our row element
                 let row = document.createElement(ROW_TAG);
-                //TODO replace the 33% with a re-allocated piece of the 100% screenspace
                 row.style.width  = 100+'%';
-                row.style.height = (33)+'%';
-                row.style.top    = (33)+'%';
+                row.style.height = (scalar)+'%';
+                row.style.top    = (runningHeight)+'%';
                 row.style.position = "absolute";
                 row.style.overflow = 'auto';
                 //Append the htmlElement to this row. This parents the content to the row, so that the elements content can be resized to the divs dimensions.
                 row.appendChild(child);
                 this.ROWS.push(row);
-                //
                 this.element.appendChild(row);
 
                 if(this.ROWS.length > 1) {
@@ -346,7 +362,7 @@ class Grid{
             }
             //When a new column is added, resize the existing columns to fit this new column.
             let count = COLUMNS.length;
-            for(var i = 0; i < count; i++){
+            for(let i = 0; i < count; i++){
                 COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
                 COLUMNS[i].element.style.left = ((i / count) * 100)+ '%';
             }
@@ -374,11 +390,11 @@ class Grid{
      * This function is called to reposition all of the drags and grid elements to proper positions after a drag has occurred, or any externalmovementt actions.
      */
     refresh(){
-        for(var i = 0; i < DRAGS.length; i++){
+        for(let i = 0; i < DRAGS.length; i++){
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
         }
-        for(var i = 0; i < COLUMNS.length; i++){
-            for(var j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
+        for(let i = 0; i < COLUMNS.length; i++){
+            for(let j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
                 COLUMNS[i].V_DRAGS[j].element.style.top = (parseFloat(COLUMNS[i].V_DRAGS[j].row2.style.top)-(COLUMNS[i].V_DRAGS[j].width()/2))+'%';
             }
         }
@@ -402,7 +418,7 @@ class Grid{
     }
 
     onVDrag(event, row1, row2){
-        if(!this.getHEIGHT){
+        if(!this['getHEIGHT']){
             console.log("This is wrong",this);
         }
         if(event.screenY > 0) {
@@ -415,7 +431,7 @@ class Grid{
             row1.style.height = ((dragY - row1Y) / this.getHEIGHT() * 100) + '%';
             row2.style.height = ((row2Height - dragY) / this.getHEIGHT() * 100) + '%';
             row2.style.top = (dragY / this.getHEIGHT() * 100) + '%';
-            for(var i = 0; i < COLUMNS.length; i++){
+            for(let i = 0; i < COLUMNS.length; i++){
                 let column = COLUMNS[i];
                 column.executeElementsCallback(row1, row1);
                 column.executeElementsCallback(row2, row2);
@@ -424,9 +440,9 @@ class Grid{
     }
 
     executeCallbacks(){
-        for(var i = 0; i < COLUMNS.length; i++){
+        for(let i = 0; i < COLUMNS.length; i++){
             let column = COLUMNS[i];
-            for(var j = 0; j < column.ROWS.length; j++) {
+            for(let j = 0; j < column.ROWS.length; j++) {
                 let element = column.ROWS[j];
                 column.executeElementsCallback(element, element);
             }
@@ -434,12 +450,12 @@ class Grid{
     }
 
     onDragEnd(){
-        for(var i = 0; i < DRAGS.length; i++){
+        for(let i = 0; i < DRAGS.length; i++){
             //col2 x - drag.width/2
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
         }
-        for(var i = 0; i < COLUMNS.length; i++){
-            for(var j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
+        for(let i = 0; i < COLUMNS.length; i++){
+            for(let j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
                 COLUMNS[i].V_DRAGS[j].element.style.top = (parseFloat(COLUMNS[i].V_DRAGS[j].row2.style.top)-(COLUMNS[i].V_DRAGS[j].width()/2))+'%';
             }
         }
@@ -460,12 +476,12 @@ class Grid{
         }else{
             //Initialize the columns to be the saved size from the last time the editor was closed.
             let runningLeftWidth = 0;
-            for(var i = 0; i < widthArray.length; i++){
+            for(let i = 0; i < widthArray.length; i++){
                 COLUMNS[i].element.style.width = (widthArray[i][0])+'%';
                 COLUMNS[i].element.style.left = (runningLeftWidth)+ '%';
                 runningLeftWidth += widthArray[i][0];
                 let runningTopHeight = 0;
-                for(var j = 0; j < COLUMNS[i].ROWS.length; j++){
+                for(let j = 0; j < COLUMNS[i].ROWS.length; j++){
                     COLUMNS[i].ROWS[j].style.height = (widthArray[i][1+j])+'%';
                     COLUMNS[i].ROWS[j].style.top = (runningTopHeight)+ '%';
                     runningTopHeight += widthArray[i][1+j];
@@ -483,21 +499,35 @@ class Grid{
 
     /**
      * This method is called when the editor is saving the active configuration. All columns and rows report their widths and heights respectivly. A multi-dimensional array object is constructed. This array has all of the height data needed to recreacte the current editor spacing on the next editor load.
-     * @returns {Array} sizes - The widths and heights of the current window configuration.
+     * @returns {Object} sizes - The widths and heights of the current window configuration.
      */
-    getGridSize(){
-        let out = [];
-        console.log(COLUMNS);
-        for(var i = 0; i < COLUMNS.length; i++){
+    generateSaveObject(){
+        let out = {
+            size:[],
+            data:[]
+        };
+        for(let i = 0; i < COLUMNS.length; i++){
             let column = [];
-            console.log(COLUMNS[i]);
             column.push(parseFloat(COLUMNS[i].element.style.width));
-            for(var j = 0; j < COLUMNS[i].ROWS.length; j++){
+            console.log("Column",i," has ",COLUMNS[i].ROWS.length," widgets.");
+            console.log(COLUMNS[i].ROWS);
+            for(let j = 0; j < COLUMNS[i].ROWS.length; j++){
+                console.log("j",j);
                 column.push(parseFloat(COLUMNS[i].ROWS[j].style.height));
+                loop:{
+                    if(COLUMNS[i]){
+                        if(COLUMNS[i].WIDGETS[j]){
+                            if (COLUMNS[i].WIDGETS[j]['save']) {
+                                out.data.push(COLUMNS[i].WIDGETS[j].save());
+                                break loop;
+                            }
+                        }
+                    }
+                    out.data.push({});
+                }
             }
-            out.push(column);
+            out.size.push(column);
         }
-        console.log(out);
         return out;
     }
 
@@ -538,10 +568,25 @@ class Grid{
         for(let i = 0; i < widgets.length; i++){
             let widget = widgets[i];
             let result = await this.initializeWidgit(widget);
-            console.log("widgetsName:",result," Element:",result.getElement());
-            console.log("COLUMN["+result.configData.col+"]",COLUMNS[result.configData.col]);
-            COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
-            result.postinit();
+            if(COLUMNS[result.configData.col]) {
+                //Check to see if we have an element at this location
+                if(COLUMNS[result.configData.col].ROWS[result.configData.row].children[0].childElementCount == 0) {
+                    console.log("widgetsName:", result, " Element:", result.getElement());
+                    console.log("COLUMN[" + result.configData.col + "]", COLUMNS[result.configData.col]);
+                    COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
+                    COLUMNS[result.configData.col].WIDGETS[result.configData.row] = result;
+                    result.postinit();
+                }else{
+                    console.warn("Trying to add an element to cell [",result.configData.col,",",result.configData.row,"] but there is already a widget there.");
+                    COLUMNS[result.configData.col].addChild(result.getElement());
+                    COLUMNS[result.configData.col].WIDGETS[COLUMNS[result.configData.col].ROWS.length] = result;
+                    this.onDragEnd();
+                    result.postinit();
+                }
+            }else{
+                console.error("Tried to access grid location [", result.configData.col,",",result.configData.row,"] but that is outside of this grids bounds.");
+                break;
+            }
         }
         console.log("Initialized.");
         for(let i = 0; i < COLUMNS.length; i++){
@@ -568,6 +613,7 @@ class Grid{
      */
     init(widgets){
         console.log("COLUMNS",COLUMNS);
+        console.log("WIDGETS",widgets);
         this.initalize(widgets, this.getCOLUMNS());
     }
 

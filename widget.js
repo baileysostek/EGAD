@@ -13,7 +13,6 @@ let name = 'EmptyWidget';
 let colIndex = 0;
 //the y index of this widget.
 let rowIndex = 0;
-
 /**
  * There is a collection of built in widgets tailored to making editor applications.
  * <pre>
@@ -43,13 +42,14 @@ class Widget{
             this.rowIndex = configData.row;
         }
         this.dependencies = dependencies;
+        this['save'] = this.save;
     }
     /**
      * This function is implemented by every child class of widget. Any initialization that needs to happen will be put inside of this function.
      * @abstract
      * @returns {Promise} Returns a promise that will be executed when an instance of this widget is generated.
      */
-    init(){
+    init(savedData){
         console.log("Initing superclass, this should not be called, and rather return a promise from a child class.");
     }
 
@@ -98,6 +98,13 @@ class Widget{
 
     getConfigData(){
         return this.configData;
+    }
+
+    save(){
+        return {
+            message:"This is the parent save call, please overwrite me.",
+            configData:this.configData
+        };
     }
 }
 

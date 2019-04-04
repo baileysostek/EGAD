@@ -18,6 +18,18 @@ class WebviewWidget extends Widget{
         //Set height correctly
         this.element.style.height = 100+'%';
         this.element.parentElement.style.height = 100+'%';
+        this.element.ondragstart = function () {
+            return false;
+        };
+        this.element.ondragenter = function () {
+            return false;
+        };
+        this.element.ondragover = function () {
+            return false;
+        };
+        this.element.ondrag = function () {
+            return false;
+        };
     }
 
 

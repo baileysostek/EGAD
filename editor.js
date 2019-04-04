@@ -8,7 +8,7 @@ let myFileManager;
 let myGrid;
 
 //Version number of this project.
-let version = '18w39';
+let version = '1.0';
 
 function init() {
     //Include all needed modules
@@ -23,18 +23,18 @@ function init() {
 
     myFileManager.initialize().then(function(result) {
         //Print out version information and Author information.
-        console.log("OpenGrid Version:", version);
-        console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty in 2018");
+        console.log("Electron Grid of Aligned Data (EGAD) Version:", version);
+        console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty (2018 - 2019)");
 
         //Initialize the Grid API with the screen width and height. This will create a reasponsive grid that can hold the rest of the editor elements.
 
         myGrid = new grid(screen.width, screen.height, 2, 1);
         myGrid.init([
-            new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project2/example.html"),
+            // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example.html"),
             // new webviewWidget(0, 1, "http://youtube.com"),
             // new webviewWidget(0, 2, "http://facebook.com"),
             // new webviewWidget(0, 3, "http://twitter.com"),
-            // new webviewWidget(0, 4, "http://imgur.com"),
+            // new webviewWidget(0, 0, "http://imgur.com"),
             // new fileBrowser(0, 0, "~Animations", myFileManager),
             // new fileBrowser(0, 1, "~Documentation", myFileManager),
             // new fileBrowser(0, 2, "~Font", myFileManager),
@@ -60,12 +60,13 @@ function init() {
             // new fileBrowser(4, 2, "~", myFileManager),
             // new fileBrowser(4, 3, "~", myFileManager),
             // new fileBrowser(4, 4, "~", myFileManager),
-            new transfromWidget(1,0)
+            new transfromWidget(1,0),
+            new transfromWidget(1,0),
+            new transfromWidget(1,0),
         ]);
 
-
     }, function(err) {
-        console.log(err);
+        console.error(err);
     });
 }
 
@@ -88,7 +89,7 @@ function open(path){
 }
 
 function save(){
-
+    console.log(myGrid.generateSaveObject());
 }
 
 function copy(){

@@ -21,14 +21,14 @@ function init() {
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
 
-    myFileManager.initialize().then(function(result) {
+    myFileManager.initialize().then(function(saveData) {
         //Print out version information and Author information.
         console.log("Electron Grid of Aligned Data (EGAD) Version:", version);
         console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty (2018 - 2019)");
 
-        //Initialize the Grid API with the screen width and height. This will create a reasponsive grid that can hold the rest of the editor elements.
+        //Initialize the Grid API with the screen width and height. This will create a responsive grid that can hold the rest of the editor elements.
 
-        myGrid = new grid(screen.width, screen.height, 2, 1);
+        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         myGrid.init([
             // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example.html"),
             // new webviewWidget(0, 1, "http://youtube.com"),
@@ -60,9 +60,9 @@ function init() {
             // new fileBrowser(4, 2, "~", myFileManager),
             // new fileBrowser(4, 3, "~", myFileManager),
             // new fileBrowser(4, 4, "~", myFileManager),
+            // new transfromWidget(1,0),
             new transfromWidget(1,0),
-            new transfromWidget(1,0),
-            new transfromWidget(1,0),
+            // new transfromWidget(1,0),
         ]);
 
     }, function(err) {
@@ -90,6 +90,7 @@ function open(path){
 
 function save(){
     console.log(myGrid.generateSaveObject());
+    myFileManager.writeToProperties('DATA', myGrid.generateSaveObject().data);
 }
 
 function copy(){

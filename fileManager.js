@@ -5,9 +5,12 @@ let fs = require('fs');
 
 let INITIALIZED = false;
 
-let loadedProject = "";
-let configurationData;
-let projectData;
+
+const SAVE_PATH = 'config/';
+const CONFIG_FILE = 'config.json';
+
+let configurationData   = {};
+let projectData         = {DATA:{}};
 
 /**
  * Creates a file manager. This class can read and write files.
@@ -19,17 +22,16 @@ class FileManager{
     }
 
     initialize(){
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            fs.readFile('Projects/config.json', function (err, data) {
+        return new Promise( (resolve, reject) => {
+            fs.readFile(SAVE_PATH+CONFIG_FILE, (err, data) => {
                 if (err) {
+                    console.error(err);
                     reject(err);
                 }
-                that.configurationData = JSON.parse(data);
-                that.PATH = 'Projects/'+that.configurationData.MAIN_PROJECT+'/';
-                that.loadedProject = that.configurationData.MAIN_PROJECT;
-                that.INITIALIZED = true;
-                resolve(that.configurationData);
+                this.configurationData = JSON.parse(data);
+                this.PATH = SAVE_PATH;
+                this.INITIALIZED = true;
+                resolve(this.configurationData);
             });
         });
     }
@@ -43,9 +45,8 @@ class FileManager{
             console.error('LoadFile was called before the FS was initialized.');
             return;
         }
-        let that = this;
-        return new Promise(function(resolve, reject) {
-            fs.readFile(that.PATH+fileName, "utf8", function (err, data){
+        return new Promise((resolve, reject) => {
+            fs.readFile(this.PATH+fileName, "utf8", function (err, data){
                 if (err) {
                     reject(err);
                 }
@@ -54,18 +55,20 @@ class FileManager{
         });
     }
 
-    writeToProperties(field, data){
+    async writeToProperties(field, data){
         if(!this.INITIALIZED){
             console.error('writeToProperties was called before the FS was initialized.');
             return;
         }
-        let that = this;
-        return new Promise(function(resolve, reject) {
-            that.projectData[field] = data;
-            fs.writeFile(that.PATH+'properties.json', JSON.stringify(that.projectData), 'utf8', function (err, data){
+        return await new Promise((resolve, reject) =>  {
+            console.log("ProjectData", projectData);
+            projectData[field.toString()] = data;
+            fs.writeFile(this.PATH+CONFIG_FILE, JSON.stringify(projectData), 'utf8', (err, data) => {
                 if (err) {
+                    console.error(err);
                     reject(err);
                 }
+                console.log(data);
                 resolve(data);
             });
         });
@@ -76,9 +79,8 @@ class FileManager{
             console.error('writeToFile was called before the FS was initialized.');
             return;
         }
-        let that = this;
-        return new Promise(function(resolve, reject) {
-            fs.writeFile(that.PATH+fileName, data, 'utf8', function (err, data){
+        return new Promise((resolve, reject) => {
+            fs.writeFile(this.PATH+fileName, data, 'utf8', (err, data) => {
                 if (err) {
                     reject(err);
                 }
@@ -92,17 +94,17 @@ class FileManager{
             console.error('getProjectData was called before the FS was initialized.');
             return;
         }
-        let that = this;
+
         if(!this.projectData) {
-            return new Promise(function (resolve, reject) {
-                fs.readFile(that.PATH + 'properties.json', function (err, data) {
+            return new Promise( (resolve, reject) => {
+                fs.readFile(this.PATH + this.CONFIG_FILE, function (err, data) {
                     if (err) {
                         reject(err);
                     }
                     console.log(data);
-                    that.projectData = JSON.parse(data);
-                    if (that.projectData[fieldName]) {
-                        resolve(that.projectData[fieldName]);
+                    this.projectData = JSON.parse(data);
+                    if (this.projectData[fieldName]) {
+                        resolve(this.projectData[fieldName]);
                     } else {
                         console.error('Field:', fieldName, " is not on the project configuration object.");
                         reject(data);
@@ -111,8 +113,8 @@ class FileManager{
             });
         }else{
             return new Promise(function (resolve, reject) {
-                if (that.projectData[fieldName]) {
-                    resolve(that.projectData[fieldName]);
+                if (this.projectData[fieldName]) {
+                    resolve(this.projectData[fieldName]);
                 } else {
                     console.error('Field:', fieldName, " is not on the project configuration object.");
                     reject(data);

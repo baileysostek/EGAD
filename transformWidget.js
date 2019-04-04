@@ -1,35 +1,33 @@
 const Widget = require('./widget');
 
-let transformElement;
-
 class TransformWidget extends Widget{
     constructor(x, y){
         super({
             name:"Transform Viewer",
             col:x,
             row:y,
-            x:12,
-            y:43,
-            z:189,
+            slider_x:null,
+            slider_y:null,
+            slider_z:null,
             id:Math.random(),
             transform:[
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1,
-            ]
+            ],
+            cells:[],
         }, {});
-
-        //Sync the sliders with the value of transform.
-        this.setPosition(
-            super.getConfigData()['x'],
-            super.getConfigData()['y'],
-            super.getConfigData()['z']
-        );
     }
 
-    async init(){
+    async init(configData){
         return await new Promise((resolve, reject) => {
+            //Load the data passed into this function, and set the sliders correctly
+            if(configData['transform']){
+                super.getConfigData()['transform'] = configData['transform'];
+                this.syncTransformWithElement();
+            }
+
             //CSS injection
             let css = document.createElement('style');
             //CSS Taken from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_rangeslider
@@ -173,6 +171,7 @@ class TransformWidget extends Widget{
 
             //X slider
             let slider_x = document.createElement('input');
+            super.getConfigData()['slider_x'] = slider_x;
             slider_x.setAttribute('type', 'range');
             slider_x.setAttribute('min', 0);
             slider_x.setAttribute('max', 360);
@@ -187,6 +186,7 @@ class TransformWidget extends Widget{
 
             //Y Slider
             let slider_y = document.createElement('input');
+            super.getConfigData()['slider_y'] = slider_y;
             slider_y.setAttribute('type', 'range');
             slider_y.setAttribute('min', 0);
             slider_y.setAttribute('max', 360);
@@ -201,6 +201,7 @@ class TransformWidget extends Widget{
 
             //Z Slider
             let slider_z = document.createElement('input');
+            super.getConfigData()['slider_z'] = slider_z;
             slider_z.setAttribute('type', 'range');
             slider_z.setAttribute('min', 0);
             slider_z.setAttribute('max', 360);
@@ -217,11 +218,12 @@ class TransformWidget extends Widget{
             container.appendChild(table);
 
             //Generate our Matrix element and append it to our table
-            transformElement = this.generateMatrixElelment();
-            container.appendChild(transformElement.element);
+            let matrixView = this.generateMatrixElelment();
+            this.getConfigData()['cells'] = matrixView.cells;
+            container.appendChild(matrixView.element);
             this.syncTransformWithElement();
 
-            this.element = container;
+            super.setElement(container);
             resolve(this);
         });
     }
@@ -236,12 +238,24 @@ class TransformWidget extends Widget{
         super.getConfigData()['transform'][3]   = x;
     }
 
+    getX(){
+        return super.getConfigData()['transform'][3];
+    }
+
     setY(y){
         super.getConfigData()['transform'][7]   = y;
     }
 
+    getY(){
+        return super.getConfigData()['transform'][7];
+    }
+
     setZ(z){
         super.getConfigData()['transform'][11]  = z;
+    }
+
+    getZ(){
+        return super.getConfigData()['transform'][11];
     }
 
     setScale(w){
@@ -353,7 +367,19 @@ class TransformWidget extends Widget{
 
     syncTransformWithElement(){
         for(let i = 0; i < super.getConfigData()['transform'].length; i++){
-            transformElement.cells[i].innerText = super.getConfigData()['transform'][i];
+            if(this.getConfigData()['cells'][i]) {
+                this.getConfigData()['cells'][i].innerText = super.getConfigData()['transform'][i];
+            }
+        }
+        //set sliders
+        if(super.getConfigData()['slider_x']){
+            super.getConfigData()['slider_x'].value = this.getX();
+        }
+        if(super.getConfigData()['slider_y']){
+            super.getConfigData()['slider_y'].value = this.getY();
+        }
+        if(super.getConfigData()['slider_z']){
+            super.getConfigData()['slider_z'].value = this.getZ();
         }
     }
 

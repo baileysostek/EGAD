@@ -22,6 +22,8 @@ let loadingContainer;
 //If this is true, the grid will display a grey screen while loading.
 let BLOCKING_LOAD = false;
 
+let SAVE_DATA = {};
+
 /**
  * Creates a new Grid, this contains columns, rows, and drag elements.
  * Columns are vertical and can have n rows inside them.
@@ -36,9 +38,11 @@ class Grid{
      * @param {Number} rows - This is the number of rows that each column should have.
      * @returns {Grid} Returns an instance of the Grid class.
      */
-    constructor(width, height, rows, columns){
+    constructor(width, height, rows, columns, saveData = {}){
         this.WIDTH = width;
         this.HEIGHT = height;
+
+        SAVE_DATA = saveData;
 
         console.log("Creating Grid [",rows,",",columns,']');
         console.log("Width:"+this.WIDTH);
@@ -238,7 +242,6 @@ class Grid{
                 let scalar = (100.0/(this.ROWS.length+1));
                 let runningHeight = 0;
 
-                console.log("RowLength:",scalar);
                 for(let i = 0; i < this.ROWS.length; i++){
                     this.ROWS[i].style.height = (scalar) + '%';
                     this.ROWS[i].style.top = runningHeight + '%';
@@ -516,7 +519,6 @@ class Grid{
                         if(COLUMNS[i].WIDGETS[j]){
                             if (COLUMNS[i].WIDGETS[j]['save']) {
                                 let saveData = COLUMNS[i].WIDGETS[j];
-                                console.log("Column[",j,"]:",saveData);
                                 out.data.push(saveData.save());
                                 break loop;
                             }
@@ -552,9 +554,9 @@ class Grid{
 
     //This call wraps the widget promise constructor inside of another promise.
     //The return value of this function is awaited upon inside of the initialize method.
-    initializeWidgit(test) {
+    initializeWidgit(test, saveData = {}) {
         return new Promise(resolve => {
-            test.init().then(function(result) {
+            test.init(saveData).then(function(result) {
                 resolve(result);
             }, function(err) {
                 console.log(err);
@@ -563,15 +565,14 @@ class Grid{
     }
 
     //Synchronous loop that populates a cell with a widget.
-    async initalize(widgets, COLUMNS) {
+    async initalize(widgets, COLUMNS, saveData) {
+        let widget_index = 1;
         for(let i = 0; i < widgets.length; i++){
             let widget = widgets[i];
-            let result = await this.initializeWidgit(widget);
+            let result = await this.initializeWidgit(widget, saveData[widget_index] ? saveData[widget_index] : {});
             if(COLUMNS[result.configData.col]) {
                 //Check to see if we have an element at this location
                 if(COLUMNS[result.configData.col].ROWS[result.configData.row].children[0].childElementCount == 0) {
-                    console.log("widgetsName:", result, " Element:", result.getElement());
-                    console.log("COLUMN[" + result.configData.col + "]", COLUMNS[result.configData.col]);
                     COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
                     COLUMNS[result.configData.col].WIDGETS[result.configData.row] = result;
                     result.postinit();
@@ -585,8 +586,8 @@ class Grid{
                 }
             }else{
                 console.error("Tried to access grid location [", result.configData.col,",",result.configData.row,"] but that is outside of this grids bounds.");
-                break;
             }
+            widget_index++;
         }
         console.log("Initialized.");
         for(let i = 0; i < COLUMNS.length; i++){
@@ -612,9 +613,7 @@ class Grid{
      * @param {Array} widgets - This is an array of Widget elements that will be initialized in array order.
      */
     init(widgets){
-        console.log("COLUMNS",COLUMNS);
-        console.log("WIDGETS",widgets);
-        this.initalize(widgets, this.getCOLUMNS());
+        this.initalize(widgets, this.getCOLUMNS(), SAVE_DATA.DATA);
     }
 
 };

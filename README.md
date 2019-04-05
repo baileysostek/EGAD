@@ -1,2 +1,2 @@
-# Electron Grid of Alinged Documents
+# Electron Grid of Aligned Documents
 

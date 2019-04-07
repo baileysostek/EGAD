@@ -10,13 +10,20 @@ let myGrid;
 //Version number of this project.
 let version = '1.0';
 
+/*
+
+ */
 function init() {
-    //Include all needed modules
+    /*
+     Include all widget classes to be referenced by the grid here.
+     */
     const grid              = require('./grid');
     const fileManager       = require('./fileManager');
     const fileBrowser       = require('./fileBrowser');
     const webviewWidget     = require('./webviewWidget');
     const transfromWidget   = require('./transformWidget');
+    const canvasWidget   = require('./canvasWidget');
+    //----------------------------------------------------------
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
@@ -30,6 +37,7 @@ function init() {
 
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         myGrid.init([
+            // new canvasWidget(0, 0, screen.width, screen.height),
             // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example.html"),
             // new webviewWidget(0, 1, "http://youtube.com"),
             // new webviewWidget(0, 2, "http://facebook.com"),
@@ -60,14 +68,19 @@ function init() {
             // new fileBrowser(4, 2, "~", myFileManager),
             // new fileBrowser(4, 3, "~", myFileManager),
             // new fileBrowser(4, 4, "~", myFileManager),
-            // new transfromWidget(1,0),
             new transfromWidget(1,0),
-            // new transfromWidget(1,0),
+            new transfromWidget(1,0),
+            new transfromWidget(1,0),
         ]);
 
     }, function(err) {
         console.error(err);
     });
+}
+
+function include(widget){
+    // this[widget] = require('./'+widget);
+    //Eval?
 }
 
 
@@ -89,40 +102,13 @@ function open(path){
 }
 
 function save(){
-    console.log(myGrid.generateSaveObject());
+    console.log(myGrid.getCell(1,1));
     myFileManager.writeToProperties('DATA', myGrid.generateSaveObject().data);
 }
 
-function copy(){
-
-}
-
-function paste(){
-
-}
-
-function suggest(){
-
-}
-
-function comment(){
-
-}
-
-function find(){
-
-}
-
-function replace(){
-
-}
-
-function getMenuData(){
-    return this.mainMenuTemplate;
-}
-
 //Create menu template
-const mainMenuTemplate = [
+function getMenu(){
+    return [
     {
         label:'File',
         submenu:[
@@ -130,33 +116,24 @@ const mainMenuTemplate = [
                 label:'Open Project',
                 accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
                 click(){
-
+                    console.log("Donuts");
                 }
-            }
-        ]
-    },
-    {
-        label:'Pile',
-        submenu:[
+            },
             {
-                label:'Open Project',
-                accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
-                click(){
-
-                }
-            }
-        ]
-    },
-    {
-        label:'Smile',
-        submenu:[
+                label:'Developer Tools',
+                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+                mainWindow_dot:"toggleDevTools"
+            },
             {
-                label:'Open Project',
-                accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
-                click(){
-
-                }
-            }
+                label:'Quit',
+                accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+                app_dot:"quit"
+            },
+            {
+                label:'Save',
+                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
+                this_dot:"save"
+            },
         ]
     }
-];
+]};

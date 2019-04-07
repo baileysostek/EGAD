@@ -524,7 +524,7 @@ class Grid{
                             }
                         }
                     }
-                    out.data.push({});
+                    // out.data.push({});
                 }
             }
             out.size.push(column);
@@ -566,7 +566,7 @@ class Grid{
 
     //Synchronous loop that populates a cell with a widget.
     async initalize(widgets, COLUMNS, saveData) {
-        let widget_index = 1;
+        let widget_index = 0;
         for(let i = 0; i < widgets.length; i++){
             let widget = widgets[i];
             let result = await this.initializeWidgit(widget, saveData[widget_index] ? saveData[widget_index] : {});
@@ -614,6 +614,16 @@ class Grid{
      */
     init(widgets){
         this.initalize(widgets, this.getCOLUMNS(), SAVE_DATA.DATA);
+    }
+
+
+    getCell(col, row) {
+        if (COLUMNS[col]) {
+            if(COLUMNS[col].WIDGETS[row]) {
+                return COLUMNS[col].WIDGETS[row];
+            }
+        }
+        return null;
     }
 
 };

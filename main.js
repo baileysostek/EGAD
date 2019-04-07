@@ -4,152 +4,88 @@ const path = require('path');
 
 const {app, BrowserWindow, Menu} = electron;
 
+const MAIN_WEBPAGE = 'editor.html';
+
 let mainWindow;
 
-// Listen for app to be ready;
-
+/**
+ * Main entry point for the EGAD framework. This function creates a new webpage window inside of an electron window once it detects that the application is ready.
+ * This function then creates a window the size of the target computers display and displays the contents of MAIN_WEBPAGE on the screen. Once the DOM of that webpage
+ * is ready, the init function is called to start the application. This class also registers a callback for when the application is closed, and forwards this callback
+ * to the file editor.js, by calling the 'onCloseRequested()' method.
+ */
 app.on('ready', function(){
-    //Create window
+    /**
+     * Create a new Browser window to host the EGAD webpage.
+     * @type {Electron.BrowserWindow}
+     */
     mainWindow = new BrowserWindow({
         show:false
     });
     mainWindow.maximize();
     mainWindow.show();
-    //Load html into the window
 
+    /**
+     * Load the contents of the html file defined by 'MAIN_WEBPAGE' into the Electron window.
+     */
     mainWindow.loadURL(url.format({
-        pathname:path.join(__dirname, 'editor.html'),
+        pathname:path.join(__dirname, MAIN_WEBPAGE),
         protocol:'file:',
         slashes:true
     }));
 
-    mainWindow.on('close', function(e){
-        mainWindow.webContents.executeJavaScript('onCloseRequested()');
+    /**
+     * Callback function which triggers when the dom is ready. This means that the file defined by 'MAIN_WEBPAGE' has been loaded into the window sucsessfully and we can start the EGAD framework.
+     */
+    mainWindow.webContents.once('dom-ready', () => {
+        mainWindow.webContents.executeJavaScript('init()');
+        mainWindow.webContents.executeJavaScript('getMenu()').then((result) => {
+            //Build Menu from template
+            for(let i = 0; i < result.length; i++){
+                if(result[i]['submenu']) {
+                    for (let j = 0; j < result[i].submenu.length; j++) {
+                        let menu_element = result[i].submenu[j];
+                        if(menu_element['mainWindow_dot']) {//If the submenu element was specified
+                            console.log("Overwriting Click Function for:",menu_element.label);
+                            result[i].submenu[j] = {
+                                label: menu_element['label'],
+                                accelerator: menu_element['accelerator'],
+                                click(){
+                                    eval("mainWindow."+menu_element['mainWindow_dot']+"()");
+                                }
+                            };
+                        }
+                        if(menu_element['app_dot']) {
+                            console.log("Overwriting Click Function for:",menu_element.label);
+                            result[i].submenu[j] = {
+                                label: menu_element['label'],
+                                accelerator: menu_element['accelerator'],
+                                click(){
+                                    eval("app."+menu_element['app_dot']+"()");
+                                }
+                            };
+                        }
+                        if(menu_element['this_dot']) {
+                            console.log("Overwriting Click Function for:",menu_element.label);
+                            result[i].submenu[j] = {
+                                label: menu_element['label'],
+                                accelerator: menu_element['accelerator'],
+                                click(){
+                                    eval("mainWindow.webContents.executeJavaScript(\'"+menu_element['this_dot']+"()\');");
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+            const mainMenu = Menu.buildFromTemplate(result);
+
+            //Insert the menu
+            Menu.setApplicationMenu(mainMenu);
+        });
     });
 
-    //Build Menu from template
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-
-    //Insert the menu
-    Menu.setApplicationMenu(mainMenu);
-
+    mainWindow.on('close', (e) => {
+        mainWindow.webContents.executeJavaScript('onCloseRequested()');
+    });
 });
-
-//Create menu template
-const mainMenuTemplate = [
-    {
-        label:'File',
-        submenu:[
-            {
-                label:'Open Project',
-                accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
-                click(){
-                    const {dialog} = require('electron');
-                    const basepath = app.getAppPath();
-
-                    dialog.showOpenDialog({
-                        defaultPath:basepath+"\\Projects",
-                        properties: ['openDirectory']
-                    },function(path){
-                        mainWindow.webContents.executeJavaScript('open('+JSON.stringify(path)+')');
-                    });
-                }
-            },
-            {
-                label:'New Project',
-                click(){
-
-                }
-            },
-            {
-                label:'Recent Projects',
-                click(){
-
-                }
-            },
-            {
-                label:'Suggest',
-                accelerator: process.platform == 'darwin' ? 'Command+`' : 'Ctrl+`',
-                click(){
-                    mainWindow.webContents.executeJavaScript('suggest()');
-                }
-            },
-            {
-                label:'Copy',
-                accelerator: process.platform == 'darwin' ? 'Command+C' : 'Ctrl+C',
-                click(){
-                    mainWindow.webContents.executeJavaScript('copy()');
-                }
-            },
-            {
-                label:'Paste',
-                accelerator: process.platform == 'darwin' ? 'Command+V' : 'Ctrl+V',
-                click(){
-                    mainWindow.webContents.executeJavaScript('paste()');
-                }
-            },
-            {
-                label:'Comment',
-                accelerator: process.platform == 'darwin' ? 'Command+/' : 'Ctrl+/',
-                click(){
-                    mainWindow.webContents.executeJavaScript('comment()');
-                }
-            },
-            {
-                label:'Developer Tools',
-                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-                click(){
-                    mainWindow.toggleDevTools();
-                }
-            },
-            {
-                label:'Quit',
-                accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-                click(){
-                    app.quit();
-                }
-            },
-            {
-                label:'Find',
-                accelerator: process.platform == 'darwin' ? 'Command+F' : 'Ctrl+F',
-                click(){
-                    mainWindow.webContents.executeJavaScript('find()');
-                }
-            },
-            {
-                label:'Replace',
-                accelerator: process.platform == 'darwin' ? 'Command+R' : 'Ctrl+R',
-                click(){
-                    mainWindow.webContents.executeJavaScript('replace()');
-                }
-            }
-        ]
-    },
-    {
-        label:'Project',
-        submenu:[
-            {
-                label:'Save',
-                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
-                click(){
-                    mainWindow.webContents.executeJavaScript('save()');
-                }
-            },
-            {
-                label:'Add File'
-            },
-            {
-                label:'Change Theme',
-                click(){
-                    console.log("Message2");
-                }
-            },
-            {
-                label:'Change Language',
-                click(){
-                    console.log("Message2");
-                }
-            }
-        ]
-    }
-];

@@ -626,5 +626,9 @@ class Grid{
         return null;
     }
 
+    addWidget(widget){
+        this.initalize([widget], this.getCOLUMNS(), widget.save());
+    }
+
 };
 module.exports = Grid;

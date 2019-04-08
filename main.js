@@ -35,9 +35,10 @@ app.on('ready', function(){
     }));
 
     /**
-     * Callback function which triggers when the dom is ready. This means that the file defined by 'MAIN_WEBPAGE' has been loaded into the window sucsessfully and we can start the EGAD framework.
+     * Callback function which triggers when the dom is ready. This means that the file defined by 'MAIN_WEBPAGE' has been loaded into the window sucsessfully and we can start to
      */
     mainWindow.webContents.once('dom-ready', () => {
+        mainWindow.webContents.executeJavaScript('console.log("Electron Grid of Aligned Data (EGAD) Version:", version); console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty (2018 - 2019)");');
         mainWindow.webContents.executeJavaScript('init()');
         mainWindow.webContents.executeJavaScript('getMenu()').then((result) => {
             //Build Menu from template
@@ -88,4 +89,5 @@ app.on('ready', function(){
     mainWindow.on('close', (e) => {
         mainWindow.webContents.executeJavaScript('onCloseRequested()');
     });
+
 });

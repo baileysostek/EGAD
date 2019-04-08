@@ -7,33 +7,48 @@ const fancyTree = require('jquery.fancytree');
 let myFileManager;
 let myGrid;
 
+//This is an object that represents the file dropdown menu for this application, customise it fit your applications specific needs.
+let MENU = [];
+
 //Version number of this project.
-let version = '1.0';
+const version = '1.0';
 
-/*
+//---------------------------------------------------------------------------
+//     Include all widget classes to be referenced by the grid here.
+//---------------------------------------------------------------------------
+const grid              = require('./grid');
+const fileManager       = require('./fileManager');
+const fileBrowser       = require('./fileBrowser');
+const webviewWidget     = require('./webviewWidget');
+const transfromWidget   = require('./transformWidget');
+const canvasWidget      = require('./canvasWidget');
 
- */
+/**
+ * The init function is executed by the main.js file after the Electron BrowserWindow hosting this file has finished initializing.
+ **/
 function init() {
-    /*
-     Include all widget classes to be referenced by the grid here.
-     */
-    const grid              = require('./grid');
-    const fileManager       = require('./fileManager');
-    const fileBrowser       = require('./fileBrowser');
-    const webviewWidget     = require('./webviewWidget');
-    const transfromWidget   = require('./transformWidget');
-    const canvasWidget   = require('./canvasWidget');
-    //----------------------------------------------------------
+
+    //---------------------------------------------------------------------------
+    //                              Build Menu here
+    //---------------------------------------------------------------------------
+    let file_dd = addMenuDropDown("File");
+    registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
+    registerFunctionCallback(file_dd, 'Save', 'S', 'save');
+    registerFunctionCallback(file_dd, 'New', 'N', 'newWidget');
+    registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
+    let help_dd = addMenuDropDown("Help");
+    let test_dd = addMenuDropDown("Test");
+    let project_dd = addMenuDropDown("Project");
+
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
 
+    //---------------------------------------------------------------------------
+    // Initialize the File Manager, when this function returns create your grid
+    //---------------------------------------------------------------------------
     myFileManager.initialize().then(function(saveData) {
-        //Print out version information and Author information.
-        console.log("Electron Grid of Aligned Data (EGAD) Version:", version);
-        console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty (2018 - 2019)");
-
-        //Initialize the Grid API with the screen width and height. This will create a responsive grid that can hold the rest of the editor elements.
+        //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         myGrid.init([
@@ -74,18 +89,33 @@ function init() {
         ]);
 
     }, function(err) {
+        //If there was an error initializing the grid, print the error here.
         console.error(err);
     });
 }
 
-function include(widget){
-    // this[widget] = require('./'+widget);
-    //Eval?
+
+//---------------------------------------------------------------------------
+//     Define helper functions needed by your application here
+//---------------------------------------------------------------------------
+
+function save(){//This function is refrenced by the menu on line #37 'registerFunctionCallback(file_dd, 'Save', 'S', 'save');' The last parameter with the string 'save' is a reference to this function.
+    console.log(myGrid.getCell(1,1));
+    myFileManager.writeToProperties('DATA', myGrid.generateSaveObject().data);
+}
+
+function newWidget(){
+    myGrid.addWidget(new transfromWidget(1,0));
 }
 
 
+//---------------------------------------------------------------------------
+//
+//---------------------------------------------------------------------------
+
+
 /**
- * Callback function executed when the windows close button is pressed.
+ * Callback function executed when the window's close button is pressed.
  * The code below is a blocking call that must terminate before the window can be closed.
  **/
 function onCloseRequested(){
@@ -93,47 +123,67 @@ function onCloseRequested(){
 }
 
 /**
- * Function to execute when the open project option is selected from the menu.
- * @param {Object} path
- * @path is the relative path to the currently opened project. It is a stringified json object that must be
+ * This function is simply a getter for this classes MENU object. The MENU object hold all configuration data needed to create the menu at the top of the window.
+ * @return{Object} An object representing all menu tabs, and their sub functions.
  **/
-function open(path){
-
-}
-
-function save(){
-    console.log(myGrid.getCell(1,1));
-    myFileManager.writeToProperties('DATA', myGrid.generateSaveObject().data);
-}
-
-//Create menu template
 function getMenu(){
-    return [
-    {
-        label:'File',
-        submenu:[
-            {
-                label:'Open Project',
-                accelerator: process.platform == 'darwin' ? 'Command+O' : 'Ctrl+O',
-                click(){
-                    console.log("Donuts");
-                }
-            },
-            {
-                label:'Developer Tools',
-                accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-                mainWindow_dot:"toggleDevTools"
-            },
-            {
-                label:'Quit',
-                accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-                app_dot:"quit"
-            },
-            {
-                label:'Save',
-                accelerator: process.platform == 'darwin' ? 'Command+S' : 'Ctrl+S',
-                this_dot:"save"
-            },
-        ]
+    return MENU;
+}
+
+/**
+ * This function will create a new tab in the menu, such as File, Edit, Project... etc.
+ * @param {String} name
+ * @name is the title of the new tab bar that you want to create. For Example, if your project requires a tab in the menu called 'Projects' call this function with the string 'Projects'
+ * @return{Object} a reference to the JSON object representing this menu tab.
+ **/
+function addMenuDropDown(name){
+    let drop_down = findMenuDropDown(name);
+    if(!drop_down) {
+        let new_menu = {
+            label: name,
+            submenu: []
+        };
+        MENU.push(new_menu);
+        return new_menu;
     }
-]};
+    return drop_down;
+}
+
+function registerWindowCallback(menu, name, character, function_name){
+    menu.submenu.push(
+        {
+            label:name,
+            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+            mainWindow_dot:function_name
+        }
+    );
+}
+
+function registerAppCallback(menu, name, character, function_name){
+    menu.submenu.push(
+        {
+            label:name,
+            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+            app_dot:function_name
+        }
+    );
+}
+
+function registerFunctionCallback(menu, name, character, function_name){
+    menu.submenu.push(
+        {
+            label:name,
+            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+            this_dot:function_name
+        }
+    );
+}
+
+function findMenuDropDown(name){
+    for(let i = 0; i < MENU.length; i++){
+        if(MENU[i].label === name){
+            return MENU[i];
+        }
+    }
+    return false;
+}

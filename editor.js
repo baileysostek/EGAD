@@ -18,10 +18,10 @@ const version = '1.0';
 //---------------------------------------------------------------------------
 const grid              = require('./grid');
 const fileManager       = require('./fileManager');
-const fileBrowser       = require('./fileBrowser');
-const webviewWidget     = require('./webviewWidget');
-const transfromWidget   = require('./transformWidget');
-const canvasWidget      = require('./canvasWidget');
+const fileBrowser       = require('./widgets/fileTreeWidget');
+const webviewWidget     = require('./widgets/webviewWidget');
+const transfromWidget   = require('./widgets/transformWidget');
+const canvasWidget      = require('./widgets/canvasWidget');
 
 /**
  * The init function is executed by the main.js file after the Electron BrowserWindow hosting this file has finished initializing.
@@ -34,7 +34,8 @@ function init() {
     let file_dd = addMenuDropDown("File");
     registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
     registerFunctionCallback(file_dd, 'Save', 'S', 'save');
-    registerFunctionCallback(file_dd, 'New', 'N', 'newWidget');
+    registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
+    registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
     registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
     let help_dd = addMenuDropDown("Help");
     let test_dd = addMenuDropDown("Test");
@@ -50,16 +51,12 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
-        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
         myGrid.init([
-            // new canvasWidget(0, 0, screen.width, screen.height),
-            // new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example.html"),
-            // new webviewWidget(0, 1, "http://youtube.com"),
-            // new webviewWidget(0, 2, "http://facebook.com"),
-            // new webviewWidget(0, 3, "http://twitter.com"),
+            new webviewWidget(0, 0, "root/documentation/index.html"),
             // new webviewWidget(0, 0, "http://imgur.com"),
-            // new fileBrowser(0, 0, "~Animations", myFileManager),
-            // new fileBrowser(0, 1, "~Documentation", myFileManager),
+            new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
+            // new fileBrowser(0, 1, "node_modules", myFileManager),
             // new fileBrowser(0, 2, "~Font", myFileManager),
             // new fileBrowser(0, 3, "~Images", myFileManager),
             // new fileBrowser(0, 4, "~/jdk-11.0.1", myFileManager),
@@ -83,9 +80,9 @@ function init() {
             // new fileBrowser(4, 2, "~", myFileManager),
             // new fileBrowser(4, 3, "~", myFileManager),
             // new fileBrowser(4, 4, "~", myFileManager),
-            new transfromWidget(1,0),
-            new transfromWidget(1,0),
-            new transfromWidget(1,0),
+            new transfromWidget(2,0),
+            // new transfromWidget(1,0),
+            // new transfromWidget(1,0),
         ]);
 
     }, function(err) {
@@ -106,6 +103,12 @@ function save(){//This function is refrenced by the menu on line #37 'registerFu
 
 function newWidget(){
     myGrid.addWidget(new transfromWidget(1,0));
+}
+
+function removeWidget() {
+    let widget = myGrid.getCOLUMNS()[1].LAST();
+    console.log(widget);
+    myGrid.removeWidget(widget);
 }
 
 

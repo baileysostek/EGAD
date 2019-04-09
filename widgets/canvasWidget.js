@@ -1,6 +1,16 @@
 const Widget = require('./widget');
 
 class canvasWidget extends Widget{
+    /**
+     * @inheritDoc
+     * @constructor
+     * @augments Widget
+     * @param {Integer} x - This is the Column that this widget should be added to.
+     * @param {Integer} y - This is the row of of the Column that this widget should be added to.
+     * @param {Integer} width - This is the width in pixels that this canvas element should take up.
+     * @param {Integer} height - This is the height in pixels that this canvas element should take up.
+     * @returns {canvasWidget} Returns a canvasWidget, an instance of the Widget class which allows a user to draw on an html canvas.
+     */
     constructor(x, y, width, height){
         super({
             name:"Canvas",

@@ -1,4 +1,32 @@
-//Created by Bailey Sostek 9/5/2018
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: grid.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: grid.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//Created by Bailey Sostek 9/5/2018
 
 //These are the width and height of the grid as a whole. This determines the relative size of the rest of the grid.
 let WIDTH = 0;
@@ -76,9 +104,9 @@ class Grid{
 
         this.resize();
 
-        for(let i = 0; i < rows; i++) {
+        for(let i = 0; i &lt; rows; i++) {
             let rows = [];
-            for(let j = 0; j < columns; j++){
+            for(let j = 0; j &lt; columns; j++){
                 rows.push(document.createElement('div'));
             }
             this.addColumn(this.createColumn(rows, {'color': '#002303'}));
@@ -94,9 +122,7 @@ class Grid{
      * @typedef {Object} Column
      * @property {Element}  element                 - The dom element for this column.
      * @property {Integer}  index                   - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
-     * @property {Array}    ROWS                    - An array of Row Objects representing the content inside of this column.
-     * @property {Array}    WIDGETS                 - An array of Widget objects, representing all widgets loaded in this column.
-     * @property {Function} LAST                    - This function returns the widget in the last row of this column.
+     * @property {Array}    ROWS                    - An array of Row Objects representing the content inside of this column
      * @property {Array}    V_DRAGS                 - An array of Vertical Drag dom elements, these elements have a drag watcher attached to them and a callback function resize two rows in this column.
      * @property {Function} onDragEnd               - A callback function that is executed whenever this column has been drug, and the mouse is released
      * @property {Function} onVDrag                 - A callback function that is executed whenever this column is in the process of being drug.
@@ -162,7 +188,7 @@ class Grid{
         }else if(elements.constructor === Array){//Pass an array of elements.
             let elementCount = elements.length;
             //For each passed element create a unique row.
-            for(let i = 0; i < elementCount; i++){
+            for(let i = 0; i &lt; elementCount; i++){
                 if(elements[i] instanceof HTMLElement) {
                     //Create our row element
                     let row = document.createElement(ROW_TAG);
@@ -182,7 +208,7 @@ class Grid{
                     // if(i > 0){
                     //     elements[i].style.paddingTop    = Math.ceil(DRAG_WIDTH/2)+'px';
                     // }
-                    // if(i < elementCount){
+                    // if(i &lt; elementCount){
                     //     elements[i].style.paddingBottom = Math.ceil(DRAG_WIDTH/2)+'px';
                     // }
                     // if(COLUMNS.length > 0){
@@ -212,14 +238,11 @@ class Grid{
             onVDrag:this.onVDrag,
             createVDrag:this.createVDrag,
             callbacks:[],
-            LAST:()=>{
-                return widgets[widgets.length-1];
-            },
             getHEIGHT:()=>{
                 return this.HEIGHT;
             },
             executeElementsCallback:function(element, data){
-                for (let i = 0; i < this.ROWS.length; i++) {
+                for (let i = 0; i &lt; this.ROWS.length; i++) {
                     if (this.ROWS[i].childNodes[0] === element || this.ROWS[i] === element) { //IF this row element is exactly the callback element OR a row contained within this column is passed.
                         if(this.callbacks[i]){ //If the element has a registered callback execute it.
                             this.callbacks[i](data);
@@ -230,7 +253,7 @@ class Grid{
             registerCallback: function(element, callback){
                 findLoop:{
                     //Look for the passed in element, to regester a callback
-                    for (let i = 0; i < this.ROWS.length; i++) {
+                    for (let i = 0; i &lt; this.ROWS.length; i++) {
                         if (this.ROWS[i].childNodes[0] === element) { //IF this row element is exactly this element.
                             this.callbacks[i] = callback;
                             console.log("Callback registered.");
@@ -247,7 +270,7 @@ class Grid{
                 let scalar = (100.0/(this.ROWS.length+1));
                 let runningHeight = 0;
 
-                for(let i = 0; i < this.ROWS.length; i++){
+                for(let i = 0; i &lt; this.ROWS.length; i++){
                     this.ROWS[i].style.height = (scalar) + '%';
                     this.ROWS[i].style.top = runningHeight + '%';
                     runningHeight += (scalar);
@@ -370,7 +393,7 @@ class Grid{
             }
             //When a new column is added, resize the existing columns to fit this new column.
             let count = COLUMNS.length;
-            for(let i = 0; i < count; i++){
+            for(let i = 0; i &lt; count; i++){
                 COLUMNS[i].element.style.width = ((1.0/count) * 100)+'%';
                 COLUMNS[i].element.style.left = ((i / count) * 100)+ '%';
             }
@@ -398,11 +421,11 @@ class Grid{
      * This function is called to reposition all of the drags and grid elements to proper positions after a drag has occurred, or any externalmovementt actions.
      */
     refresh(){
-        for(let i = 0; i < DRAGS.length; i++){
+        for(let i = 0; i &lt; DRAGS.length; i++){
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
         }
-        for(let i = 0; i < COLUMNS.length; i++){
-            for(let j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
+        for(let i = 0; i &lt; COLUMNS.length; i++){
+            for(let j = 0; j &lt; COLUMNS[i].V_DRAGS.length; j++){
                 COLUMNS[i].V_DRAGS[j].element.style.top = (parseFloat(COLUMNS[i].V_DRAGS[j].row2.style.top)-(COLUMNS[i].V_DRAGS[j].width()/2))+'%';
             }
         }
@@ -411,7 +434,7 @@ class Grid{
 
     onDrag(event, index1, index2){
         let screenPercentPos = ((event.screenX / this.getWIDTH()) * 100);
-        if(screenPercentPos > (parseFloat(COLUMNS[index1].element.style.left) + COLUMN_MIN_WIDTH) && screenPercentPos < (parseFloat(COLUMNS[index2].element.style.left) + parseFloat(COLUMNS[index2].element.style.width) - COLUMN_MIN_WIDTH)) {
+        if(screenPercentPos > (parseFloat(COLUMNS[index1].element.style.left) + COLUMN_MIN_WIDTH) &amp;&amp; screenPercentPos &lt; (parseFloat(COLUMNS[index2].element.style.left) + parseFloat(COLUMNS[index2].element.style.width) - COLUMN_MIN_WIDTH)) {
             //Index 1 Left is never Going to change
             let col1X = (parseFloat(COLUMNS[index1].element.style.left)/100) * this.getWIDTH(); //PX coords of the start of this column
             let col2X = (parseFloat(COLUMNS[index2].element.style.left)/100) * this.getWIDTH(); //PX coords of the start of this column
@@ -439,7 +462,7 @@ class Grid{
             row1.style.height = ((dragY - row1Y) / this.getHEIGHT() * 100) + '%';
             row2.style.height = ((row2Height - dragY) / this.getHEIGHT() * 100) + '%';
             row2.style.top = (dragY / this.getHEIGHT() * 100) + '%';
-            for(let i = 0; i < COLUMNS.length; i++){
+            for(let i = 0; i &lt; COLUMNS.length; i++){
                 let column = COLUMNS[i];
                 column.executeElementsCallback(row1, row1);
                 column.executeElementsCallback(row2, row2);
@@ -448,9 +471,9 @@ class Grid{
     }
 
     executeCallbacks(){
-        for(let i = 0; i < COLUMNS.length; i++){
+        for(let i = 0; i &lt; COLUMNS.length; i++){
             let column = COLUMNS[i];
-            for(let j = 0; j < column.ROWS.length; j++) {
+            for(let j = 0; j &lt; column.ROWS.length; j++) {
                 let element = column.ROWS[j];
                 column.executeElementsCallback(element, element);
             }
@@ -458,12 +481,12 @@ class Grid{
     }
 
     onDragEnd(){
-        for(let i = 0; i < DRAGS.length; i++){
+        for(let i = 0; i &lt; DRAGS.length; i++){
             //col2 x - drag.width/2
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
         }
-        for(let i = 0; i < COLUMNS.length; i++){
-            for(let j = 0; j < COLUMNS[i].V_DRAGS.length; j++){
+        for(let i = 0; i &lt; COLUMNS.length; i++){
+            for(let j = 0; j &lt; COLUMNS[i].V_DRAGS.length; j++){
                 COLUMNS[i].V_DRAGS[j].element.style.top = (parseFloat(COLUMNS[i].V_DRAGS[j].row2.style.top)-(COLUMNS[i].V_DRAGS[j].width()/2))+'%';
             }
         }
@@ -484,12 +507,12 @@ class Grid{
         }else{
             //Initialize the columns to be the saved size from the last time the editor was closed.
             let runningLeftWidth = 0;
-            for(let i = 0; i < widthArray.length; i++){
+            for(let i = 0; i &lt; widthArray.length; i++){
                 COLUMNS[i].element.style.width = (widthArray[i][0])+'%';
                 COLUMNS[i].element.style.left = (runningLeftWidth)+ '%';
                 runningLeftWidth += widthArray[i][0];
                 let runningTopHeight = 0;
-                for(let j = 0; j < COLUMNS[i].ROWS.length; j++){
+                for(let j = 0; j &lt; COLUMNS[i].ROWS.length; j++){
                     COLUMNS[i].ROWS[j].style.height = (widthArray[i][1+j])+'%';
                     COLUMNS[i].ROWS[j].style.top = (runningTopHeight)+ '%';
                     runningTopHeight += widthArray[i][1+j];
@@ -514,10 +537,10 @@ class Grid{
             size:[],
             data:[]
         };
-        for(let i = 0; i < COLUMNS.length; i++){
+        for(let i = 0; i &lt; COLUMNS.length; i++){
             let column = [];
             column.push(parseFloat(COLUMNS[i].element.style.width));
-            for(let j = 0; j < COLUMNS[i].ROWS.length; j++){
+            for(let j = 0; j &lt; COLUMNS[i].ROWS.length; j++){
                 column.push(parseFloat(COLUMNS[i].ROWS[j].style.height));
                 loop:{
                     if(COLUMNS[i]){
@@ -565,7 +588,6 @@ class Grid{
                 resolve(result);
             }, function(err) {
                 console.log(err);
-                resolve(null);
             });
         });
     }
@@ -573,33 +595,31 @@ class Grid{
     //Synchronous loop that populates a cell with a widget.
     async initalize(widgets, COLUMNS, saveData) {
         let widget_index = 0;
-        for(let i = 0; i < widgets.length; i++){
+        for(let i = 0; i &lt; widgets.length; i++){
             let widget = widgets[i];
             let result = await this.initializeWidgit(widget, saveData[widget_index] ? saveData[widget_index] : {});
-            if(result) {
-                if (COLUMNS[result.configData.col]) {
-                    //Check to see if we have an element at this location
-                    if (COLUMNS[result.configData.col].ROWS[result.configData.row].children[0].childElementCount == 0) {
-                        COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
-                        COLUMNS[result.configData.col].WIDGETS[result.configData.row] = result;
-                        result.postinit();
-                    } else {
-                        console.warn("Trying to add an element to cell [", result.configData.col, ",", result.configData.row, "] but there is already a widget there.");
-                        COLUMNS[result.configData.col].addChild(result.getElement());
-                        let widget_index = COLUMNS[result.configData.col].ROWS.length - 1;
-                        COLUMNS[result.configData.col].WIDGETS[widget_index] = result;
-                        this.onDragEnd();
-                        result.postinit();
-                    }
-                } else {
-                    console.error("Tried to access grid location [", result.configData.col, ",", result.configData.row, "] but that is outside of this grids bounds.");
+            if(COLUMNS[result.configData.col]) {
+                //Check to see if we have an element at this location
+                if(COLUMNS[result.configData.col].ROWS[result.configData.row].children[0].childElementCount == 0) {
+                    COLUMNS[result.configData.col].ROWS[result.configData.row].childNodes[0].appendChild(result.element);
+                    COLUMNS[result.configData.col].WIDGETS[result.configData.row] = result;
+                    result.postinit();
+                }else{
+                    console.warn("Trying to add an element to cell [",result.configData.col,",",result.configData.row,"] but there is already a widget there.");
+                    COLUMNS[result.configData.col].addChild(result.getElement());
+                    let widget_index = COLUMNS[result.configData.col].ROWS.length - 1;
+                    COLUMNS[result.configData.col].WIDGETS[widget_index] = result;
+                    this.onDragEnd();
+                    result.postinit();
                 }
+            }else{
+                console.error("Tried to access grid location [", result.configData.col,",",result.configData.row,"] but that is outside of this grids bounds.");
             }
             widget_index++;
         }
         console.log("Initialized.");
-        for(let i = 0; i < COLUMNS.length; i++){
-            for(let j= 0; j < COLUMNS[i].ROWS.length; j++){
+        for(let i = 0; i &lt; COLUMNS.length; i++){
+            for(let j= 0; j &lt; COLUMNS[i].ROWS.length; j++){
                 COLUMNS[i].ROWS[j].style.backgroundColor = '#442222';
             }
         }
@@ -615,9 +635,9 @@ class Grid{
      * This way later widgets can have earlier widgets passed into them. Example [Document(requires:[]), Tab(requires:[Document])] In this example the Widget Document requires nothing
      * and is the first widget to be initialized in the program. Tab is the second widget to be initialized, and it requires Document. When Tab's initialize method is called, the value
      * of Document will be stable and usable. This chaining method can be propagated forwards to allow widgets to require previously initialized widgets.
-     * <pre>
+     * &lt;pre>
      * See {@link Widget} for information on built in widgets and how to create your own.
-     * <pre>
+     * &lt;pre>
      * @param {Array} widgets - This is an array of Widget elements that will be initialized in array order.
      */
     init(widgets){
@@ -634,34 +654,27 @@ class Grid{
         return null;
     }
 
-    addWidget(widget){
-        this.initalize([widget], this.getCOLUMNS(), widget.save());
-    }
-
-    removeWidget(widget){
-        for(let i = 0; i < COLUMNS.length; i++){
-            let col = COLUMNS[i];
-            for(let j = 0; j < col.WIDGETS.length; j++){
-                let col_widget = col.WIDGETS[j];
-                if(col_widget['configData']) {
-                    if (col_widget.configData.id === widget.configData.id) {
-                        let target_row = col.ROWS[j];
-                        col.WIDGETS.splice(j, 1);
-                        for(let k = 0; k < col.V_DRAGS.length; k++){
-                            if(col.V_DRAGS[k].row1 === target_row){
-                                col.element.removeChild(col.V_DRAGS[k].element);
-                            }
-                            if(col.V_DRAGS[k].row2 === target_row){
-                                col.element.removeChild(col.V_DRAGS[k].element);
-                            }
-                        }
-                        col.element.removeChild(target_row);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
 };
-module.exports = Grid;
+module.exports = Grid;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileTreeWidget.html">FileTreeWidget</a></li><li><a href="FileManager.html">FileManager</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Widget.html">Widget</a></li></ul><h3>Global</h3><ul><li><a href="global.html#onCloseRequested">onCloseRequested</a></li><li><a href="global.html#open">open</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 07 2019 16:32:21 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

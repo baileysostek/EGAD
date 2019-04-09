@@ -1,6 +1,42 @@
-const Widget = require('./widget');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: transformWidget.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: transformWidget.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Widget = require('./widget');
 
 class TransformWidget extends Widget{
+    /**
+     * @inheritDoc
+     * @constructor
+     * @augments Widget
+     * @param {Integer} x - This is the Column that this widget should be added to.
+     * @param {Integer} y - This is the row of of the Column that this widget should be added to.
+     * @returns {TransformWidget} Returns a TransformWidget, an instance of the Widget class which specialises in visualizing 4x4 matrices. These matrices are commonly used to represent transformations in 3D space.
+     */
     constructor(x, y){
         super({
             name:"Transform Viewer",
@@ -20,6 +56,11 @@ class TransformWidget extends Widget{
         }, {});
     }
 
+    /**
+     * This init call overrides the parent init call. This call generates all the HTML needed to represent a transform visually, as well as creates the sliders. The values of configData.transform are set to the save data for this widget which was generated the last time the program closed.
+     * @param {Oject} configData - This is the Column that this widget should be added to.
+     * @returns {Promise} This initialization call returns a promise that resolves once this widget has completely initialized.In the initialization of a TransformWidget, the html element representing a transform visually si generated and added to the webpage. The css is also generated and injected through javascript into the &lt;row> that that this widget is living in.
+     */
     async init(configData){
         return await new Promise((resolve, reject) => {
             //Load the data passed into this function, and set the sliders correctly
@@ -228,40 +269,85 @@ class TransformWidget extends Widget{
         });
     }
 
+    /**
+     * This function allows a user to easily set the XYZ position of a 4x4 matrix.
+     * @param {Float} x - This is a floating point number representing the X position of this transform object.
+     * @param {Float} y - This is a floating point number representing the Y position of this transform object.
+     * @param {Float} z - This is a floating point number representing the Z position of this transform object.
+     * @returns {Vector3F} This function returns a Vector3F which is an object with a vector with a x , y , and z value.
+     */
     setPosition(x, y, z){
         super.getConfigData()['transform'][3]  = x;
         super.getConfigData()['transform'][7]  = y;
         super.getConfigData()['transform'][11] = z;
+        return [x, y, z];
     }
 
+    /**
+     * This function allows a user to set the X position of a 4x4 matrix, this is element [3] of the matrix array.
+     * @param {Float} x - This is a floating point number representing the X position of this transform object.
+     * @returns {Float} The X value of the transform is returned.
+     */
     setX(x){
         super.getConfigData()['transform'][3]   = x;
+        return x;
     }
 
+    /**
+     * This function returns the X value of the 4x4 matrix.
+     * @returns {Float} The X value of the transform is returned.
+     */
     getX(){
         return super.getConfigData()['transform'][3];
     }
 
+    /**
+     * This function allows a user to set the Y position of a 4x4 matrix, this is element [7] of the matrix array.
+     * @param {Float} y - This is a floating point number representing the Y position of this transform object.
+     * @returns {Float} The Y value of the transform is returned.
+     */
     setY(y){
         super.getConfigData()['transform'][7]   = y;
     }
 
+    /**
+     * This function returns the Y value of the 4x4 matrix.
+     * @returns {Float} The Y value of the transform is returned.
+     */
     getY(){
         return super.getConfigData()['transform'][7];
     }
 
+    /**
+     * This function allows a user to set the Z position of a 4x4 matrix, this is element [11] of the matrix array.
+     * @param {Float} z - This is a floating point number representing the Z position of this transform object.
+     * @returns {Float} The Z value of the transform is returned.
+     */
     setZ(z){
         super.getConfigData()['transform'][11]  = z;
     }
 
+    /**
+     * This function returns the Z value of the 4x4 matrix.
+     * @returns {Float} The Z value of the transform is returned.
+     */
     getZ(){
         return super.getConfigData()['transform'][11];
     }
 
+    /**
+     * This function allows a user to set the Scale position of a 4x4 matrix, this is element [15] of the matrix array.
+     * @param {Float} w - This is a floating point number representing the Scale of this transform object.
+     * @returns {Float} The Scale value of the transform is returned.
+     */
     setScale(w){
         super.getConfigData()['transform'][15] = w;
     }
 
+    /**
+     * This function gets the current state of the transformation matrix and returns column 3, the data representing the x, y, z and scale of this transform.
+     * @returns {Vector4f} An object containing the elements x,y,z, and w is returned from this function.
+     */
     getPosition(){
         return {
             x:super.getConfigData()['transform'][3],
@@ -365,8 +451,11 @@ class TransformWidget extends Widget{
         };
     }
 
+    /**
+     * This function is called whenever a slider's value changes. Much like the Observer design pattern, whenever a sliders value changes, this function is triggered to set the internal transform data = to the current value of the sliders.
+     */
     syncTransformWithElement(){
-        for(let i = 0; i < super.getConfigData()['transform'].length; i++){
+        for(let i = 0; i &lt; super.getConfigData()['transform'].length; i++){
             if(this.getConfigData()['cells'][i]) {
                 this.getConfigData()['cells'][i].innerText = super.getConfigData()['transform'][i];
             }
@@ -383,6 +472,10 @@ class TransformWidget extends Widget{
         }
     }
 
+    /**
+     * This function generates a save object to be written to disk whenever the application closes. The only data that this widget needs to persist between the application closing and opening is the current value of the 4x4 transformation matrix.
+     * @returns {Object} save - An object containing transformation matrix that this widget allows a user to view and modify.
+     */
     save(){
         this.syncTransformWithElement();
         return {
@@ -391,4 +484,26 @@ class TransformWidget extends Widget{
     }
 };
 
-module.exports = TransformWidget;
+module.exports = TransformWidget;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="canvasWidget.html">canvasWidget</a></li><li><a href="FileTreeWidget.html">FileTreeWidget</a></li><li><a href="TransformWidget.html">TransformWidget</a></li><li><a href="WebviewWidget.html">WebviewWidget</a></li><li><a href="Widget.html">Widget</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Apr 09 2019 14:32:19 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

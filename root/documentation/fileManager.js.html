@@ -1,4 +1,32 @@
-//Created by Bailey Sostek 9/5/2018
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: fileManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: fileManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//Created by Bailey Sostek 9/5/2018
 
 let PATH = '';
 let fs = require('fs');
@@ -6,7 +34,7 @@ let fs = require('fs');
 let INITIALIZED = false;
 
 
-const SAVE_PATH = 'root/';
+const SAVE_PATH = 'config/';
 const CONFIG_FILE = 'config.json';
 
 let configurationData   = {};
@@ -97,23 +125,16 @@ class FileManager{
 
         if(!this.projectData) {
             return new Promise( (resolve, reject) => {
-                console.log(this.PATH);
-                console.log(CONFIG_FILE);
-                fs.readFile(this.PATH + CONFIG_FILE, (err, data) => {
+                fs.readFile(this.PATH + this.CONFIG_FILE, function (err, data) {
                     if (err) {
                         reject(err);
                     }
-                    if(data) {
-                        console.log(JSON.parse(data));
-                        this.projectData = JSON.parse(data);
-                        if (this.projectData[fieldName]) {
-                            resolve(this.projectData[fieldName]);
-                        } else {
-                            console.error('Field:', fieldName, " is not on the project configuration object.");
-                            reject(data);
-                        }
-                    }else{
-                        console.error('File:', this.PATH , CONFIG_FILE , 'does not exist, or is empty.');
+                    console.log(data);
+                    this.projectData = JSON.parse(data);
+                    if (this.projectData[fieldName]) {
+                        resolve(this.projectData[fieldName]);
+                    } else {
+                        console.error('Field:', fieldName, " is not on the project configuration object.");
                         reject(data);
                     }
                 });
@@ -130,7 +151,7 @@ class FileManager{
         }
     }
 
-    getProjectFiles(subdir, ignore){
+    getProjectFiles(subdir){
         if(!this.INITIALIZED){
             console.error('getProjectFiles was called before the FS was initialized.');
             return;
@@ -143,51 +164,54 @@ class FileManager{
                     reject(err);
                 }
                 let outputFiles = [];
-
-                if(!subdir) {
-                    console.log("Ignored files:", ignore);
-                }
-                let ignoreObject = {};
-
-                for(var i = 0; i < ignore.length; i++) {
-                    let fileName = ignore[i].split('.')[0];
-                    let extension = ignore[i].split('.')[1];
-                    if (ignoreObject[extension]) {
-                        ignoreObject[extension].push(fileName);
-                    }else{
-                        ignoreObject[extension] = []; //Initialize the array
-                        ignoreObject[extension].push(fileName);
+                this.getProjectData("IGNORE").then((result) => {
+                    if(!subdir) {
+                        console.log("Ignored files:", result);
                     }
-                }
+                    let ignoreObject = {};
 
-                files.forEach(file => {
-                    let fileName  = file.split('.')[0];
-                    let extension = file.split('.')[1];
-                    //Is this file extension in the list of ignored file extensions?
-                    if(extension) {
+                    for(var i = 0; i &lt; result.length; i++) {
+                        let fileName = result[i].split('.')[0];
+                        let extension = result[i].split('.')[1];
                         if (ignoreObject[extension]) {
-                            for (var i = 0; i < ignoreObject[extension].length; i++) {
-                                let ignoreIdentifier = ignoreObject[extension][i];
-                                if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
-
-                                } else { //Add this file
-                                    outputFiles.push(this.convertFileToObject(file));
-                                }
-                            }
-                        } else { //If not then there is no way this file is ignored, so push it.
-                            outputFiles.push(this.convertFileToObject(file));
+                            ignoreObject[extension].push(fileName);
+                        }else{
+                            ignoreObject[extension] = []; //Initialize the array
+                            ignoreObject[extension].push(fileName);
                         }
-                    } else { //This is a directory because it does not have a file extension, we will recursivly load this directory
-                        this.convertFileToFolderObject(subdir, file).then((result) => {
-                            outputFiles.push(result);
-                        }, (err) => {
-                            console.error(err);
-                        });
                     }
 
-                });
+                    files.forEach(file => {
+                        let fileName  = file.split('.')[0];
+                        let extension = file.split('.')[1];
+                        //Is this file extension in the list of ignored file extensions?
+                        if(extension) {
+                            if (ignoreObject[extension]) {
+                                for (var i = 0; i &lt; ignoreObject[extension].length; i++) {
+                                    let ignoreIdentifier = ignoreObject[extension][i];
+                                    if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
-                resolve(outputFiles);
+                                    } else { //Add this file
+                                        outputFiles.push(this.convertFileToObject(file));
+                                    }
+                                }
+                            } else { //If not then there is no way this file is ignored, so push it.
+                                outputFiles.push(this.convertFileToObject(file));
+                            }
+                        } else { //This is a directory because it does not have a file extension, we will recursivly load this directory
+                            this.convertFileToFolderObject(subdir, file).then(function(result) {
+                                outputFiles.push(result);
+                            }, function(err) {
+                                console.error(err);
+                            });
+                        }
+
+                    });
+
+                    resolve(outputFiles);
+                }, function(err) {
+                    reject(err);
+                });
             })
         });
     }
@@ -213,7 +237,7 @@ class FileManager{
         });
     }
 
-    getProjectFiles(subdir, ignore = {}){
+    getProjectFiles(subdir){
         if(!this.INITIALIZED){
             console.error('getProjectFiles was called before the FS was initialized.');
             return;
@@ -226,31 +250,30 @@ class FileManager{
                     reject(err);
                 }
                 let outputFiles = [];
-
-                if(!subdir) {
-                    console.log("Ignored files:", ignore);
-                }
-                let ignoreObject = {};
-
-                for(var i = 0; i < ignore.length; i++) {
-                    let fileName = ignore[i].split('.')[0];
-                    let extension = ignore[i].split('.')[1];
-                    if (ignoreObject[extension]) {
-                        ignoreObject[extension].push(fileName);
-                    }else{
-                        ignoreObject[extension] = []; //Initialize the array
-                        ignoreObject[extension].push(fileName);
+                this.getProjectData("IGNORE").then((result) => {
+                    if(!subdir) {
+                        console.log("Ignored files:", result);
                     }
-                }
+                    let ignoreObject = {};
 
-                if(files){
+                    for(var i = 0; i &lt; result.length; i++) {
+                        let fileName = result[i].split('.')[0];
+                        let extension = result[i].split('.')[1];
+                        if (ignoreObject[extension]) {
+                            ignoreObject[extension].push(fileName);
+                        }else{
+                            ignoreObject[extension] = []; //Initialize the array
+                            ignoreObject[extension].push(fileName);
+                        }
+                    }
+
                     files.forEach(file => {
                         let fileName  = file.split('.')[0];
                         let extension = file.split('.')[1];
                         //Is this file extension in the list of ignored file extensions?
                         if(extension) {
                             if (ignoreObject[extension]) {
-                                for (var i = 0; i < ignoreObject[extension].length; i++) {
+                                for (var i = 0; i &lt; ignoreObject[extension].length; i++) {
                                     let ignoreIdentifier = ignoreObject[extension][i];
                                     if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
@@ -262,19 +285,44 @@ class FileManager{
                                 outputFiles.push(this.convertFileToObject(file));
                             }
                         } else { //This is a directory because it does not have a file extension, we will recursivly load this directory
-                            this.convertFileToFolderObject(subdir, file).then((result) => {
+                            this.convertFileToFolderObject(subdir, file).then(function(result) {
                                 outputFiles.push(result);
-                            }, (err) => {
+                            }, function(err) {
                                 console.error(err);
                             });
                         }
-                    });
-                }
 
-                resolve(outputFiles);
+                    });
+
+                    resolve(outputFiles);
+                }, function(err) {
+                    reject(err);
+                });
             })
         });
     }
 };
 
-module.exports = FileManager;
+module.exports = FileManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileTreeWidget.html">FileTreeWidget</a></li><li><a href="FileManager.html">FileManager</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Widget.html">Widget</a></li></ul><h3>Global</h3><ul><li><a href="global.html#onCloseRequested">onCloseRequested</a></li><li><a href="global.html#open">open</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 07 2019 16:32:21 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,4 +1,47 @@
-//Created by Bailey Sostek 9/5/2018
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>util/fileManager.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="canvasWidget.html">canvasWidget</a><ul class='methods'><li data-type='method'><a href="canvasWidget.html#getCol">getCol</a></li><li data-type='method'><a href="canvasWidget.html#getElement">getElement</a></li><li data-type='method'><a href="canvasWidget.html#getRow">getRow</a></li><li data-type='method'><a href="canvasWidget.html#init">init</a></li><li data-type='method'><a href="canvasWidget.html#setElement">setElement</a></li></ul></li><li><a href="FileManager.html">FileManager</a></li><li><a href="FileTreeWidget.html">FileTreeWidget</a><ul class='methods'><li data-type='method'><a href="FileTreeWidget.html#doubleClick">doubleClick</a></li><li data-type='method'><a href="FileTreeWidget.html#getCol">getCol</a></li><li data-type='method'><a href="FileTreeWidget.html#getElement">getElement</a></li><li data-type='method'><a href="FileTreeWidget.html#getRow">getRow</a></li><li data-type='method'><a href="FileTreeWidget.html#init">init</a></li><li data-type='method'><a href="FileTreeWidget.html#setElement">setElement</a></li><li data-type='method'><a href="FileTreeWidget.html#translateRelative">translateRelative</a></li></ul></li><li><a href="Grid.html">Grid</a><ul class='methods'><li data-type='method'><a href="Grid.html#addColumn">addColumn</a></li><li data-type='method'><a href="Grid.html#addDrag">addDrag</a></li><li data-type='method'><a href="Grid.html#createColumn">createColumn</a></li><li data-type='method'><a href="Grid.html#createDrag">createDrag</a></li><li data-type='method'><a href="Grid.html#createVDrag">createVDrag</a></li><li data-type='method'><a href="Grid.html#generateSaveObject">generateSaveObject</a></li><li data-type='method'><a href="Grid.html#getHEIGHT">getHEIGHT</a></li><li data-type='method'><a href="Grid.html#getWIDTH">getWIDTH</a></li><li data-type='method'><a href="Grid.html#init">init</a></li><li data-type='method'><a href="Grid.html#loadGridSizes">loadGridSizes</a></li><li data-type='method'><a href="Grid.html#refresh">refresh</a></li></ul></li><li><a href="TransformWidget.html">TransformWidget</a><ul class='methods'><li data-type='method'><a href="TransformWidget.html#getCol">getCol</a></li><li data-type='method'><a href="TransformWidget.html#getElement">getElement</a></li><li data-type='method'><a href="TransformWidget.html#getPosition">getPosition</a></li><li data-type='method'><a href="TransformWidget.html#getRow">getRow</a></li><li data-type='method'><a href="TransformWidget.html#getX">getX</a></li><li data-type='method'><a href="TransformWidget.html#getY">getY</a></li><li data-type='method'><a href="TransformWidget.html#getZ">getZ</a></li><li data-type='method'><a href="TransformWidget.html#init">init</a></li><li data-type='method'><a href="TransformWidget.html#save">save</a></li><li data-type='method'><a href="TransformWidget.html#setElement">setElement</a></li><li data-type='method'><a href="TransformWidget.html#setPosition">setPosition</a></li><li data-type='method'><a href="TransformWidget.html#setScale">setScale</a></li><li data-type='method'><a href="TransformWidget.html#setX">setX</a></li><li data-type='method'><a href="TransformWidget.html#setY">setY</a></li><li data-type='method'><a href="TransformWidget.html#setZ">setZ</a></li><li data-type='method'><a href="TransformWidget.html#syncTransformWithElement">syncTransformWithElement</a></li></ul></li><li><a href="WebviewWidget.html">WebviewWidget</a><ul class='methods'><li data-type='method'><a href="WebviewWidget.html#getCol">getCol</a></li><li data-type='method'><a href="WebviewWidget.html#getElement">getElement</a></li><li data-type='method'><a href="WebviewWidget.html#getRow">getRow</a></li><li data-type='method'><a href="WebviewWidget.html#init">init</a></li><li data-type='method'><a href="WebviewWidget.html#setElement">setElement</a></li></ul></li><li><a href="Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="Widget.html#getCol">getCol</a></li><li data-type='method'><a href="Widget.html#getElement">getElement</a></li><li data-type='method'><a href="Widget.html#getRow">getRow</a></li><li data-type='method'><a href="Widget.html#init">init</a></li><li data-type='method'><a href="Widget.html#setElement">setElement</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#Editor">Editor</a></li><li><a href="global.html#getMenu">getMenu</a></li><li><a href="global.html#onCloseRequested">onCloseRequested</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">util/fileManager.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//Created by Bailey Sostek 9/5/2018
 
 let PATH = '';
 let fs = require('fs');
@@ -149,7 +192,7 @@ class FileManager{
                 }
                 let ignoreObject = {};
 
-                for(var i = 0; i < ignore.length; i++) {
+                for(var i = 0; i &lt; ignore.length; i++) {
                     let fileName = ignore[i].split('.')[0];
                     let extension = ignore[i].split('.')[1];
                     if (ignoreObject[extension]) {
@@ -166,7 +209,7 @@ class FileManager{
                     //Is this file extension in the list of ignored file extensions?
                     if(extension) {
                         if (ignoreObject[extension]) {
-                            for (var i = 0; i < ignoreObject[extension].length; i++) {
+                            for (var i = 0; i &lt; ignoreObject[extension].length; i++) {
                                 let ignoreIdentifier = ignoreObject[extension][i];
                                 if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
@@ -221,18 +264,18 @@ class FileManager{
 
         return new Promise((resolve, reject) => {
             fs.readdir(subdir, (err, files) => {
-                console.log("Directory:",subdir);
+                // console.log("Directory:",subdir);
                 if (err) {
                     reject(err);
                 }
                 let outputFiles = [];
 
                 if(!subdir) {
-                    console.log("Ignored files:", ignore);
+                    // console.log("Ignored files:", ignore);
                 }
                 let ignoreObject = {};
 
-                for(var i = 0; i < ignore.length; i++) {
+                for(var i = 0; i &lt; ignore.length; i++) {
                     let fileName = ignore[i].split('.')[0];
                     let extension = ignore[i].split('.')[1];
                     if (ignoreObject[extension]) {
@@ -250,7 +293,7 @@ class FileManager{
                         //Is this file extension in the list of ignored file extensions?
                         if(extension) {
                             if (ignoreObject[extension]) {
-                                for (var i = 0; i < ignoreObject[extension].length; i++) {
+                                for (var i = 0; i &lt; ignoreObject[extension].length; i++) {
                                     let ignoreIdentifier = ignoreObject[extension][i];
                                     if (ignoreIdentifier === fileName || ignoreIdentifier === '*') { //If this files name or '*' is listed as an ignored file, ignore this file.
 
@@ -265,7 +308,7 @@ class FileManager{
                             this.convertFileToFolderObject(subdir, file).then((result) => {
                                 outputFiles.push(result);
                             }, (err) => {
-                                console.error(err);
+                                // console.error(err);
                             });
                         }
                     });
@@ -277,4 +320,28 @@ class FileManager{
     }
 };
 
-module.exports = FileManager;
+module.exports = FileManager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 11 2019 14:28:35 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

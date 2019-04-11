@@ -2,7 +2,7 @@
   "name": "electron-tutorial-app",
   "version": "1.0.0",
   "description": "Integrated Development Envronment for the Perlenspiel game engine",
-  "main": "main.js",
+  "main": "app.js",
   "scripts": {
     "start": "electron ."
   },
@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "codemirror": "~5.40.0",
+    "docdash": "^1.1.0",
     "electron-download": "^4.1.1",
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",

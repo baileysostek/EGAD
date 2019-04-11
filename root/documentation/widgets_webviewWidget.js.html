@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>widgets/webviewWidget.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -31,31 +31,70 @@
 
 <div id="main">
     
+    <h1 class="page-title">widgets/webviewWidget.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Widget = require('./widget');
+
+class WebviewWidget extends Widget{
+    /**
+     * @inheritDoc
+     * @constructor
+     * @augments Widget
+     * @param {Integer} url - This is the Column that this widget should be added to.
+     * @returns {WebviewWidget} Returns a WebviewWidget, an instance of the Widget class which allows a user to display a remote webpage, or a local html file.
+     */
+    constructor(x, y, url){
+        super({name:"Web View", col:x, row:y, url:url}, {});
+    }
+
+    async init(){
+        return await new Promise((resolve, reject) => {
+            if(navigator.onLine || !this.configData.url.includes('http:')) {
+                this.element = document.createElement("webview");
+                this.element.setAttribute("src", this.configData.url);
+                resolve(this);
+            }else{
+                //Offline, so show a grey screen
+                this.element = document.createElement("div");
+                this.element.style.backgroundColor = '#343434';
+                this.element.innerHTML = "&lt;h1>Not Connected to Internet!&lt;/h1>"
+                resolve(this);
+            }
+        });
+    }
 
 
-    <section class="package">
-        <h3> </h3>		
+    postinit(){
+        //Set height correctly
+        this.element.style.height = 100+'%';
+        this.element.parentElement.style.height = 100+'%';
+        this.element.ondragstart = function () {
+            return false;
+        };
+        this.element.ondragenter = function () {
+            return false;
+        };
+        this.element.ondragover = function () {
+            return false;
+        };
+        this.element.ondrag = function () {
+            return false;
+        };
+    }
+
+};
+
+module.exports = WebviewWidget;</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
 
 
 

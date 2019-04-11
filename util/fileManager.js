@@ -221,14 +221,14 @@ class FileManager{
 
         return new Promise((resolve, reject) => {
             fs.readdir(subdir, (err, files) => {
-                console.log("Directory:",subdir);
+                // console.log("Directory:",subdir);
                 if (err) {
                     reject(err);
                 }
                 let outputFiles = [];
 
                 if(!subdir) {
-                    console.log("Ignored files:", ignore);
+                    // console.log("Ignored files:", ignore);
                 }
                 let ignoreObject = {};
 
@@ -265,7 +265,7 @@ class FileManager{
                             this.convertFileToFolderObject(subdir, file).then((result) => {
                                 outputFiles.push(result);
                             }, (err) => {
-                                console.error(err);
+                                // console.error(err);
                             });
                         }
                     });

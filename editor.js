@@ -7,21 +7,25 @@ const fancyTree = require('jquery.fancytree');
 let myFileManager;
 let myGrid;
 
-//This is an object that represents the file dropdown menu for this application, customise it fit your applications specific needs.
-let MENU = [];
-
 //Version number of this project.
 const version = '1.0';
 
 //---------------------------------------------------------------------------
 //     Include all widget classes to be referenced by the grid here.
 //---------------------------------------------------------------------------
-const grid              = require('./grid');
-const fileManager       = require('./fileManager');
+const grid              = require('./grid/grid');
+const fileManager       = require('./util/fileManager');
 const fileBrowser       = require('./widgets/fileTreeWidget');
 const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
+
+//---------------------------------------------------------------------------
+//                    Include Utility Classes here
+//---------------------------------------------------------------------------
+const menuBuilder       = require('./util/menuBuilder');
+//Initialize the menu here.
+let menu = new menuBuilder();
 
 /**
  * The init function is executed by the main.js file after the Electron BrowserWindow hosting this file has finished initializing.
@@ -31,15 +35,15 @@ function init() {
     //---------------------------------------------------------------------------
     //                              Build Menu here
     //---------------------------------------------------------------------------
-    let file_dd = addMenuDropDown("File");
-    registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
-    registerFunctionCallback(file_dd, 'Save', 'S', 'save');
-    registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
-    registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
-    registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
-    let help_dd = addMenuDropDown("Help");
-    let test_dd = addMenuDropDown("Test");
-    let project_dd = addMenuDropDown("Project");
+    let file_dd = menu.addMenuDropDown("File");
+    menu.registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
+    menu.registerFunctionCallback(file_dd, 'Save', 'S', 'save');
+    menu.registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
+    menu.registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
+    menu.registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
+    let help_dd = menu.addMenuDropDown("Help");
+    let test_dd = menu.addMenuDropDown("Test");
+    let project_dd = menu.addMenuDropDown("Project");
 
 
     //Initialize the file manager, and load the configuration file.
@@ -51,11 +55,16 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
-        myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
+        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         myGrid.init([
-            new webviewWidget(0, 0, "root/documentation/index.html"),
+            new canvasWidget(0, 0, screen.width, screen.height),
+            new transfromWidget(1,0),
+        ]);
+        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        // myGrid.init([
+            // new webviewWidget(0, 0, "root/documentation/index.html"),
             // new webviewWidget(0, 0, "http://imgur.com"),
-            new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
+            // new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
             // new fileBrowser(0, 1, "node_modules", myFileManager),
             // new fileBrowser(0, 2, "~Font", myFileManager),
             // new fileBrowser(0, 3, "~Images", myFileManager),
@@ -80,10 +89,10 @@ function init() {
             // new fileBrowser(4, 2, "~", myFileManager),
             // new fileBrowser(4, 3, "~", myFileManager),
             // new fileBrowser(4, 4, "~", myFileManager),
-            new transfromWidget(2,0),
             // new transfromWidget(1,0),
             // new transfromWidget(1,0),
-        ]);
+            // new transfromWidget(1,0),
+        // ]);
 
     }, function(err) {
         //If there was an error initializing the grid, print the error here.
@@ -116,6 +125,9 @@ function removeWidget() {
 //
 //---------------------------------------------------------------------------
 
+function getMenu () {
+    return menu.getMenu();
+}
 
 /**
  * Callback function executed when the window's close button is pressed.
@@ -123,70 +135,4 @@ function removeWidget() {
  **/
 function onCloseRequested(){
     myFileManager.writeToProperties('WIDTHS', myGrid.getGridSize());
-}
-
-/**
- * This function is simply a getter for this classes MENU object. The MENU object hold all configuration data needed to create the menu at the top of the window.
- * @return{Object} An object representing all menu tabs, and their sub functions.
- **/
-function getMenu(){
-    return MENU;
-}
-
-/**
- * This function will create a new tab in the menu, such as File, Edit, Project... etc.
- * @param {String} name
- * @name is the title of the new tab bar that you want to create. For Example, if your project requires a tab in the menu called 'Projects' call this function with the string 'Projects'
- * @return{Object} a reference to the JSON object representing this menu tab.
- **/
-function addMenuDropDown(name){
-    let drop_down = findMenuDropDown(name);
-    if(!drop_down) {
-        let new_menu = {
-            label: name,
-            submenu: []
-        };
-        MENU.push(new_menu);
-        return new_menu;
-    }
-    return drop_down;
-}
-
-function registerWindowCallback(menu, name, character, function_name){
-    menu.submenu.push(
-        {
-            label:name,
-            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
-            mainWindow_dot:function_name
-        }
-    );
-}
-
-function registerAppCallback(menu, name, character, function_name){
-    menu.submenu.push(
-        {
-            label:name,
-            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
-            app_dot:function_name
-        }
-    );
-}
-
-function registerFunctionCallback(menu, name, character, function_name){
-    menu.submenu.push(
-        {
-            label:name,
-            accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
-            this_dot:function_name
-        }
-    );
-}
-
-function findMenuDropDown(name){
-    for(let i = 0; i < MENU.length; i++){
-        if(MENU[i].label === name){
-            return MENU[i];
-        }
-    }
-    return false;
 }

@@ -47,7 +47,7 @@ app.on('ready', function(){
                     for (let j = 0; j < result[i].submenu.length; j++) {
                         let menu_element = result[i].submenu[j];
                         if(menu_element['mainWindow_dot']) {//If the submenu element was specified
-                            console.log("Overwriting Click Function for:",menu_element.label);
+                            // console.log("Overwriting Click Function for:",menu_element.label);
                             result[i].submenu[j] = {
                                 label: menu_element['label'],
                                 accelerator: menu_element['accelerator'],
@@ -57,7 +57,7 @@ app.on('ready', function(){
                             };
                         }
                         if(menu_element['app_dot']) {
-                            console.log("Overwriting Click Function for:",menu_element.label);
+                            // console.log("Overwriting Click Function for:",menu_element.label);
                             result[i].submenu[j] = {
                                 label: menu_element['label'],
                                 accelerator: menu_element['accelerator'],
@@ -67,7 +67,7 @@ app.on('ready', function(){
                             };
                         }
                         if(menu_element['this_dot']) {
-                            console.log("Overwriting Click Function for:",menu_element.label);
+                            // console.log("Overwriting Click Function for:",menu_element.label);
                             result[i].submenu[j] = {
                                 label: menu_element['label'],
                                 accelerator: menu_element['accelerator'],

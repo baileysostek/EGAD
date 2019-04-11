@@ -22,6 +22,9 @@ let loadingContainer;
 //If this is true, the grid will display a grey screen while loading.
 let BLOCKING_LOAD = false;
 
+//Indexing data to preserve save/load order of widgets
+let widget_index = 0;
+
 let SAVE_DATA = {};
 
 /**
@@ -514,6 +517,7 @@ class Grid{
             size:[],
             data:[]
         };
+        // console.log("Columns:",COLUMNS);
         for(let i = 0; i < COLUMNS.length; i++){
             let column = [];
             column.push(parseFloat(COLUMNS[i].element.style.width));
@@ -524,12 +528,12 @@ class Grid{
                         if(COLUMNS[i].WIDGETS[j]){
                             if (COLUMNS[i].WIDGETS[j]['save']) {
                                 let saveData = COLUMNS[i].WIDGETS[j];
-                                out.data.push(saveData.save());
+                                out.data[saveData.getConfigData().init_order] = saveData.save();
                                 break loop;
                             }
                         }
                     }
-                    // out.data.push({});
+                    out.data.push({});
                 }
             }
             out.size.push(column);
@@ -572,9 +576,10 @@ class Grid{
 
     //Synchronous loop that populates a cell with a widget.
     async initalize(widgets, COLUMNS, saveData) {
-        let widget_index = 0;
         for(let i = 0; i < widgets.length; i++){
             let widget = widgets[i];
+            widget.getConfigData().init_order = widget_index;
+            console.log(widget,widget_index);
             let result = await this.initializeWidgit(widget, saveData[widget_index] ? saveData[widget_index] : {});
             if(result) {
                 if (COLUMNS[result.configData.col]) {
@@ -610,6 +615,19 @@ class Grid{
         }
     }
 
+    // //The Initialization order of widgets does not neccessarily corrilate with the save order of widgets, IE we cant assume initWidget 1 == saveWidget1, we do the correct translation in here.
+    // getWidgetIndex(widget){
+    //     if(widget){
+    //         let col = widget.getConfigData().col;//Variable
+    //         let row = widget.getConfigData().row;//Fixed offset,
+    //         let offset = 0;
+    //         for(let i = 0; i < col; i++){
+    //             offset+=COLUMNS[i].ROWS.length;
+    //         }
+    //         return row + offset;
+    //     }
+    // }
+
     /**
      * Initializes the grid with Widgets. A Widget is a synchronously spawned promise. This function will iterate through the widgets array and initialize one widget after another.
      * This way later widgets can have earlier widgets passed into them. Example [Document(requires:[]), Tab(requires:[Document])] In this example the Widget Document requires nothing
@@ -625,7 +643,7 @@ class Grid{
     }
 
 
-    getCell(col, row) {
+    getWidget(col, row) {
         if (COLUMNS[col]) {
             if(COLUMNS[col].WIDGETS[row]) {
                 return COLUMNS[col].WIDGETS[row];
@@ -634,29 +652,44 @@ class Grid{
         return null;
     }
 
+    setWidget(col, row, widget) {
+        if(widget) {
+            let config = widget.getConfigData();
+            config['col'] = col;
+            config['row'] = row;
+            this.removeWidget(this.getWidget(col, row));
+            this.addWidget(widget);
+        }
+    }
+
     addWidget(widget){
         this.initalize([widget], this.getCOLUMNS(), widget.save());
     }
 
+    //WIP
     removeWidget(widget){
-        for(let i = 0; i < COLUMNS.length; i++){
-            let col = COLUMNS[i];
-            for(let j = 0; j < col.WIDGETS.length; j++){
-                let col_widget = col.WIDGETS[j];
-                if(col_widget['configData']) {
-                    if (col_widget.configData.id === widget.configData.id) {
-                        let target_row = col.ROWS[j];
-                        col.WIDGETS.splice(j, 1);
-                        for(let k = 0; k < col.V_DRAGS.length; k++){
-                            if(col.V_DRAGS[k].row1 === target_row){
-                                col.element.removeChild(col.V_DRAGS[k].element);
+        if(widget) {
+            for (let i = 0; i < COLUMNS.length; i++) {
+                let col = COLUMNS[i];
+                for (let j = 0; j < col.WIDGETS.length; j++) {
+                    let col_widget = col.WIDGETS[j];
+                    if (col_widget['configData']) {
+                        if (col_widget.configData.id === widget.configData.id) {
+                            let target_row = col.ROWS[j];
+                            col.WIDGETS.splice(j, 1);
+                            for (let k = 0; k < col.V_DRAGS.length; k++) {
+                                if (col.V_DRAGS[k].row1 === target_row) {
+                                    col.element.removeChild(col.V_DRAGS[k].element);
+                                }
+                                if (col.V_DRAGS[k].row2 === target_row) {
+                                    col.element.removeChild(col.V_DRAGS[k].element);
+                                }
                             }
-                            if(col.V_DRAGS[k].row2 === target_row){
-                                col.element.removeChild(col.V_DRAGS[k].element);
-                            }
+                            // col.element.removeChild(target_row.children[0]);
+                            // col.ROWS.splice(j,1);
+                            target_row.children[0].removeChild(target_row.children[0].children[0]);
+                            return;
                         }
-                        col.element.removeChild(target_row);
-                        return;
                     }
                 }
             }

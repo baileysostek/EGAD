@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>util/menuBuilder.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="canvasWidget.html">canvasWidget</a><ul class='methods'><li data-type='method'><a href="canvasWidget.html#getCol">getCol</a></li><li data-type='method'><a href="canvasWidget.html#getElement">getElement</a></li><li data-type='method'><a href="canvasWidget.html#getRow">getRow</a></li><li data-type='method'><a href="canvasWidget.html#init">init</a></li><li data-type='method'><a href="canvasWidget.html#setElement">setElement</a></li></ul></li><li><a href="FileManager.html">FileManager</a></li><li><a href="FileTreeWidget.html">FileTreeWidget</a><ul class='methods'><li data-type='method'><a href="FileTreeWidget.html#doubleClick">doubleClick</a></li><li data-type='method'><a href="FileTreeWidget.html#getCol">getCol</a></li><li data-type='method'><a href="FileTreeWidget.html#getElement">getElement</a></li><li data-type='method'><a href="FileTreeWidget.html#getRow">getRow</a></li><li data-type='method'><a href="FileTreeWidget.html#init">init</a></li><li data-type='method'><a href="FileTreeWidget.html#setElement">setElement</a></li><li data-type='method'><a href="FileTreeWidget.html#translateRelative">translateRelative</a></li></ul></li><li><a href="Grid.html">Grid</a><ul class='methods'><li data-type='method'><a href="Grid.html#addColumn">addColumn</a></li><li data-type='method'><a href="Grid.html#addDrag">addDrag</a></li><li data-type='method'><a href="Grid.html#createColumn">createColumn</a></li><li data-type='method'><a href="Grid.html#createDrag">createDrag</a></li><li data-type='method'><a href="Grid.html#createVDrag">createVDrag</a></li><li data-type='method'><a href="Grid.html#generateSaveObject">generateSaveObject</a></li><li data-type='method'><a href="Grid.html#getHEIGHT">getHEIGHT</a></li><li data-type='method'><a href="Grid.html#getWIDTH">getWIDTH</a></li><li data-type='method'><a href="Grid.html#init">init</a></li><li data-type='method'><a href="Grid.html#loadGridSizes">loadGridSizes</a></li><li data-type='method'><a href="Grid.html#refresh">refresh</a></li></ul></li><li><a href="TransformWidget.html">TransformWidget</a><ul class='methods'><li data-type='method'><a href="TransformWidget.html#getCol">getCol</a></li><li data-type='method'><a href="TransformWidget.html#getElement">getElement</a></li><li data-type='method'><a href="TransformWidget.html#getPosition">getPosition</a></li><li data-type='method'><a href="TransformWidget.html#getRow">getRow</a></li><li data-type='method'><a href="TransformWidget.html#getX">getX</a></li><li data-type='method'><a href="TransformWidget.html#getY">getY</a></li><li data-type='method'><a href="TransformWidget.html#getZ">getZ</a></li><li data-type='method'><a href="TransformWidget.html#init">init</a></li><li data-type='method'><a href="TransformWidget.html#save">save</a></li><li data-type='method'><a href="TransformWidget.html#setElement">setElement</a></li><li data-type='method'><a href="TransformWidget.html#setPosition">setPosition</a></li><li data-type='method'><a href="TransformWidget.html#setScale">setScale</a></li><li data-type='method'><a href="TransformWidget.html#setX">setX</a></li><li data-type='method'><a href="TransformWidget.html#setY">setY</a></li><li data-type='method'><a href="TransformWidget.html#setZ">setZ</a></li><li data-type='method'><a href="TransformWidget.html#syncTransformWithElement">syncTransformWithElement</a></li></ul></li><li><a href="WebviewWidget.html">WebviewWidget</a><ul class='methods'><li data-type='method'><a href="WebviewWidget.html#getCol">getCol</a></li><li data-type='method'><a href="WebviewWidget.html#getElement">getElement</a></li><li data-type='method'><a href="WebviewWidget.html#getRow">getRow</a></li><li data-type='method'><a href="WebviewWidget.html#init">init</a></li><li data-type='method'><a href="WebviewWidget.html#setElement">setElement</a></li></ul></li><li><a href="Widget.html">Widget</a><ul class='methods'><li data-type='method'><a href="Widget.html#getCol">getCol</a></li><li data-type='method'><a href="Widget.html#getElement">getElement</a></li><li data-type='method'><a href="Widget.html#getRow">getRow</a></li><li data-type='method'><a href="Widget.html#init">init</a></li><li data-type='method'><a href="Widget.html#setElement">setElement</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#init">init</a></li><li><a href="global.html#onCloseRequested">onCloseRequested</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">util/menuBuilder.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//This is an object that represents the file dropdown menu for this application, customise it fit your applications specific needs.
+let MENU = [];
+
+class menuBuilder{
+    /**
+     * This function is simply a getter for this classes MENU object. The MENU object hold all configuration data needed to create the menu at the top of the window.
+     * @return{Object} An object representing all menu tabs, and their sub functions.
+     **/
+    getMenu(){
+        return MENU;
+    }
+
+    /**
+     * This function will create a new tab in the menu, such as File, Edit, Project... etc.
+     * @param {String} name
+     * @name is the title of the new tab bar that you want to create. For Example, if your project requires a tab in the menu called 'Projects' call this function with the string 'Projects'
+     * @return{Object} a reference to the JSON object representing this menu tab.
+     **/
+    addMenuDropDown(name){
+        let drop_down = this.findMenuDropDown(name);
+        if(!drop_down) {
+            let new_menu = {
+                label: name,
+                submenu: []
+            };
+            MENU.push(new_menu);
+            return new_menu;
+        }
+        return drop_down;
+    }
+
+    registerWindowCallback(menu, name, character, function_name){
+        menu.submenu.push(
+            {
+                label:name,
+                accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+                mainWindow_dot:function_name
+            }
+        );
+    }
+
+    registerAppCallback(menu, name, character, function_name){
+        menu.submenu.push(
+            {
+                label:name,
+                accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+                app_dot:function_name
+            }
+        );
+    }
+
+    registerFunctionCallback(menu, name, character, function_name){
+        menu.submenu.push(
+            {
+                label:name,
+                accelerator: process.platform == 'darwin' ? 'Command+'+character : 'Ctrl+'+character,
+                this_dot:function_name
+            }
+        );
+    }
+
+    findMenuDropDown(name) {
+        for (let i = 0; i &lt; MENU.length; i++) {
+            if (MENU[i].label === name) {
+                return MENU[i];
+            }
+        }
+        return false;
+    }
+};
+
+module.exports = menuBuilder;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 11 2019 17:13:31 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

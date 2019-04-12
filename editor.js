@@ -19,6 +19,7 @@ const fileBrowser       = require('./widgets/fileTreeWidget');
 const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
+const consoleWidget     = require('./widgets/consoleWidget');
 const codeMirrorWidget  = require('./widgets/codeMirrorWidget');
 const tabWidget         = require('./widgets/tabWidget');
 
@@ -59,11 +60,15 @@ function init() {
 
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         let fileTree = new fileBrowser(1, 0, "~", myFileManager);
+        let dev_console =  new consoleWidget(0,0);
+        dev_console.subscribe((message) => {
+            dev_console.log(message);
+        });
         myGrid.init([
             new codeMirrorWidget(0, 0, 'javascript'),
             fileTree,
             new tabWidget(1, 0, fileTree),
-            new transfromWidget(0,0),
+            dev_console,
         ]);
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([

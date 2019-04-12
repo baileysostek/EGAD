@@ -20,6 +20,7 @@ const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
 const codeMirrorWidget  = require('./widgets/codeMirrorWidget');
+const tabWidget         = require('./widgets/tabWidget');
 
 //---------------------------------------------------------------------------
 //                    Include Utility Classes here
@@ -57,9 +58,12 @@ function init() {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        let fileTree = new fileBrowser(1, 0, "~", myFileManager);
         myGrid.init([
             new codeMirrorWidget(0, 0, 'javascript'),
-            new codeMirrorWidget(1, 0, 'javascript'),
+            fileTree,
+            new tabWidget(1, 0, fileTree),
+            new transfromWidget(0,0),
         ]);
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([
@@ -137,5 +141,5 @@ function getMenu () {
  * The code below is a blocking call that must terminate before the window can be closed.
  **/
 function onCloseRequested(){
-    myFileManager.writeToProperties('WIDTHS', myGrid.getGridSize());
+    save();
 }

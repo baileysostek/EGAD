@@ -1,4 +1,5 @@
 const Widget = require('./widget');
+let observers = [];
 let fileManager;
 
 class FileTreeWidget extends Widget{
@@ -81,8 +82,14 @@ class FileTreeWidget extends Widget{
      * @param {Object} data - Data holds all of the data for that FileTree node.
      */
     doubleClick(event, data){
-        console.log("Event:", event);
-        console.log("Data:", data)
+        for(let observer_key in observers){
+            let observer = observers[observer_key];
+            observer(event, data);
+        }
+    }
+
+    subscribe(observer){
+        observers.push(observer);
     }
 };
 

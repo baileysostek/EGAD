@@ -20,11 +20,11 @@ body{
 }
 
 .tab:hover {
-    background-color: #808080;
+    background-color: #bababa;
 }
 
 .selected{
-    background-color: #bababa;
+    background-color: #808080;
 }
 
 .colorPicker {

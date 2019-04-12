@@ -1,19 +1,44 @@
+const Widget = require('./widget');
+
 let OPEN_TABS = [];
 let FILE_TYPES = [];
 
 let tabClass = 'tab'; //CSS class for this tab
 let selectedClass = 'selected'; //CSS class for this tab
 
-let TAB_ELEMENT; //DOM element for this class
-let selectedPath = '';
+class tabWidget extends Widget{
+    constructor(x, y, fileTreeWidget){
+        super({
+            name:"Canvas",
+            col:x,
+            row:y
+        }, {
+            tree:fileTreeWidget
+        });
 
-module.exports = class tabs{
-    constructor(){
-        TAB_ELEMENT = document.createElement('div');
-        TAB_ELEMENT.setAttribute('id', 'tabs');
-        TAB_ELEMENT.style.backgroundColor = '#53ffff';
-        TAB_ELEMENT.style.width = '100%';
-        TAB_ELEMENT.style.height = '100%';
+        //Pass to tree widgetf
+
+        fileTreeWidget.subscribe((event, data)=>{
+            console.log("Event:", event);
+            console.log("Data:", data);
+            this.openFile(data);
+        });
+    }
+
+    async init(){
+        return await new Promise((resolve, reject) => {
+            this.element = document.createElement('div');
+            this.element.setAttribute('id', 'tabs');
+            this.element.style.backgroundColor = '#53ffff';
+            this.element.style.width = '100%';
+            this.element.style.height = '100%';
+
+            resolve(this);
+        });
+    }
+
+    postinit() {
+
     }
 
     //This lets you register a callback to trigger when a file of a specifc type is opened
@@ -45,7 +70,7 @@ module.exports = class tabs{
                 tab.className += ' '+selectedClass;
                 this.performCallbackForFileType(pathName);
             });
-            TAB_ELEMENT.appendChild(tab);
+            this.element.appendChild(tab);
             OPEN_TABS[pathName] = {
                 element:tab,
                 filePath:pathName
@@ -60,7 +85,7 @@ module.exports = class tabs{
     }
 
     getElement(){
-        return TAB_ELEMENT;
+        return this.element;
     }
 
     resizeTabs(){
@@ -102,4 +127,9 @@ module.exports = class tabs{
     getSelectedFilePath(){
         return this.selectedPath;
     }
+
+    save() {
+        return super.save();
+    }
 }
+module.exports = tabWidget;

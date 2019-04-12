@@ -22,6 +22,7 @@ app.on('ready', function(){
     mainWindow = new BrowserWindow({
         show:false
     });
+    mainWindow.setMenuBarVisibility(false);
     mainWindow.maximize();
     mainWindow.show();
 
@@ -78,6 +79,11 @@ app.on('ready', function(){
                         }
                     }
                 }
+            }
+            if(Object.keys(result).length <= 0){
+                return;
+            }else{
+                mainWindow.setMenuBarVisibility(true);
             }
             const mainMenu = Menu.buildFromTemplate(result);
 

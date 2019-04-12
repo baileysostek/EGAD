@@ -55,7 +55,8 @@ class canvasWidget extends Widget{
             // Clear the color buffer with specified clear color
             gl.clear(gl.COLOR_BUFFER_BIT);
         }, 1);
-        window.setInterval(() => {
+        //TODO adjust this
+        let refresh = window.setInterval(() => {
             console.log("count",count);
             count = 0;
         }, 1000);
@@ -79,6 +80,10 @@ class canvasWidget extends Widget{
                 this.observers[i](this.g2d);
             }
         }
+    }
+
+    setFameRate(fps){
+
     }
 
 };

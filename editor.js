@@ -58,18 +58,25 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
+        // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        // let fileTree = new fileBrowser(1, 0, "~", myFileManager);
+        // let dev_console =  new consoleWidget(0,0);
+        // dev_console.subscribe((message) => {
+        //     dev_console.log(message);
+        // });
+        // myGrid.init([
+        //     new codeMirrorWidget(0, 0, 'javascript'),
+        //     fileTree,
+        //     new tabWidget(1, 0, fileTree),
+        //     dev_console,
+        // ]);
+
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
-        let fileTree = new fileBrowser(1, 0, "~", myFileManager);
-        let dev_console =  new consoleWidget(0,0);
-        dev_console.subscribe((message) => {
-            dev_console.log(message);
-        });
         myGrid.init([
-            new codeMirrorWidget(0, 0, 'javascript'),
-            fileTree,
-            new tabWidget(1, 0, fileTree),
-            dev_console,
+            new canvasWidget(0, 0, screen.width, screen.height),
+            new transfromWidget(1,0),
         ]);
+
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([
         //     new webviewWidget(0, 0, "root/documentation/index.html"),

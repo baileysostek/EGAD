@@ -576,10 +576,13 @@ class Grid{
 
     //Synchronous loop that populates a cell with a widget.
     async initalize(widgets, COLUMNS, saveData) {
+        if(!saveData){
+            console.error("initalize is being called with undefinded saveData. Was a saveData object passed into this grids constructor?");
+            saveData = []; // This allows the widgets to initialize, however no save data will be passed onto them.
+        }
         for(let i = 0; i < widgets.length; i++){
             let widget = widgets[i];
             widget.getConfigData().init_order = widget_index;
-            console.log(widget,widget_index);
             let result = await this.initializeWidgit(widget, saveData[widget_index] ? saveData[widget_index] : {});
             if(result) {
                 if (COLUMNS[result.configData.col]) {

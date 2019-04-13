@@ -94,6 +94,17 @@ class Grid{
     //DEFINE ALL DATA-TYPES FOR THIS CLASS
 
     /**
+     * @typedef {Object} H_Drag
+     * @property {Integer}  offset  - Im not sure what this dose
+     * @property {Column}   column1 - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
+     * @property {Column}   column2 - An array of Row Objects representing the content inside of this column.
+     * @property {Element}  element - The dom element for this drag.
+     * @property {Function} width   - The size of this drags dom element in terms of window%
+     */
+
+
+    //Column typedef
+    /**
      * @typedef {Object} Column
      * @property {Element}  element                 - The dom element for this column.
      * @property {Integer}  index                   - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
@@ -108,16 +119,6 @@ class Grid{
      * @property {Function} executeElementsCallback - This is the function which is executed whenever this column is resided, it then in part executes all of the functions defined in the callback array.
      * @property {Function} registerCallback        - This function is called to register interest in a specific row. A callback function is also passed, this callback will be executed when that specific element is resided.
      */
-
-    /**
-     * @typedef {Object} H_Drag
-     * @property {Integer}  offset  - Im not sure what this dose
-     * @property {Column}   column1 - The numerical index for this column, the left-most column is zero and the index increases as more columns are added.
-     * @property {Column}   column2 - An array of Row Objects representing the content inside of this column.
-     * @property {Element}  element - The dom element for this drag.
-     * @property {Function} width   - The size of this drags dom element in terms of window%
-     */
-
     /**
      * Creates a Column. A column is a resizable container for data.
      * Columns contain an index (left to right) starting at 0,
@@ -181,6 +182,7 @@ class Grid{
                     //
                     column.appendChild(row);
 
+                    //TODO this generates padding on grid cells, so that content does not overlap drag elements. Its not perfect yet, so its better to keep this commented out.
                     //The drag elements that we create take up a non-trivial ammount of space, any element that is created needs to have its margins offset such that it dose not overlap with the drag element.
                     // if(i > 0){
                     //     elements[i].style.paddingTop    = Math.ceil(DRAG_WIDTH/2)+'px';
@@ -241,10 +243,9 @@ class Grid{
                         }
                     }
                     //This is reached if
-                    console.log("Wlement not found; Callback was not registered.");
+                    console.log("Element not found; Callback was not registered.");
                 }
             },
-            //TODO build a row here.
             addChild: function(child){
                 //Scale our existing elements
                 let scalar = (100.0/(this.ROWS.length+1));
@@ -411,7 +412,12 @@ class Grid{
         }
     }
 
-
+    /**
+     * This function is called to whenever a horizontal drag event is triggered.
+     * @param {Event} event - This is the drag event that was detected.
+     * @param {Integer} index1 - This is the index of the first column to be offset by this drag event.
+     * @param {Integer} index2 - This is the index of the second column to be offset by this drag event.
+     */
     onDrag(event, index1, index2){
         let screenPercentPos = ((event.screenX / this.getWIDTH()) * 100);
         if(screenPercentPos > (parseFloat(COLUMNS[index1].element.style.left) + COLUMN_MIN_WIDTH) && screenPercentPos < (parseFloat(COLUMNS[index2].element.style.left) + parseFloat(COLUMNS[index2].element.style.width) - COLUMN_MIN_WIDTH)) {
@@ -428,6 +434,12 @@ class Grid{
         }
     }
 
+    /**
+     * This function is called to whenever a vertical drag event is triggered.
+     * @param {Event} event - This is the drag event that was detected.
+     * @param {Integer} row1 - This is the index of the first row to be offset by this drag event.
+     * @param {Integer} row2 - This is the index of the second row to be offset by this drag event.
+     */
     onVDrag(event, row1, row2){
         if(!this['getHEIGHT']){
             console.log("This is wrong",this);
@@ -450,6 +462,9 @@ class Grid{
         }
     }
 
+    /**
+     * This function executes all registered callback functions inside of this grid.
+     */
     executeCallbacks(){
         for(let i = 0; i < COLUMNS.length; i++){
             let column = COLUMNS[i];
@@ -460,6 +475,9 @@ class Grid{
         }
     }
 
+    /**
+     * This event is triggered after a horizontal drag has finished moving, it is used to set the absolute position of the 2 columns referenced by the drag event.
+     */
     onDragEnd(){
         for(let i = 0; i < DRAGS.length; i++){
             //col2 x - drag.width/2
@@ -472,6 +490,9 @@ class Grid{
         }
     }
 
+    /**
+     * This function is used to sync the values of WIDTH and HEIGHT after the document window has been resided.
+     */
     resize(){
         WIDTH = document.body.clientWidth;
         HEIGHT = document.body.clientHeight;
@@ -557,15 +578,24 @@ class Grid{
         return this.HEIGHT;
     }
 
+    /**
+     * Get all columns in this grid.
+     * @returns {Column[]} COLUMNS - The columns that make up this grid.
+     */
     getCOLUMNS(){
         return COLUMNS;
     }
 
-    //This call wraps the widget promise constructor inside of another promise.
-    //The return value of this function is awaited upon inside of the initialize method.
-    initializeWidgit(test, saveData = {}) {
+    /**
+     * This call wraps the widget promise constructor inside of another promise.
+     * The return value of this function is awaited upon inside of the initialize method.
+     * @param {Widget} widget - An uninitialized widget to initialize.
+     * @param {Object} saveData - An object containing information about the state of widgets the last time the application was closed.s
+     * @return {Promise<any>} This returns a promise wrapped around the widget's init function. The promise resolves when the widget finishes initializing.
+     */
+    initializeWidgit(widget, saveData = {}) {
         return new Promise(resolve => {
-            test.init(saveData).then(function(result) {
+            widget.init(saveData).then(function(result) {
                 resolve(result);
             }, function(err) {
                 console.log(err);
@@ -618,19 +648,6 @@ class Grid{
         }
     }
 
-    // //The Initialization order of widgets does not neccessarily corrilate with the save order of widgets, IE we cant assume initWidget 1 == saveWidget1, we do the correct translation in here.
-    // getWidgetIndex(widget){
-    //     if(widget){
-    //         let col = widget.getConfigData().col;//Variable
-    //         let row = widget.getConfigData().row;//Fixed offset,
-    //         let offset = 0;
-    //         for(let i = 0; i < col; i++){
-    //             offset+=COLUMNS[i].ROWS.length;
-    //         }
-    //         return row + offset;
-    //     }
-    // }
-
     /**
      * Initializes the grid with Widgets. A Widget is a synchronously spawned promise. This function will iterate through the widgets array and initialize one widget after another.
      * This way later widgets can have earlier widgets passed into them. Example [Document(requires:[]), Tab(requires:[Document])] In this example the Widget Document requires nothing
@@ -646,6 +663,12 @@ class Grid{
     }
 
 
+    /**
+     * This function returns the widget stored in grid cell (col, row). If there is no widget in that cell null is returned.
+     * @param {Integer} col - This the column or X of the grid that you are trying to access.
+     * @param {Integer} row - This the row or Y of the grid that you are trying to access.
+     * @returns {Widget | null} widget - This is the widget in grid cell (col, row) if there is no widget in that cell, null is returned.
+     */
     getWidget(col, row) {
         if (COLUMNS[col]) {
             if(COLUMNS[col].WIDGETS[row]) {
@@ -655,6 +678,12 @@ class Grid{
         return null;
     }
 
+    /**
+     * This function changes the contents of cell (col, row) to widget. Null can be passed in to remove a widget from the grid, the row that that widget was in will persist however
+     * @param {Integer} col - This the column or X of the grid that you are trying to access.
+     * @param {Integer} row - This the row or Y of the grid that you are trying to access.
+     * @param {Widget} widget - This is the widget that cell (col, row) should be set to.
+     */
     setWidget(col, row, widget) {
         if(widget) {
             let config = widget.getConfigData();
@@ -665,11 +694,18 @@ class Grid{
         }
     }
 
+    /**
+     * This function adds a widget into the grid of widgets being displayed
+     * @param {Widget} widget - This widget will be added into the grid at widget.col widget.row
+     */
     addWidget(widget){
         this.initalize([widget], this.getCOLUMNS(), widget.save());
     }
 
-    //WIP
+    /**
+     * This function adds a widget into the grid of widgets being displayed
+     * @param {Widget} widget - This widget will be added into the grid at widget.col widget.row
+     */
     removeWidget(widget){
         if(widget) {
             for (let i = 0; i < COLUMNS.length; i++) {

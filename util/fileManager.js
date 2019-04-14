@@ -28,7 +28,11 @@ class FileManager{
                     console.error(err);
                     reject(err);
                 }
-                this.configurationData = JSON.parse(data);
+                if(data.length <= 0){
+                    this.configurationData = {DATA:[]};
+                } else {
+                    this.configurationData = JSON.parse(data);
+                }
                 this.PATH = SAVE_PATH;
                 this.INITIALIZED = true;
                 resolve(this.configurationData);

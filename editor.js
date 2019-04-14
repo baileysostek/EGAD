@@ -19,6 +19,16 @@ const fileBrowser       = require('./widgets/fileTreeWidget');
 const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
+const consoleWidget     = require('./widgets/consoleWidget');
+const codeMirrorWidget  = require('./widgets/codeMirrorWidget');
+const tabWidget         = require('./widgets/tabWidget');
+
+//---------------------------------------------------------------------------
+//                    Include Utility Classes here
+//---------------------------------------------------------------------------
+const menuBuilder       = require('./util/menuBuilder');
+//Initialize the menu here.
+let menu = new menuBuilder();
 
 //---------------------------------------------------------------------------
 //                    Include Utility Classes here
@@ -56,6 +66,7 @@ function init() {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+<<<<<<< HEAD
         myGrid.init([
             new canvasWidget(0, 0, screen.width, screen.height),
             new transfromWidget(1,0),
@@ -93,6 +104,59 @@ function init() {
             // new transfromWidget(1,0),
             // new transfromWidget(1,0),
         // ]);
+=======
+        let fileTree = new fileBrowser(1, 0, "~", myFileManager);
+        let dev_console =  new consoleWidget(0,0);
+        dev_console.subscribe((message) => {
+            dev_console.log(message);
+        });
+        myGrid.init([
+            new codeMirrorWidget(0, 0, 'javascript'),
+            fileTree,
+            new tabWidget(1, 0, fileTree),
+            dev_console,
+        ]);
+>>>>>>> e8edb05b5ff8fbf2a602eaf8b5c7a2f88372833f
+
+        // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        // myGrid.init([
+        //     new canvasWidget(0, 0, screen.width, screen.height),
+        //     new transfromWidget(1,0),
+        // ]);
+
+        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        // myGrid.init([
+        //     new webviewWidget(0, 0, "root/documentation/index.html"),
+        //     new webviewWidget(0, 0, "http://imgur.com"),
+        //     new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
+        //     new fileBrowser(0, 1, "node_modules", myFileManager),
+        //     new fileBrowser(0, 2, "~Font", myFileManager),
+        //     new fileBrowser(0, 3, "~Images", myFileManager),
+        //     new fileBrowser(0, 4, "~/jdk-11.0.1", myFileManager),
+        //     new fileBrowser(1, 0, "~Levels", myFileManager),
+        //     new fileBrowser(1, 1, "~Logs", myFileManager),
+        //     new fileBrowser(1, 2, "~Models", myFileManager),
+        //     new fileBrowser(1, 3, "~Natives", myFileManager),
+        //     new fileBrowser(1, 4, "~res", myFileManager),
+        //     new fileBrowser(2, 0, "~saves", myFileManager),
+        //     new fileBrowser(2, 1, "~Scripting", myFileManager),
+        //     new fileBrowser(2, 2, "~Shaders", myFileManager),
+        //     new fileBrowser(2, 3, "~Sounds", myFileManager),
+        //     new fileBrowser(2, 4, "~Web", myFileManager),
+        //     new fileBrowser(3, 0, "~", myFileManager),
+        //     new fileBrowser(3, 1, "~", myFileManager),
+        //     new fileBrowser(3, 2, "~", myFileManager),
+        //     new fileBrowser(3, 3, "~", myFileManager),
+        //     new fileBrowser(3, 4, "~", myFileManager),
+        //     new fileBrowser(4, 0, "~", myFileManager),
+        //     new fileBrowser(4, 1, "~", myFileManager),
+        //     new fileBrowser(4, 2, "~", myFileManager),
+        //     new fileBrowser(4, 3, "~", myFileManager),
+        //     new fileBrowser(4, 4, "~", myFileManager),
+        //     new transfromWidget(1,0),
+        //     new transfromWidget(1,0),
+        //     new transfromWidget(1,0),
+        // ]);
 
     }, function(err) {
         //If there was an error initializing the grid, print the error here.
@@ -106,8 +170,10 @@ function init() {
 //---------------------------------------------------------------------------
 
 function save(){//This function is refrenced by the menu on line #37 'registerFunctionCallback(file_dd, 'Save', 'S', 'save');' The last parameter with the string 'save' is a reference to this function.
-    console.log(myGrid.getCell(1,1));
-    myFileManager.writeToProperties('DATA', myGrid.generateSaveObject().data);
+    // myGrid.setWidget(0,0, new transfromWidget(0,0));
+    let saveData = myGrid.generateSaveObject().data;
+    console.log("SaveData",saveData);
+    myFileManager.writeToProperties('DATA', saveData);
 }
 
 function newWidget(){
@@ -134,5 +200,9 @@ function getMenu () {
  * The code below is a blocking call that must terminate before the window can be closed.
  **/
 function onCloseRequested(){
+<<<<<<< HEAD
     myFileManager.writeToProperties('WIDTHS', myGrid.getGridSize());
+=======
+    save();
+>>>>>>> e8edb05b5ff8fbf2a602eaf8b5c7a2f88372833f
 }

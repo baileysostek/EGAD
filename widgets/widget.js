@@ -41,6 +41,7 @@ class Widget{
         if(configData['row']){
             this.rowIndex = configData.row;
         }
+        configData['init_order'] = 0;
         this.dependencies = dependencies;
 
         this['save'] = this.save;

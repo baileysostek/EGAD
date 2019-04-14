@@ -1,7 +1,11 @@
 {
-  "name": "electron-tutorial-app",
+  "name": "EGAD",
   "version": "1.0.0",
+<<<<<<< HEAD
   "description": "Integrated Development Envronment for the Perlenspiel game engine",
+=======
+  "description": "Electron Grid of Aligned Documents",
+>>>>>>> e8edb05b5ff8fbf2a602eaf8b5c7a2f88372833f
   "main": "app.js",
   "scripts": {
     "start": "electron ."
@@ -10,16 +14,24 @@
   "author": "Bailey Sostek",
   "license": "MIT",
   "dependencies": {
+<<<<<<< HEAD
     "codemirror": "~5.40.0",
+=======
+    "codemirror": "^5.45.0",
+>>>>>>> e8edb05b5ff8fbf2a602eaf8b5c7a2f88372833f
     "docdash": "^1.1.0",
     "electron-download": "^4.1.1",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "jquery-ui": "^1.12.1",
-    "jquery.fancytree": "^2.30.0"
+    "jquery.fancytree": "^2.30.2"
   },
   "devDependencies": {
-    "electron": "^3.0.5",
+    "electron": "^3.1.8",
     "electron-packager": "^12.2.0",
     "jsdoc": "^3.5.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhsostek/EGAD.git"
   }
 }

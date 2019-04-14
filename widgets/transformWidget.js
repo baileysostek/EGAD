@@ -35,6 +35,7 @@ class TransformWidget extends Widget{
      */
     async init(configData){
         return await new Promise((resolve, reject) => {
+            console.log("Passed:",configData);
             //Load the data passed into this function, and set the sliders correctly
             if(configData['transform']){
                 super.getConfigData()['transform'] = configData['transform'];

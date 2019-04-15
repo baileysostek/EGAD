@@ -604,7 +604,13 @@ class Grid{
         });
     }
 
-    //Synchronous loop that populates a cell with a widget.
+    /**
+     * Asynchronous loop which will Synchronous populates a cell with an intialized widget untill all widgets are initialized, at this point it will then return.
+     * @param {Widget[]} widgets - Uninitialized widgets to be initialized and loaded into the grid.
+     * @param {Column[]} COLUMNS - The Columns that make up this EGAD grid.
+     * @param {Object} saveData - A save object representing the state of all widgets the last time the application was closed.
+     * @return {Promise<void>} - This promise resolves once all widgets are initialized.
+     */
     async initalize(widgets, COLUMNS, saveData) {
         if(!saveData){
             console.error("initalize is being called with undefinded saveData. Was a saveData object passed into this grids constructor?");

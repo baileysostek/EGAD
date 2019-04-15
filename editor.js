@@ -20,7 +20,7 @@ const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
 const consoleWidget     = require('./widgets/consoleWidget');
-const codeMirrorWidget  = require('./widgets/codeMirrorWidget');
+const codeEditorWidget  = require('./widgets/codeEditorWidget');
 const tabWidget         = require('./widgets/tabWidget');
 
 //---------------------------------------------------------------------------
@@ -58,23 +58,22 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
-        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
         let fileTree = new fileBrowser(1, 0, "~", myFileManager);
         let dev_console =  new consoleWidget(0,0);
         dev_console.subscribe((message) => {
             dev_console.log(message);
         });
         myGrid.init([
-            new codeMirrorWidget(0, 0, 'javascript'),
-            fileTree,
-            new tabWidget(1, 0, fileTree),
-            dev_console,
+            // new codeEditorWidget(0, 0, 'javascript'),
+            // fileTree,
+            // new webviewWidget(2, 0, "root/cube/game.html"),
         ]);
 
-        // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([
-        //     new canvasWidget(0, 0, screen.width, screen.height),
-        //     new transfromWidget(1,0),
+        //     new webviewWidget(0, 0, "root/cube/game.html"),
+        //     new codeEditorWidget(1,0),
         // ]);
 
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
@@ -130,13 +129,11 @@ function save(){//This function is refrenced by the menu on line #37 'registerFu
 }
 
 function newWidget(){
-    myGrid.addWidget(new transfromWidget(1,0));
+
 }
 
 function removeWidget() {
-    let widget = myGrid.getCOLUMNS()[1].LAST();
-    console.log(widget);
-    myGrid.removeWidget(widget);
+
 }
 
 

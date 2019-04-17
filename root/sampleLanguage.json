@@ -1,0 +1,29 @@
+{
+  "LANGUAGE":{
+    "NAME": "JavaScript Extension",
+    "VARIABLE_KEYWORDS": [
+      "var",
+      "let",
+      "const"
+    ],
+    "TYPES": [
+      "bead"
+    ],
+    "COMMENT_HEAD": "//",
+    "COMMENT_TAIL": "",
+    "FUNCTIONS": {
+      "custom.test": {
+        "NAME": "test",
+        "PARAMETERS": [],
+        "RETURN": {},
+        "TEXT": "This function is a test function"
+      },
+      "custom.log": {
+        "NAME": "log",
+        "PARAMETERS": [],
+        "RETURN": {},
+        "TEXT": "This function is a test function called log"
+      }
+    }
+  }
+}

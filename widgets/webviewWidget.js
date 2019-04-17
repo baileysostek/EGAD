@@ -55,6 +55,14 @@ class WebviewWidget extends Widget{
         };
     }
 
+
+    /**
+     * This function reloads the body of the WebView, it is the same as if you refreshed a webpage in a traditional browser.
+     */
+    reload(){
+        this.element.reload();
+    }
+
 };
 
 module.exports = WebviewWidget;

@@ -29,8 +29,13 @@ let INTERESTING_TOKENS = []; //This is an array of objects, the structure is as 
 //If a line contains the key that is desired, the entire line is passed to the callback function
 //A line must contain all desired tokens in order to trigger the callback function.
 
-
-module.exports = class languageParser{
+class languageParser{
+    /**
+     * The language parser class allows for quick indexing and predictive searching of user defined functions.
+     * @param {Object} languageInformation - This is the key to a language, all aspects of the language such as functions, primitive types, and commenting information are defined within this object.
+     * @constructor
+     * @returns {languageParser} Returns a new language parser ready to parse the language defined by <languageInformation>
+     */
     constructor(languageInformation){
         languageName = languageInformation.LANGUAGE.NAME;
         console.log("Language:", languageName);
@@ -446,5 +451,6 @@ module.exports = class languageParser{
             }
         }
     }
-
 }
+
+module.exports = languageParser;

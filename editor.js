@@ -58,23 +58,23 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
-        myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
-        let fileTree = new fileBrowser(1, 0, "~", myFileManager);
-        let dev_console =  new consoleWidget(0,0);
-        dev_console.subscribe((message) => {
-            dev_console.log(message);
-        });
-        myGrid.init([
-            // new codeEditorWidget(0, 0, 'javascript'),
-            // fileTree,
-            // new webviewWidget(2, 0, "root/cube/game.html"),
-        ]);
-
-        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        // myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
+        // let fileTree = new fileBrowser(1, 0, "", myFileManager, {});
+        // let dev_console =  new consoleWidget(0,0);
+        // dev_console.subscribe((message) => {
+        //     dev_console.log(message);
+        // });
         // myGrid.init([
-        //     new webviewWidget(0, 0, "root/cube/game.html"),
-        //     new codeEditorWidget(1,0),
+        //     fileTree,
+        //     dev_console,
+        //     new transfromWidget(1, 0),
+        //     new canvasWidget( 2, 0, screen.width, screen.height)
         // ]);
+
+        myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
+        myGrid.init([
+            new webviewWidget(0, 0, "root/webviewExample/game.html"),
+        ]);
 
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([

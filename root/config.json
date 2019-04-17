@@ -1,1 +1,1 @@
-{"DATA":[{},{},{}]}
+{"DATA":[{"message":"This is the parent save call, please overwrite me.","configData":{"name":"Web View","col":0,"row":0,"url":"root/webviewExample/game.html","init_order":0}}]}

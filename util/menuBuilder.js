@@ -29,6 +29,13 @@ class menuBuilder{
         return drop_down;
     }
 
+    /**
+     * This function allows a user to create menu elements to trigger events on the Electron BrowserWindow object defined in app.js.
+     * @param menu - The tab of the menu to add this functionality to.
+     * @param name - The name of this event
+     * @param character - The character to associate this functionality with, Example S for save would map the hotkey ctrl+S to this function.
+     * @param function_name - The textual name of the function to call on the BrowserWindow object. Example, 'toggleDevTools' will open the devTools.
+     */
     registerWindowCallback(menu, name, character, function_name){
         menu.submenu.push(
             {
@@ -39,6 +46,13 @@ class menuBuilder{
         );
     }
 
+    /**
+     * This function allows a user to create menu elements to trigger events on the main electron app object.
+     * @param menu - The tab of the menu to add this functionality to.
+     * @param name - The name of this event
+     * @param character - The character to associate this functionality with, Example S for save would map the hotkey ctrl+S to this function.
+     * @param function_name - The textual name of the function to call on the app. Example, 'quit' will call app.quit() to close the application.
+     */
     registerAppCallback(menu, name, character, function_name){
         menu.submenu.push(
             {
@@ -49,6 +63,13 @@ class menuBuilder{
         );
     }
 
+    /**
+     * This function allows a user to create menu elements to trigger events on the editor.js class.
+     * @param menu - The tab of the menu to add this functionality to.
+     * @param name - The name of this event
+     * @param character - The character to associate this functionality with, Example S for save would map the hotkey ctrl+S to this function.
+     * @param function_name - The textual name of the function to call on the editor.js object. Example, 'save' will call the editor.save() function.
+     */
     registerFunctionCallback(menu, name, character, function_name){
         menu.submenu.push(
             {
@@ -59,6 +80,11 @@ class menuBuilder{
         );
     }
 
+    /**
+     * This function creates a new drop down tab on the menu. Example, 'file' will create a new tab called 'file'
+     * @param name - The name of the tab to add to the menyu.
+     * @return {*} Returns a reference to the menu object [name] this object is passed into the registerCallback functions to correctly add functionality to tabs.
+     */
     findMenuDropDown(name) {
         for (let i = 0; i < MENU.length; i++) {
             if (MENU[i].label === name) {

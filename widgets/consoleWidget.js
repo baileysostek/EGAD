@@ -14,17 +14,21 @@ class consoleWidget extends Widget{
      * @augments Widget
      * @param {Integer} x - This is the Column that this widget should be added to.
      * @param {Integer} y - This is the row of of the Column that this widget should be added to.
+     * @param {Integer} [textSize=18] - The font size to use in the console.
      * @returns {canvasWidget} Returns a canvasWidget, an instance of the Widget class which allows a user to draw on an html canvas.
      */
-    constructor(x, y){
+    constructor(x, y, textSize = 18){
         super({
-            name:"Canvas",
+            name:"Console",
             col:x,
             row:y,
-            textScale:18
+            textScale:textSize
         }, {});
     }
 
+    /** This function overrides the parent widget initialize function and creates a console to be displayed within this widget.
+     * @return {Promise<any>}
+     */
     async init(){
         return await new Promise((resolve, reject) => {
 
@@ -108,6 +112,10 @@ class consoleWidget extends Widget{
         });
     }
 
+    /**
+     * This function allows a string to be passed in to then be printed to the consoles output.
+     * @param {String} message - This is the message to print to this consoles output area.
+     */
     log(message){
         if(!message.includes('\n')){
             outputConsole.innerText += message + '\n';
@@ -117,14 +125,10 @@ class consoleWidget extends Widget{
         outputConsole.parentNode.scrollTop = outputConsole.parentNode.scrollHeight;
     }
 
-    postinit(){
-
-    }
-
-    save(){
-
-    }
-
+    /**
+     * This function allows developers to register function callbacks to be excuted whenever enter is pressed when text is inside the input field of this console. The text is passed into all callback functions.
+     * @param {Function} observer - Function to be called whenever enter is pressed from the consoles input field.
+     */
     subscribe(observer){
         observers.push(observer);
     }

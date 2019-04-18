@@ -1,6 +1,15 @@
 const EXEC = require('child_process').execFile;
 
 class processSpawner {
+    /**
+     * This function allows a developer to spawn an arbatrary process on the host pc, and subscribe to various events the spawned process emits.
+     * @param {String} cmd - The command to execute.
+     * @param {String[]} args - Command line arguments to pass into the command.
+     * @param {function} stdIN - Function to execute whenever data is written to stdin of the process.
+     * @param {function} stdOUT - Function to execute whenever the process sends data to stdOut
+     * @param {function} onCLOSE - Function to execute when the process terminates.
+     * @return {Promise<any>} Returns a promise that will resolve once the process has spawned and is running.
+     */
     spawn(cmd, args, stdIN = (data)=>{console.log(data)}, stdOUT = (data)=>{console.log(data)}, onCLOSE = (data)=>{console.log(data)}){
         return new Promise((resolve, reject) => {
             let my_process = exec(cmd, args, { maxBuffer: 1024 * 1024, pipeOutput: true}, (err, data) => {

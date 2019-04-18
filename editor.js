@@ -20,7 +20,7 @@ const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
 const canvasWidget      = require('./widgets/canvasWidget');
 const consoleWidget     = require('./widgets/consoleWidget');
-const codeMirrorWidget  = require('./widgets/codeMirrorWidget');
+const codeEditorWidget  = require('./widgets/codeEditorWidget');
 const tabWidget         = require('./widgets/tabWidget');
 
 //---------------------------------------------------------------------------
@@ -45,15 +45,15 @@ function init() {
     //---------------------------------------------------------------------------
     //                              Build Menu here
     //---------------------------------------------------------------------------
-    let file_dd = menu.addMenuDropDown("File");
-    menu.registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
-    menu.registerFunctionCallback(file_dd, 'Save', 'S', 'save');
-    menu.registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
-    menu.registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
-    menu.registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
-    let help_dd = menu.addMenuDropDown("Help");
-    let test_dd = menu.addMenuDropDown("Test");
-    let project_dd = menu.addMenuDropDown("Project");
+    // let file_dd = menu.addMenuDropDown("File");
+    // menu.registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
+    // menu.registerFunctionCallback(file_dd, 'Save', 'S', 'save');
+    // menu.registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
+    // menu.registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
+    // menu.registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
+    // let help_dd = menu.addMenuDropDown("Help");
+    // let test_dd = menu.addMenuDropDown("Test");
+    // let project_dd = menu.addMenuDropDown("Project");
 
 
     //Initialize the file manager, and load the configuration file.
@@ -65,7 +65,21 @@ function init() {
     myFileManager.initialize().then(function(saveData) {
         //Initialize the Grid API with the screen width and height. This will create a responsive grid that will hold all of your widget elements.
 
+        // myGrid = new grid(screen.width, screen.height, 3, 1, saveData);
+        // let fileTree = new fileBrowser(1, 0, "", myFileManager, {});
+        // let dev_console =  new consoleWidget(0,0);
+        // dev_console.subscribe((message) => {
+        //     dev_console.log(message);
+        // });
+        // myGrid.init([
+        //     fileTree,
+        //     dev_console,
+        //     new transfromWidget(1, 0),
+        //     new canvasWidget( 2, 0, screen.width, screen.height)
+        // ]);
+
         myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+<<<<<<< HEAD
 <<<<<<< HEAD
         myGrid.init([
             new canvasWidget(0, 0, screen.width, screen.height),
@@ -110,49 +124,49 @@ function init() {
         dev_console.subscribe((message) => {
             dev_console.log(message);
         });
+=======
+>>>>>>> 74132bed0dd3156696ba672e6c8602384358d612
         myGrid.init([
-            new codeMirrorWidget(0, 0, 'javascript'),
-            fileTree,
-            new tabWidget(1, 0, fileTree),
-            dev_console,
+            new transfromWidget(1, 0),
+            new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example_alt.html"),
         ]);
 >>>>>>> e8edb05b5ff8fbf2a602eaf8b5c7a2f88372833f
 
         // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         // myGrid.init([
-        //     new canvasWidget(0, 0, screen.width, screen.height),
-        //     new transfromWidget(1,0),
+        //     new codeEditorWidget(0, 0, 'javascript'),
+        //     new webviewWidget(1, 0, "root/webviewExample/game.html"),
         // ]);
-
+        //
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([
         //     new webviewWidget(0, 0, "root/documentation/index.html"),
         //     new webviewWidget(0, 0, "http://imgur.com"),
         //     new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
-        //     new fileBrowser(0, 1, "node_modules", myFileManager),
-        //     new fileBrowser(0, 2, "~Font", myFileManager),
-        //     new fileBrowser(0, 3, "~Images", myFileManager),
-        //     new fileBrowser(0, 4, "~/jdk-11.0.1", myFileManager),
-        //     new fileBrowser(1, 0, "~Levels", myFileManager),
-        //     new fileBrowser(1, 1, "~Logs", myFileManager),
-        //     new fileBrowser(1, 2, "~Models", myFileManager),
-        //     new fileBrowser(1, 3, "~Natives", myFileManager),
-        //     new fileBrowser(1, 4, "~res", myFileManager),
-        //     new fileBrowser(2, 0, "~saves", myFileManager),
-        //     new fileBrowser(2, 1, "~Scripting", myFileManager),
-        //     new fileBrowser(2, 2, "~Shaders", myFileManager),
-        //     new fileBrowser(2, 3, "~Sounds", myFileManager),
-        //     new fileBrowser(2, 4, "~Web", myFileManager),
-        //     new fileBrowser(3, 0, "~", myFileManager),
-        //     new fileBrowser(3, 1, "~", myFileManager),
-        //     new fileBrowser(3, 2, "~", myFileManager),
-        //     new fileBrowser(3, 3, "~", myFileManager),
-        //     new fileBrowser(3, 4, "~", myFileManager),
-        //     new fileBrowser(4, 0, "~", myFileManager),
-        //     new fileBrowser(4, 1, "~", myFileManager),
-        //     new fileBrowser(4, 2, "~", myFileManager),
-        //     new fileBrowser(4, 3, "~", myFileManager),
-        //     new fileBrowser(4, 4, "~", myFileManager),
+        //     new fileBrowser(0, 1, "", myFileManager),
+        //     new fileBrowser(0, 2, "", myFileManager),
+        //     new fileBrowser(0, 3, "", myFileManager),
+        //     new fileBrowser(0, 4, "", myFileManager),
+        //     new fileBrowser(1, 0, "", myFileManager),
+        //     new fileBrowser(1, 1, "", myFileManager),
+        //     new fileBrowser(1, 2, "", myFileManager),
+        //     new fileBrowser(1, 3, "", myFileManager),
+        //     new fileBrowser(1, 4, "", myFileManager),
+        //     new fileBrowser(2, 0, "", myFileManager),
+        //     new fileBrowser(2, 1, "", myFileManager),
+        //     new fileBrowser(2, 2, "", myFileManager),
+        //     new fileBrowser(2, 3, "", myFileManager),
+        //     new fileBrowser(2, 4, "", myFileManager),
+        //     new fileBrowser(3, 0, "", myFileManager),
+        //     new fileBrowser(3, 1, "", myFileManager),
+        //     new fileBrowser(3, 2, "", myFileManager),
+        //     new fileBrowser(3, 3, "", myFileManager),
+        //     new fileBrowser(3, 4, "", myFileManager),
+        //     new fileBrowser(4, 0, "", myFileManager),
+        //     new fileBrowser(4, 1, "", myFileManager),
+        //     new fileBrowser(4, 2, "", myFileManager),
+        //     new fileBrowser(4, 3, "", myFileManager),
+        //     new fileBrowser(4, 4, "", myFileManager),
         //     new transfromWidget(1,0),
         //     new transfromWidget(1,0),
         //     new transfromWidget(1,0),
@@ -177,13 +191,11 @@ function save(){//This function is refrenced by the menu on line #37 'registerFu
 }
 
 function newWidget(){
-    myGrid.addWidget(new transfromWidget(1,0));
+
 }
 
 function removeWidget() {
-    let widget = myGrid.getCOLUMNS()[1].LAST();
-    console.log(widget);
-    myGrid.removeWidget(widget);
+
 }
 
 

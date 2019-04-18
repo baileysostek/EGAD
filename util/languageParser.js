@@ -29,8 +29,13 @@ let INTERESTING_TOKENS = []; //This is an array of objects, the structure is as 
 //If a line contains the key that is desired, the entire line is passed to the callback function
 //A line must contain all desired tokens in order to trigger the callback function.
 
-
-module.exports = class languageParser{
+class languageParser{
+    /**
+     * The language parser class allows for quick indexing and predictive searching of user defined functions.
+     * @param {Object} languageInformation - This is the key to a language, all aspects of the language such as functions, primitive types, and commenting information are defined within this object.
+     * @constructor
+     * @returns {languageParser} Returns a new language parser ready to parse the language defined by <languageInformation>
+     */
     constructor(languageInformation){
         languageName = languageInformation.LANGUAGE.NAME;
         console.log("Language:", languageName);
@@ -57,7 +62,10 @@ module.exports = class languageParser{
 
     }
 
-    //Take in data from a file, and generate a tree structure for this file representing the scope of this file.
+    /**
+     * This function takes in data from a file and generate a tree structure for this file representing the scopes of this file. This scoping information is used to determine local variables.
+     * @param {String} fileData - This is a string of all lines of a file, with each line delimited with the \n character.
+     */
     loadFileSpecificData(fileData){
         this.FILE_DATA = fileData;
         // this.findAllScopes(fileData);
@@ -142,7 +150,11 @@ module.exports = class languageParser{
         console.log("getSubScope", this.getSubScope(SCOPE_SET[0]));
     }
 
-
+    /**
+     * This function returns which scope the cursor is currently in. A cursor object contains a line number and a character.
+     * @param {Cursor} cursor - An object representing a cursors position inside of this file.
+     * @return {*} Returs the scope that the cursor is inside of.
+     */
     cursorToScope(cursor){
         let SCOPE = this.getSubScope(SCOPE_SET[0]);
         for (let i = SCOPE.length - 1; i > 0; i--){
@@ -154,6 +166,12 @@ module.exports = class languageParser{
         return SCOPE_SET[0];
     }
 
+    /**
+     * This function takes a cursor and a scope and returns true if the cursor is inside of the scope.
+     * @param cursor - cursor object
+     * @param scope - scope to check cursor against.
+     * @return {boolean} If cursor 'cursor' is inside of scope 'scope'
+     */
     cursorInScope(cursor, scope){
         if (cursor.line == scope.start.line) {
             if (cursor.ch > scope.start.ch) {
@@ -183,6 +201,11 @@ module.exports = class languageParser{
         return false;
     }
 
+    /**
+     * This function returns all child scopes of a desired scope.
+     * @param {Scope} scope - The scope to get the children of.
+     * @return {Scope[]} Returns the array of child scopes parented to 'scope'.
+     */
     getSubScope(scope){
         let out = [scope];
         for(let i = 0; i < scope.children.length; i++){
@@ -191,6 +214,11 @@ module.exports = class languageParser{
         return out;
     }
 
+    /**
+     * When code is added to or removed from a document at a position, scopes need to be offset by that ammount. Example, if there is a scope which starts on line 42, but lines 5-10 are deleted, then the scope starting on 42 will now start on 36. This function updates all scopes so they are still in the correct place.
+     * @param {Integer} delta - Number of lines to offset scopes by, either positive for new lines, or negative for deletions.
+     * @param {Cursor} cursor - The position of the cursor, so we know where these lines were inserted or deleted relative to.
+     */
     offsetScopes(delta, cursor){
         let lastCursorPosition = {line:cursor.line, ch:cursor.ch};
         lastCursorPosition.line -= delta;
@@ -206,6 +234,10 @@ module.exports = class languageParser{
         }
     }
 
+    /**
+     * This function is used when reading the language description. This function generates a hashmap of functions defined within this languages domain. These functions are looked up when generating IntelliSence
+     * @param {l_function} l_function - The language specific function to add to this languages registered functions.
+     */
     addFunction(l_function){
         if(l_function) {
             if(!FUNCTIONS[l_function.getNAME()]) {
@@ -216,10 +248,12 @@ module.exports = class languageParser{
         }
     }
 
-    addKeyword(){
-
-    }
-
+    /**
+     * This function returs an array of l_functions which the user could be typing. This function performs a fuzzy search through the list of defined functions and generates a subset of functions that are similar to 'string'
+     * @param {String} string - String to search
+     * @param {Cursor} cursor - position in the file
+     * @return {l_function[]} Returns an array of l_functions which the user could be trying to type.
+     */
     getSuggestion(string, cursor){
         console.log("FUNCTIONS",FUNCTIONS," FILE_VARS",FILE_VARS);
         console.log("SCOPE:", this.cursorToScope(cursor), "Cursor:",cursor);
@@ -255,10 +289,11 @@ module.exports = class languageParser{
         return suggestionSet;
     }
 
-    getSuggestionFromType(type){
-
-    }
-
+    /**
+     * This function takes in a string and turns it into an array of string tokens.
+     * @param {String} string - String to tokenise
+     * @return {String[]} - Array of string tokens
+     */
     tokeniseString(string){
         let tokens = [];
         let workingStrings = [string];
@@ -283,6 +318,11 @@ module.exports = class languageParser{
         return tokens;
     }
 
+    /**
+     * Returns the last token of a line
+     * @param tokenArrayg
+     * @return {*}
+     */
     getLastToken(tokenArray){
         if(tokenArray.length > 1) {
             return tokenArray[tokenArray.length - 1];
@@ -446,5 +486,6 @@ module.exports = class languageParser{
             }
         }
     }
-
 }
+
+module.exports = languageParser;

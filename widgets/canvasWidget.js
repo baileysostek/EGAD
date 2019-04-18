@@ -1,5 +1,7 @@
 const Widget = require('./widget');
 
+let count = 0;
+
 class canvasWidget extends Widget{
     /**
      * @inheritDoc
@@ -11,25 +13,33 @@ class canvasWidget extends Widget{
      * @param {Integer} height - This is the height in pixels that this canvas element should take up.
      * @returns {canvasWidget} Returns a canvasWidget, an instance of the Widget class which allows a user to draw on an html canvas.
      */
-    constructor(x, y, width, height){
+    constructor(x, y, width, height, fps = 60){
         super({
             name:"Canvas",
             col:x,
             row:y,
             width:width,
-            height:height
+            height:height,
+            fps:fps,
+            draw_func:{}
         }, {});
-
-        this.x_pos = 0;
-        this.y_pos = 0;
     }
 
-    async init(){
+    /**
+     * This function overrides the parent widgets init function to create a new canvas widget.
+     * @param {Object} configData - This is the save object passed back into the function, the only important field on this object is 'fps' which determines the target framerate of the canvas.
+     * * @return {Promise<any>} - This promise resolves once this widget has initialized.
+     */
+    async init(configData){
         return await new Promise((resolve, reject) => {
             this.element = document.createElement("canvas");
             this.element.setAttribute('id', 'glCanvas');
             this.element.setAttribute("width", super.getConfigData()['width']);
             this.element.setAttribute("height", super.getConfigData()['height']);
+
+            if(configData['fps']){
+                this.element.setAttribute("fps", configData['fps']);
+            }
 
             super.getConfigData()['gl'] = this.element.getContext("webgl");
 
@@ -43,29 +53,32 @@ class canvasWidget extends Widget{
         });
     }
 
-
+    /**
+     * This function triggers after the widget has initialized, at this point all fields should be able to be referenced. In the canvas widget this function registers a callback function to run 'fps' times per second.
+     */
     postinit(){
         let count = 0;
         //Put g2d on this
         let gl = super.getConfigData()['gl'];
-        window.setInterval(() => {
+        super.getConfigData()['draw_func'] = window.setInterval(() => {
             count++;
             // Set clear color to black, fully opaque
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
             // Clear the color buffer with specified clear color
             gl.clear(gl.COLOR_BUFFER_BIT);
-        }, 1);
-        //TODO adjust this
-        let refresh = window.setInterval(() => {
+            this.draw();
+        }, 1000/super.getConfigData()['fps'] );
+
+        let fps = window.setInterval(() => {
             console.log("count",count);
             count = 0;
         }, 1000);
     }
 
-    save(){
-
-    }
-
+    /**
+     * This function allows a user to subscribe to this widgets draw call, The passed function will have gl passed to it, and will be called 'fps' times per second.
+     * @param {Function} observer - This is a callback function to execute fps times per second.
+     */
     subscribeToDraw(observer){
         if(!this.observers){
             this.observers = [];
@@ -74,18 +87,43 @@ class canvasWidget extends Widget{
         }
     }
 
+    /**
+     *
+     */
     draw(){
         if(this.observers){
             for(let i = 0; i < this.observers.length; i++){
-                this.observers[i](this.g2d);
+                this.observers[i](super.getConfigData()['gl']);
             }
         }
     }
 
+    /**
+     * This function allows a user to adjust the rate at which the screen refreshes. The parameter fps specifies the new target frame-rate.
+     * @param {Integet} fps - The target frame rate for this canvas.
+     */
     setFameRate(fps){
+        super.getConfigData()['fps'] = fps;
+        clearInterval(super.getConfigData()['draw_func']);
+        super.getConfigData()['draw_func'] = window.setInterval(() => {
+            count++;
+            // Set clear color to black, fully opaque
+            super.getConfigData()['gl'].clearColor(0.0, 0.0, 0.0, 1.0);
+            // Clear the color buffer with specified clear color
+            super.getConfigData()['gl'].clear(super.getConfigData()['gl'].COLOR_BUFFER_BIT);
+            this.draw();
+        }, 1000/super.getConfigData()['fps'] );
+    }
 
+    /**
+     * This function generates a save object so that this widget can initialize to the state which it is in the next time the application starts.
+     * @return {{fps: *}}
+     */
+    save(){
+        return {
+            fps:super.getConfigData()['fps']
+        };
     }
 
 };
-
 module.exports = canvasWidget;

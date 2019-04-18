@@ -19,8 +19,8 @@ const DRAG_WIDTH = 9 ;
 let gridContainer;
 let loadingContainer;
 
-//If this is true, the grid will display a grey screen while loading.
-let BLOCKING_LOAD = false;
+//If this is true, the grid will display the logo screen while loading.
+let BLOCKING_LOAD = true;
 
 //Indexing data to preserve save/load order of widgets
 let widget_index = 0;
@@ -59,6 +59,28 @@ class Grid{
             loadingContainer.style.height = this.HEIGHT + 'px';
             loadingContainer.style.position = "absolute";
             loadingContainer.style.backgroundColor = "#191919";
+
+            //Add the image to the loading screen
+            let logo_container = document.createElement('img');
+            logo_container.setAttribute('src', 'root/logo.png');
+            logo_container.style.position = 'absolute';
+            logo_container.style.top = '50%';
+            logo_container.style.marginRight = '-50%';
+            logo_container.style.transform = 'translate(50%, -50%)';
+            loadingContainer.appendChild(logo_container);
+
+            //Add progress bar
+            let progress_container = document.createElement('progress');
+            progress_container.setAttribute('max', 100);
+            progress_container.setAttribute('value', 0);
+            progress_container.setAttribute('id', 'load');
+            progress_container.style.position = 'absolute';
+            progress_container.style.top = '90%';
+            progress_container.style.left = '50%';
+            progress_container.style.transform = 'translate(-100%, -50%)';
+            loadingContainer.appendChild(progress_container);
+
+
             document.body.appendChild(loadingContainer);
         }
 
@@ -66,7 +88,7 @@ class Grid{
         gridContainer = document.createElement('div');
         gridContainer.setAttribute('id', GRID_TAG);
         if(BLOCKING_LOAD) {
-            gridContainer.style.visibility = "hidden";
+            $(gridContainer).fadeOut(0);
         }
         document.body.appendChild(gridContainer);
 
@@ -604,7 +626,13 @@ class Grid{
         });
     }
 
-    //Synchronous loop that populates a cell with a widget.
+    /**
+     * Asynchronous loop which will Synchronous populates a cell with an intialized widget untill all widgets are initialized, at this point it will then return.
+     * @param {Widget[]} widgets - Uninitialized widgets to be initialized and loaded into the grid.
+     * @param {Column[]} COLUMNS - The Columns that make up this EGAD grid.
+     * @param {Object} saveData - A save object representing the state of all widgets the last time the application was closed.
+     * @return {Promise<void>} - This promise resolves once all widgets are initialized.
+     */
     async initalize(widgets, COLUMNS, saveData) {
         if(!saveData){
             console.error("initalize is being called with undefinded saveData. Was a saveData object passed into this grids constructor?");
@@ -634,8 +662,10 @@ class Grid{
                 }
             }
             widget_index++;
+            document.getElementById('load').value = Math.ceil((i / widgets.length)*100);
         }
         console.log("Initialized.");
+        document.getElementById('load').value = Math.ceil(100);
         for(let i = 0; i < COLUMNS.length; i++){
             for(let j= 0; j < COLUMNS[i].ROWS.length; j++){
                 COLUMNS[i].ROWS[j].style.backgroundColor = '#442222';
@@ -643,8 +673,7 @@ class Grid{
         }
 
         if(BLOCKING_LOAD) {
-            gridContainer.style.visibility = "visible";
-            loadingContainer.style.visibility = "hidden";
+            setTimeout(() => { $(gridContainer).fadeIn(750); }, 250);
         }
     }
 

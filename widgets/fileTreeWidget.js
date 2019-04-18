@@ -6,6 +6,7 @@ class FileTreeWidget extends Widget{
     /**
      * @inheritDoc
      * @constructor
+     * @typedef FileTreeWidget
      * @augments Widget
      * @param {Integer} x - This is the Column that this widget should be added to.
      * @param {Integer} y - This is the row of of the Column that this widget should be added to.
@@ -88,6 +89,10 @@ class FileTreeWidget extends Widget{
         }
     }
 
+    /**
+     * This function allows any class to pass functions into the observers object, when a file is clicked on, every observer will have their callback functions trigger.
+     * @param {Function} observer - Observer is a callback function to execute when a file is double clicked on.
+     */
     subscribe(observer){
         observers.push(observer);
     }

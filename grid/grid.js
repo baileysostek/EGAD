@@ -19,8 +19,8 @@ const DRAG_WIDTH = 9 ;
 let gridContainer;
 let loadingContainer;
 
-//If this is true, the grid will display a grey screen while loading.
-let BLOCKING_LOAD = false;
+//If this is true, the grid will display the logo screen while loading.
+let BLOCKING_LOAD = true;
 
 //Indexing data to preserve save/load order of widgets
 let widget_index = 0;
@@ -59,6 +59,16 @@ class Grid{
             loadingContainer.style.height = this.HEIGHT + 'px';
             loadingContainer.style.position = "absolute";
             loadingContainer.style.backgroundColor = "#191919";
+
+            //Add the image to the loading screen
+            let logo_container = document.createElement('img');
+            logo_container.setAttribute('src', 'root/logo.png');
+            logo_container.style.position = 'absolute';
+            logo_container.style.top = '50%';
+            logo_container.style.marginRight = '-50%';
+            logo_container.style.transform = 'translate(50%, -50%)';
+            loadingContainer.appendChild(logo_container);
+
             document.body.appendChild(loadingContainer);
         }
 
@@ -66,7 +76,7 @@ class Grid{
         gridContainer = document.createElement('div');
         gridContainer.setAttribute('id', GRID_TAG);
         if(BLOCKING_LOAD) {
-            gridContainer.style.visibility = "hidden";
+            $(gridContainer).fadeOut(0);
         }
         document.body.appendChild(gridContainer);
 
@@ -649,8 +659,7 @@ class Grid{
         }
 
         if(BLOCKING_LOAD) {
-            gridContainer.style.visibility = "visible";
-            loadingContainer.style.visibility = "hidden";
+            $(gridContainer).fadeIn(500);
         }
     }
 

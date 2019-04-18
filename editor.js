@@ -38,15 +38,15 @@ function init() {
     //---------------------------------------------------------------------------
     //                              Build Menu here
     //---------------------------------------------------------------------------
-    let file_dd = menu.addMenuDropDown("File");
-    menu.registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
-    menu.registerFunctionCallback(file_dd, 'Save', 'S', 'save');
-    menu.registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
-    menu.registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
-    menu.registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
-    let help_dd = menu.addMenuDropDown("Help");
-    let test_dd = menu.addMenuDropDown("Test");
-    let project_dd = menu.addMenuDropDown("Project");
+    // let file_dd = menu.addMenuDropDown("File");
+    // menu.registerAppCallback(file_dd, 'Quit', 'Q', 'quit');
+    // menu.registerFunctionCallback(file_dd, 'Save', 'S', 'save');
+    // menu.registerFunctionCallback(file_dd, 'New', '=', 'newWidget');
+    // menu.registerFunctionCallback(file_dd, 'Remove', '-', 'removeWidget');
+    // menu.registerWindowCallback(file_dd, 'Developer Console', 'I', 'toggleDevTools');
+    // let help_dd = menu.addMenuDropDown("Help");
+    // let test_dd = menu.addMenuDropDown("Test");
+    // let project_dd = menu.addMenuDropDown("Project");
 
 
     //Initialize the file manager, and load the configuration file.
@@ -71,44 +71,44 @@ function init() {
         //     new canvasWidget( 2, 0, screen.width, screen.height)
         // ]);
 
-        myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
-        myGrid.init([
-            new webviewWidget(0, 0, "root/webviewExample/game.html"),
-        ]);
-
-        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        // myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
         // myGrid.init([
-        //     new webviewWidget(0, 0, "root/documentation/index.html"),
-        //     new webviewWidget(0, 0, "http://imgur.com"),
-        //     new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
-        //     new fileBrowser(0, 1, "node_modules", myFileManager),
-        //     new fileBrowser(0, 2, "~Font", myFileManager),
-        //     new fileBrowser(0, 3, "~Images", myFileManager),
-        //     new fileBrowser(0, 4, "~/jdk-11.0.1", myFileManager),
-        //     new fileBrowser(1, 0, "~Levels", myFileManager),
-        //     new fileBrowser(1, 1, "~Logs", myFileManager),
-        //     new fileBrowser(1, 2, "~Models", myFileManager),
-        //     new fileBrowser(1, 3, "~Natives", myFileManager),
-        //     new fileBrowser(1, 4, "~res", myFileManager),
-        //     new fileBrowser(2, 0, "~saves", myFileManager),
-        //     new fileBrowser(2, 1, "~Scripting", myFileManager),
-        //     new fileBrowser(2, 2, "~Shaders", myFileManager),
-        //     new fileBrowser(2, 3, "~Sounds", myFileManager),
-        //     new fileBrowser(2, 4, "~Web", myFileManager),
-        //     new fileBrowser(3, 0, "~", myFileManager),
-        //     new fileBrowser(3, 1, "~", myFileManager),
-        //     new fileBrowser(3, 2, "~", myFileManager),
-        //     new fileBrowser(3, 3, "~", myFileManager),
-        //     new fileBrowser(3, 4, "~", myFileManager),
-        //     new fileBrowser(4, 0, "~", myFileManager),
-        //     new fileBrowser(4, 1, "~", myFileManager),
-        //     new fileBrowser(4, 2, "~", myFileManager),
-        //     new fileBrowser(4, 3, "~", myFileManager),
-        //     new fileBrowser(4, 4, "~", myFileManager),
-        //     new transfromWidget(1,0),
-        //     new transfromWidget(1,0),
-        //     new transfromWidget(1,0),
+        //     new webviewWidget(0, 0, "root/webviewExample/game.html"),
         // ]);
+
+        myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        myGrid.init([
+            new webviewWidget(0, 0, "root/documentation/index.html"),
+            new webviewWidget(0, 0, "http://imgur.com"),
+            new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
+            new fileBrowser(0, 1, "", myFileManager),
+            new fileBrowser(0, 2, "", myFileManager),
+            new fileBrowser(0, 3, "", myFileManager),
+            new fileBrowser(0, 4, "", myFileManager),
+            new fileBrowser(1, 0, "", myFileManager),
+            new fileBrowser(1, 1, "", myFileManager),
+            new fileBrowser(1, 2, "", myFileManager),
+            new fileBrowser(1, 3, "", myFileManager),
+            new fileBrowser(1, 4, "", myFileManager),
+            new fileBrowser(2, 0, "", myFileManager),
+            new fileBrowser(2, 1, "", myFileManager),
+            new fileBrowser(2, 2, "", myFileManager),
+            new fileBrowser(2, 3, "", myFileManager),
+            new fileBrowser(2, 4, "", myFileManager),
+            new fileBrowser(3, 0, "", myFileManager),
+            new fileBrowser(3, 1, "", myFileManager),
+            new fileBrowser(3, 2, "", myFileManager),
+            new fileBrowser(3, 3, "", myFileManager),
+            new fileBrowser(3, 4, "", myFileManager),
+            new fileBrowser(4, 0, "", myFileManager),
+            new fileBrowser(4, 1, "", myFileManager),
+            new fileBrowser(4, 2, "", myFileManager),
+            new fileBrowser(4, 3, "", myFileManager),
+            new fileBrowser(4, 4, "", myFileManager),
+            new transfromWidget(1,0),
+            new transfromWidget(1,0),
+            new transfromWidget(1,0),
+        ]);
 
     }, function(err) {
         //If there was an error initializing the grid, print the error here.

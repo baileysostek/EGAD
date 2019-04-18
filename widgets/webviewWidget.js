@@ -23,7 +23,8 @@ class WebviewWidget extends Widget{
             if(navigator.onLine || !this.configData.url.includes('http:')) {
                 this.element = document.createElement("webview");
                 this.element.setAttribute("src", this.configData.url);
-                resolve(this);
+                this.element.addEventListener('dom-ready', resolve(this));
+                this.element.addEventListener('did-fail-load', reject(this));
             }else{
                 //Offline, so show a grey screen
                 this.element = document.createElement("div");

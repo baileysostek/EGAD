@@ -71,44 +71,45 @@ function init() {
         //     new canvasWidget( 2, 0, screen.width, screen.height)
         // ]);
 
-        // myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
-        // myGrid.init([
-        //     new webviewWidget(0, 0, "root/webviewExample/game.html"),
-        // ]);
-
-        myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         myGrid.init([
-            new webviewWidget(0, 0, "root/documentation/index.html"),
-            new webviewWidget(0, 0, "http://imgur.com"),
-            new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
-            new fileBrowser(0, 1, "", myFileManager),
-            new fileBrowser(0, 2, "", myFileManager),
-            new fileBrowser(0, 3, "", myFileManager),
-            new fileBrowser(0, 4, "", myFileManager),
-            new fileBrowser(1, 0, "", myFileManager),
-            new fileBrowser(1, 1, "", myFileManager),
-            new fileBrowser(1, 2, "", myFileManager),
-            new fileBrowser(1, 3, "", myFileManager),
-            new fileBrowser(1, 4, "", myFileManager),
-            new fileBrowser(2, 0, "", myFileManager),
-            new fileBrowser(2, 1, "", myFileManager),
-            new fileBrowser(2, 2, "", myFileManager),
-            new fileBrowser(2, 3, "", myFileManager),
-            new fileBrowser(2, 4, "", myFileManager),
-            new fileBrowser(3, 0, "", myFileManager),
-            new fileBrowser(3, 1, "", myFileManager),
-            new fileBrowser(3, 2, "", myFileManager),
-            new fileBrowser(3, 3, "", myFileManager),
-            new fileBrowser(3, 4, "", myFileManager),
-            new fileBrowser(4, 0, "", myFileManager),
-            new fileBrowser(4, 1, "", myFileManager),
-            new fileBrowser(4, 2, "", myFileManager),
-            new fileBrowser(4, 3, "", myFileManager),
-            new fileBrowser(4, 4, "", myFileManager),
-            new transfromWidget(1,0),
-            new transfromWidget(1,0),
-            new transfromWidget(1,0),
+            new codeEditorWidget(0, 0, 'javascript'),
+            new webviewWidget(1, 0, "root/webviewExample/game.html"),
         ]);
+
+        // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
+        // myGrid.init([
+        //     new webviewWidget(0, 0, "root/documentation/index.html"),
+        //     new webviewWidget(0, 0, "http://imgur.com"),
+        //     new fileBrowser(1, 0, "~", myFileManager, ['*.json']),//Brows the root directory
+        //     new fileBrowser(0, 1, "", myFileManager),
+        //     new fileBrowser(0, 2, "", myFileManager),
+        //     new fileBrowser(0, 3, "", myFileManager),
+        //     new fileBrowser(0, 4, "", myFileManager),
+        //     new fileBrowser(1, 0, "", myFileManager),
+        //     new fileBrowser(1, 1, "", myFileManager),
+        //     new fileBrowser(1, 2, "", myFileManager),
+        //     new fileBrowser(1, 3, "", myFileManager),
+        //     new fileBrowser(1, 4, "", myFileManager),
+        //     new fileBrowser(2, 0, "", myFileManager),
+        //     new fileBrowser(2, 1, "", myFileManager),
+        //     new fileBrowser(2, 2, "", myFileManager),
+        //     new fileBrowser(2, 3, "", myFileManager),
+        //     new fileBrowser(2, 4, "", myFileManager),
+        //     new fileBrowser(3, 0, "", myFileManager),
+        //     new fileBrowser(3, 1, "", myFileManager),
+        //     new fileBrowser(3, 2, "", myFileManager),
+        //     new fileBrowser(3, 3, "", myFileManager),
+        //     new fileBrowser(3, 4, "", myFileManager),
+        //     new fileBrowser(4, 0, "", myFileManager),
+        //     new fileBrowser(4, 1, "", myFileManager),
+        //     new fileBrowser(4, 2, "", myFileManager),
+        //     new fileBrowser(4, 3, "", myFileManager),
+        //     new fileBrowser(4, 4, "", myFileManager),
+        //     new transfromWidget(1,0),
+        //     new transfromWidget(1,0),
+        //     new transfromWidget(1,0),
+        // ]);
 
     }, function(err) {
         //If there was an error initializing the grid, print the error here.

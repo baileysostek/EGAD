@@ -76,7 +76,7 @@ function init() {
         //     new codeEditorWidget(0, 0, 'javascript'),
         //     new webviewWidget(1, 0, "root/webviewExample/game.html"),
         // ]);
-
+        //
         myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         myGrid.init([
             new webviewWidget(0, 0, "root/documentation/index.html"),

@@ -69,6 +69,18 @@ class Grid{
             logo_container.style.transform = 'translate(50%, -50%)';
             loadingContainer.appendChild(logo_container);
 
+            //Add progress bar
+            let progress_container = document.createElement('progress');
+            progress_container.setAttribute('max', 100);
+            progress_container.setAttribute('value', 0);
+            progress_container.setAttribute('id', 'load');
+            progress_container.style.position = 'absolute';
+            progress_container.style.top = '90%';
+            progress_container.style.left = '50%';
+            progress_container.style.transform = 'translate(-100%, -50%)';
+            loadingContainer.appendChild(progress_container);
+
+
             document.body.appendChild(loadingContainer);
         }
 
@@ -650,8 +662,10 @@ class Grid{
                 }
             }
             widget_index++;
+            document.getElementById('load').value = Math.ceil((i / widgets.length)*100);
         }
         console.log("Initialized.");
+        document.getElementById('load').value = Math.ceil(100);
         for(let i = 0; i < COLUMNS.length; i++){
             for(let j= 0; j < COLUMNS[i].ROWS.length; j++){
                 COLUMNS[i].ROWS[j].style.backgroundColor = '#442222';

@@ -659,7 +659,7 @@ class Grid{
         }
 
         if(BLOCKING_LOAD) {
-            $(gridContainer).fadeIn(500);
+            setTimeout(() => { $(gridContainer).fadeIn(750); }, 250);
         }
     }
 

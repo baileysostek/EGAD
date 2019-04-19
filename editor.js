@@ -71,17 +71,17 @@ function init() {
         //     new canvasWidget( 2, 0, screen.width, screen.height)
         // ]);
 
-        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
-        myGrid.init([
-            new transfromWidget(1, 0),
-            new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example_alt.html"),
-        ]);
-
         // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
         // myGrid.init([
-        //     new codeEditorWidget(0, 0, 'javascript'),
-        //     new webviewWidget(1, 0, "root/webviewExample/game.html"),
+        //     new transfromWidget(1, 0),
+        //     new webviewWidget(0, 0, "http://users.wpi.edu/~bhsostek/CS4731/Project4/example_alt.html"),
         // ]);
+
+        myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        myGrid.init([
+            new codeEditorWidget(0, 0, 'javascript'),
+            new webviewWidget(1, 0, "https://facebook.com"),
+        ]);
         //
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([

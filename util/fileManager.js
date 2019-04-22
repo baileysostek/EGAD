@@ -13,11 +13,12 @@ const CONFIG_FILE = 'config.json';
 let configurationData   = {};
 let projectData         = {DATA:{}};
 
-/**
- * Creates a file manager. This class can read and write files.
- * @class
- */
 class FileManager{
+    /**
+     * Creates a file manager. This class can read and write files.
+     * @constructor
+     * @class
+     */
     constructor(){
 
     }

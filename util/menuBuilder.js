@@ -3,6 +3,15 @@ let MENU = [];
 
 class menuBuilder{
     /**
+     * Creates a menuBuilder. This class provides utilites which helps a user build a menu bar for their application
+     * @constructor
+     * @class
+     */
+    constructor(){
+
+    }
+
+    /**
      * This function is simply a getter for this classes MENU object. The MENU object hold all configuration data needed to create the menu at the top of the window.
      * @return{Object} An object representing all menu tabs, and their sub functions.
      **/

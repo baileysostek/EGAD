@@ -2,6 +2,15 @@ const EXEC = require('child_process').execFile;
 
 class processSpawner {
     /**
+     * Creates a processSpawner. This class allows a user to spawn a native process and acces the stdin and stdout streams spawned from the process.
+     * @constructor
+     * @class
+     */
+    constructor(){
+
+    }
+
+    /**
      * This function allows a developer to spawn an arbatrary process on the host pc, and subscribe to various events the spawned process emits.
      * @param {String} cmd - The command to execute.
      * @param {String[]} args - Command line arguments to pass into the command.

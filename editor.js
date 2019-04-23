@@ -6,6 +6,7 @@ const fancyTree = require('jquery.fancytree');
 //These are the modules that are loaded and specific to Perlenspeil IDE
 let myFileManager;
 let myGrid;
+let myGamepadManager;
 
 //Version number of this project.
 const version = '1.0';
@@ -15,6 +16,7 @@ const version = '1.0';
 //---------------------------------------------------------------------------
 const grid              = require('./grid/grid');
 const fileManager       = require('./util/fileManager');
+const gamepadManager    = require('./util/gamepadManager');
 const fileBrowser       = require('./widgets/fileTreeWidget');
 const webviewWidget     = require('./widgets/webviewWidget');
 const transfromWidget   = require('./widgets/transformWidget');
@@ -51,6 +53,7 @@ function init() {
 
     //Initialize the file manager, and load the configuration file.
     myFileManager = new fileManager();
+    myGamepadManager = new gamepadManager();
 
     //---------------------------------------------------------------------------
     // Initialize the File Manager, when this function returns create your grid
@@ -72,8 +75,10 @@ function init() {
         // ]);
 
         myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
+        let theCanavas = new canvasWidget(0, 0, screen.width, screen.height, 144);
+        theCanavas.setGamepadManager(myGamepadManager);
         myGrid.init([
-            new canvasWidget(0, 0, screen.width, screen.height),
+            theCanavas
         ]);
 
         // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);

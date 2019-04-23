@@ -38,6 +38,7 @@ app.on('ready', function(){
      */
     mainWindow.webContents.once('dom-ready', () => {
         mainWindow.maximize();
+        // mainWindow.setFullScreen(true);
         mainWindow.webContents.executeJavaScript('console.log("Electron Grid of Aligned Data (EGAD) Version:", version); console.log("Created by Bailey Sostek with the help of Professor Brian Moriarty (2018 - 2019)");');
         mainWindow.webContents.executeJavaScript('init()');
         mainWindow.webContents.executeJavaScript('getMenu()').then((result) => {

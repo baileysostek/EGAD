@@ -2,6 +2,8 @@ const Widget = require('./widget');
 
 let count = 0;
 
+let delta = 0;
+
 class canvasWidget extends Widget{
     /**
      * @inheritDoc
@@ -23,6 +25,10 @@ class canvasWidget extends Widget{
             fps:fps,
             draw_func:{}
         }, {});
+    }
+
+    setGamepadManager(gamepadManager){
+        super.getConfigData()['gamepads'] = gamepadManager;
     }
 
     /**
@@ -57,20 +63,28 @@ class canvasWidget extends Widget{
      * This function triggers after the widget has initialized, at this point all fields should be able to be referenced. In the canvas widget this function registers a callback function to run 'fps' times per second.
      */
     postinit(){
-        let count = 0;
+        count = 0;
         //Put g2d on this
         let gl = super.getConfigData()['gl'];
         super.getConfigData()['draw_func'] = window.setInterval(() => {
             count++;
             // Set clear color to black, fully opaque
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            if(super.getConfigData()['gamepads'].getGamepads()[0]){
+                gl.clearColor(Math.abs(super.getConfigData()['gamepads'].getGamepads()[0].axes[1]), super.getConfigData()['gamepads'].getGamepads()[0].axes[0], -1 * super.getConfigData()['gamepads'].getGamepads()[0].axes[0], 1.0);
+            }else{
+                gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            }
             // Clear the color buffer with specified clear color
             gl.clear(gl.COLOR_BUFFER_BIT);
             this.draw();
-        }, 1000/super.getConfigData()['fps'] );
+        }, (1000/super.getConfigData()['fps'])+delta );
 
         let fps = window.setInterval(() => {
             console.log("count",count);
+            if(count > super.getConfigData()['fps']){
+                delta++;
+                this.setFameRate(super.getConfigData()['fps']);
+            }
             count = 0;
         }, 1000);
     }
@@ -103,16 +117,21 @@ class canvasWidget extends Widget{
      * @param {Integet} fps - The target frame rate for this canvas.
      */
     setFameRate(fps){
+        let gl = super.getConfigData()['gl'];
         super.getConfigData()['fps'] = fps;
         clearInterval(super.getConfigData()['draw_func']);
         super.getConfigData()['draw_func'] = window.setInterval(() => {
             count++;
             // Set clear color to black, fully opaque
-            super.getConfigData()['gl'].clearColor(0.0, 0.0, 0.0, 1.0);
+            if(super.getConfigData()['gamepads'].getGamepads()[0]){
+                gl.clearColor(Math.abs(super.getConfigData()['gamepads'].getGamepads()[0].axes[1]), super.getConfigData()['gamepads'].getGamepads()[0].axes[0], -1 * super.getConfigData()['gamepads'].getGamepads()[0].axes[0], 1.0);
+            }else{
+                gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            }
             // Clear the color buffer with specified clear color
             super.getConfigData()['gl'].clear(super.getConfigData()['gl'].COLOR_BUFFER_BIT);
             this.draw();
-        }, 1000/super.getConfigData()['fps'] );
+        }, (1000/super.getConfigData()['fps'])+delta);
     }
 
     /**

@@ -64,6 +64,10 @@ class WebviewWidget extends Widget{
         this.element.reload();
     }
 
+    executeJavaScript(code, ){
+        this.element.executeJavaScript();
+    }
+
 };
 
 module.exports = WebviewWidget;

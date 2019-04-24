@@ -74,18 +74,17 @@ function init() {
         //     new canvasWidget( 2, 0, screen.width, screen.height)
         // ]);
 
-        myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
-        let theCanavas = new canvasWidget(0, 0, screen.width, screen.height, 144);
-        theCanavas.setGamepadManager(myGamepadManager);
-        myGrid.init([
-            theCanavas
-        ]);
-
-        // myGrid = new grid(screen.width, screen.height, 2, 1, saveData);
+        // myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
+        // let theCanavas = new canvasWidget(0, 0, screen.width, screen.height, 144);
+        // theCanavas.setGamepadManager(myGamepadManager);
         // myGrid.init([
-        //     new codeEditorWidget(0, 0, 'javascript'),
-        //     new webviewWidget(1, 0, "https://facebook.com"),
+        //     theCanavas
         // ]);
+
+        myGrid = new grid(screen.width, screen.height, 1, 1, saveData);
+        myGrid.init([
+            new webviewWidget(0, 0, "https://perlenspiel.net/ps3/examples/whither/game.html"),
+        ]);
         //
         // myGrid = new grid(screen.width, screen.height, 5, 5, saveData);
         // myGrid.init([

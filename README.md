@@ -2,6 +2,8 @@
 
 The EGAD framework allows users to quickly create grid based web applications by speicifying a grid size, then populating that grid with prebuilt content. There are many differnet modules built into the framework that help a developer get up and running, such as a Code Editor, File Tree, and a WebGL Canvas. 
 
+[![EGAD Presentation](https://img.youtube.com/vi/BiBUdq4y2fw/0.jpg)](https://www.youtube.com/watch?v=BiBUdq4y2fw)
+
 ## Code Editor
 <p>The Code Editor widget is a language agnostic editor which allows a user to edit an arbitrary language specified by the developer. This widget also contains a custom Language Parser which suggests commands that a user could be trying to type. Code Mirror  is the base editor tool that the widget is designed and built around. Code Mirror is open source, widely used, incredibly flexible, and well documented making it an excellent choice for a language agnostic editor. The widget takes in an additional parameter called “languageMap” which associates file extensions with languages. This widget has configurable hotkeys for saving the code being edited to a file as well as, copying, pasting, and commenting code. The widget provides a way to register function callbacks to be executed whenever one of these hotkeys is triggered.
 </p>

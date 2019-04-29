@@ -2,6 +2,7 @@
 
 The EGAD framework allows users to quickly create grid based web applications by speicifying a grid size, then populating that grid with prebuilt content. There are many differnet modules built into the framework that help a developer get up and running, such as a Code Editor, File Tree, and a WebGL Canvas. 
 
+# Presentation Video (click image to link to youtube)
 [![EGAD Presentation](https://img.youtube.com/vi/BiBUdq4y2fw/0.jpg)](https://www.youtube.com/watch?v=BiBUdq4y2fw)
 
 ## Code Editor
